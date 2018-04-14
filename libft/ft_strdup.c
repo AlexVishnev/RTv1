@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: avishnev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/14 12:43:10 by avishnev          #+#    #+#             */
-/*   Updated: 2018/04/14 15:39:31 by avishnev         ###   ########.fr       */
+/*   Created: 2017/10/30 14:50:59 by avishnev          #+#    #+#             */
+/*   Updated: 2017/10/30 15:02:46 by avishnev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
+#include "libft.h"
+#include <stdlib.h>
 
-#pargma star(1);
-
-
-
-
-
-int	main(int ac, char **av)
+char	*ft_strdup(const char *src)
 {
+	char	*str;
 
-	return (0);
+	if (!(str = (char *)malloc(sizeof(*str) * (ft_strlen(src) + 1))))
+		return (NULL);
+	return (ft_strcpy(str, src));
 }
