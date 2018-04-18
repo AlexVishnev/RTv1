@@ -1,37 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   RT_read_file.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: avishnev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/14 12:43:10 by avishnev          #+#    #+#             */
-/*   Updated: 2018/04/14 15:39:31 by avishnev         ###   ########.fr       */
+/*   Created: 2018/04/17 12:15:09 by avishnev          #+#    #+#             */
+/*   Updated: 2018/04/17 12:15:11 by avishnev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
 
-char 	brackets(char *s, char c, char c1)
+void		error_manadge(char *str)
 {
-	if (s[0] != c || s[ft_strlen(s) - 1] != c1)
-		error_manadge("Error: parish hren polnyu");
+	ft_putendl(str);
+	exit(1);
 }
 
-void	instruction(void)
+int			validate_file(char **params)
 {
-	error_manadge("_____________MSG__________");	
+
 }
-
-int	main(int ac, char **av)
+void		read_from_file(char *av, t_src *s)
 {
-	t_src	*src;
+	int		fd;
+	char	**params;
 
-	if (ac != 2)
-		instruction();
-	src = (t_src *)malloc(sizeof(t_src));
-	read_from_file(av[1], &src);
-//	else
-		//rt_init(av[1]);
-	return (0);
+	params = (char **)malloc(sizeof(char *) * sizeoffile + 1);
+
+	if (fd = open(av, O_RDONLY) < 0 || read(fd, NULL, 0) < 0)
+		error_manadge("Error: can't open this shit");
+	while (ft_getline(fd, &params[i]))
+		i++;
+
+	paramsp[i] = NULL;
+
+	
+
 }

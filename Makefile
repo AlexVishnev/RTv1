@@ -6,13 +6,13 @@
 #    By: avishnev <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/14 12:41:56 by avishnev          #+#    #+#              #
-#    Updated: 2018/04/14 20:32:02 by avishnev         ###   ########.fr        #
+#    Updated: 2018/04/18 13:26:39 by avishnev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = RTv1
 CC = gcc
-FILES = main
+FILES = main RT_read_file
 LIBA = libft/libft.a
 LIB_D_FT = libft/
 SRC = $(addprefix scr/, $(addsuffix .c, $(FILES)))

@@ -11,13 +11,44 @@
 /* ************************************************************************** */
 
 #ifndef RTV1_H
-#define RTV1_H
+# define RTV1_H
 
-typedef	struct	s_rt
+# include <fcntl.h>
+# include "SDL2/SDL.h"
+# include <math.h>
+# include "libft.h"
+# define WIN_WD 1080
+# define WIN_HG 720
+
+
+
+typedef struct	s_ligth
+{
+	float	x;
+	float	y;
+	float	z;
+}				t_ligth;
+
+typedef	struct	s_obj
+{
+	int		x;
+	int		y;	
+}				t_obj;
+
+typedef	struct	s_src
+{
+
+	t_obj		*object;
+	t_ligth 	*ligth;
+	
+}				t_src;
+
+typedef	struct	s_cam
 {
 	
-}				t_rt;
+}				t_cam;
 
-
+void		read_from_file(char *tmp, t_src *s);
+void		error_manadge(char *str);
 
 #endif
