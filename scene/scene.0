@@ -1,0 +1,13 @@
+#nbr spotlight
+
+#camera start position
+
+->camera [{0,0,0}]
+
+->sourceligth [{0,0,0};{1,1,1}]
+
+#(type){size}{colour}{shadows}
+->object [(plane){10}{255, 255, 255}{on}]
+->object [(cylinder){10}{255, 255, 255}{on}]
+->object [(sphere){10}{255, 255, 255}{on}]
+->object [(cone){10}{255, 255, 255}{on}]

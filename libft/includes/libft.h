@@ -24,6 +24,7 @@ typedef struct	s_list
 	struct s_list	*next;
 }				t_list;
 
+int				ft_getline(const int fd, char **line);
 char			*ft_strrev(char *str);
 char			*ft_strnchr(const char *str, int c, int len);
 char			*ft_delchr(char *s, char c);
