@@ -12,10 +12,13 @@
 
 #include "rtv1.h"
 
-void		error_manadge(char *str)
+void		error_manadge(char *str, int flag, char *src)
 {
+	if (flag == 1)
+		free(src);
 	ft_putendl(str);
-	exit (1);
+	system("leaks -q RTv1");
+	exit(1);
 }
 
 int			get_size(char *av)
@@ -36,38 +39,47 @@ int			get_size(char *av)
 	return (i);
 }
 
-int			fill_data(char *source, t_src *src)
+int			validate_data(char *source, t_src *src)
 {
 	char		*tmp;
 
 	tmp = ft_strsub(source, 0, 6);
-	if (!(ft_strcmp(tmp, "camera") || ft_strcmp(tmp, "object") || 
-			ft_strcmp(tmp, "sligth"))) 
-	{
-		free(tmp);
-		error_manadge("Error: invalid params"); // add free
-	}
+	if (!(ft_strcmp(tmp, "camera") || ft_strcmp(tmp, "object") 
+		|| ft_strcmp(tmp, "sligth")))
+		error_manadge(MSG_FORMAT, 1, tmp);
 	free(tmp);
 	tmp = ft_strsub(source, 7, ft_strlen(source));
-	if (*tmp != '[')
-		error_manadge("Error: invalid params");
+	if (tmp[0] != '[' || tmp[ft_strlen(tmp) - 1] != ']')
+		error_manadge(MSG_FORMAT, 1, tmp);
+	if ((tmp[1] != '(' && tmp[1] != '{') || 
+		(tmp[ft_strlen(tmp) - 2] != ')' && tmp[ft_strlen(tmp) - 2] != '}'))
+		error_manadge(MSG_FORMAT, 1, tmp);
+	free(tmp);
+	tmp = ft_strsub(source, 0, ft_strlen(source));
+	get_data_values(tmp, src);
 	free(tmp);
 	return (0);
-
-
 }
-
-	
 
 void		get_parameters(char *str, t_src *src)
 {
-	//ft_putendl(str);
-	if (str[0] == '#' || str[0] == '\n')
+	if (str[0] == '#' || str[0] == '\0') /*ignore coments*/
 		return ;
 	else if (str[0] == '-' && str[1] == '>')
-		fill_data(&str[2], src);
-	else if (str[9] == ' ')
-		error_manadge("Error: invalid format of data");
+		validate_data(&str[2], src);
+}
+
+int			get_data_values(char *str, t_src *src)
+{
+	char		*tmp;
+
+	tmp = ft_strsub(str, 0, 6);
+	if (!ft_strcmp(tmp, "camera"))
+	{
+		ft_putendl(str);
+	}
+	free(tmp);
+	return (0);
 }
 
 void		read_from_file(char *av, t_src *src)
@@ -78,10 +90,12 @@ void		read_from_file(char *av, t_src *src)
 	int		size;
 
 	fd = open(av, O_RDONLY);
-	if (read(fd, av, 0 ))
-		error_manadge("Error: You argunent are shit");
+	if (read(fd, av, 0))
+	{
+		close(fd);
+		error_manadge(MSG_PARSE, 0, NULL);
+	}
 	size = get_size(av);
-	src = NULL;
 	params = (char **)ft_memalloc(sizeof(char *) * size + 1);
 	i = 0;
 	while (ft_getline(fd, &params[i]))
@@ -91,6 +105,5 @@ void		read_from_file(char *av, t_src *src)
 		i++;
 	}
 	free(params);
-
 	close(fd);
 }

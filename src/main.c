@@ -15,29 +15,29 @@
 void	init_host(t_src *src)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
-		error_manadge((char *)SDL_GetError());
+		error_manadge((char *)SDL_GetError(), 0, NULL);
 	if (TTF_Init() < 0)
-		error_manadge((char *)SDL_GetError());
-	src->wind = SDL_CreateWindow("RT_v1", 
-					SDL_WINDOWPOS_UNDEFINED, 
+		error_manadge((char *)SDL_GetError(), 0, NULL);
+	src->wind = SDL_CreateWindow("RT_v1",
 					SDL_WINDOWPOS_UNDEFINED,
-					WIN_WD, WIN_HG, 
+					SDL_WINDOWPOS_UNDEFINED,
+					WIN_WD, WIN_HG,
 					SDL_WINDOW_ALLOW_HIGHDPI);
 	src->surf = SDL_GetWindowSurface(src->wind);
 	src->img_pxl = src->surf->pixels;
 }
 
-int 		expose_hook(t_src *src)
+int		expose_hook(t_src *src)
 {
 	SDL_Event	key;
 
 	while (SDL_PollEvent(&key))
 	{
 		if ((key.type == SDL_QUIT) ||
-		 key.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+		key.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 			return (0);
 	}
-	return (1);	
+	return (1);
 }
 
 void	exit_work(t_src *src)
@@ -45,7 +45,7 @@ void	exit_work(t_src *src)
 	SDL_DestroyWindow(src->wind);
 	IMG_Quit();
 	SDL_Quit();
-	free(src); // free main structure
+	free(src);
 	system("leaks -q RTv1");
 }
 
@@ -54,9 +54,8 @@ int		main(int ac, char **av)
 	t_src	*src;
 
 	if (ac != 2)
-		error_manadge(MSG);
+		error_manadge(MSG, 0, NULL);
 	src = (t_src *)ft_memalloc(sizeof(t_src));
-	
 	read_from_file(av[1], src);
 	init_host(src);
 	while (42)

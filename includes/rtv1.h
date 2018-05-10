@@ -32,7 +32,9 @@
  #  include <CL/cl.h>
  # endif
 # define MSG "Usage: scenes/scene.1"
-
+# define MSG_PARSE "Error: You argunent are shit"
+# define MSG_FORMAT "Error: invalid format of data"
+# define MSG_PARAMS "Error: invalid params"
 
 
 typedef struct	s_ligth
@@ -42,8 +44,17 @@ typedef struct	s_ligth
 	float	z;
 }				t_ligth;
 
+typedef struct s_color
+{
+	int		red;
+	int		green;
+	int		blue;
+}				t_color;
+
 typedef	struct	s_obj
 {
+	char	*obj_type;
+	int 	radius;
 	int		x;
 	int		y;	
 }				t_obj;
@@ -56,7 +67,7 @@ typedef	struct	s_src
 
 	t_obj		*object;
 	t_ligth 	*ligth;
-	
+
 }				t_src;
 
 typedef	struct	s_cam
@@ -67,12 +78,14 @@ typedef	struct	s_cam
 }				t_cam;
 
 void		read_from_file(char *tmp, t_src *s);
-void		error_manadge(char *str);
+void		error_manadge(char *str, int flag, char *src);
 int			get_size(char *av);
 void		get_parameters(char *str, t_src *src);
 
 void		init_host(t_src *src);
 int			expose_hook(t_src *src);
-int			fill_data(char *source, t_src *src);
+int			validate_data(char *source, t_src *src);
+
+int			get_data_values(char *tmp, t_src *src);
 
 #endif
