@@ -12,11 +12,6 @@
 
 #include "rtv1.h"
 
-void	instruction(void)
-{
-	error_manadge(MSG);	
-}
-
 void	init_host(t_src *src)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -45,25 +40,31 @@ int 		expose_hook(t_src *src)
 	return (1);	
 }
 
+void	exit_work(t_src *src)
+{
+	SDL_DestroyWindow(src->wind);
+	IMG_Quit();
+	SDL_Quit();
+	free(src); // free main structure
+	system("leaks -q RTv1");
+}
+
 int		main(int ac, char **av)
 {
 	t_src	*src;
 
 	if (ac != 2)
-		instruction();
-	if (!(src = (t_src *)ft_memalloc(sizeof(t_src))))
-		return (0);
-	init_host(src);
+		error_manadge(MSG);
+	src = (t_src *)ft_memalloc(sizeof(t_src));
+	
 	read_from_file(av[1], src);
+	init_host(src);
 	while (42)
 	{
 		if (!expose_hook(src))
 			break ;
 		SDL_UpdateWindowSurface(src->wind);
-
 	}
-		// SDL_DestroyWindow(src->wind);
-		// IMG_Quit();
-		// SDL_Quit();
+	exit_work(src);
 	return (0);
 }

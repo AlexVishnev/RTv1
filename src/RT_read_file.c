@@ -15,7 +15,7 @@
 void		error_manadge(char *str)
 {
 	ft_putendl(str);
-	exit(1);
+	exit (1);
 }
 
 int			get_size(char *av)
@@ -35,15 +35,42 @@ int			get_size(char *av)
 	close(fd);
 	return (i);
 }
-void		get_parameters(char *str)
+
+int			fill_data(char *source, t_src *src)
 {
-	if (str[0] == '#')
-		return ;
-	if (str[0] == '-' && str[1] == '>')
-		ft_putendl(&str[2]);
+	char		*tmp;
+
+	tmp = ft_strsub(source, 0, 6);
+	if (!(ft_strcmp(tmp, "camera") || ft_strcmp(tmp, "object") || 
+			ft_strcmp(tmp, "sligth"))) 
+	{
+		free(tmp);
+		error_manadge("Error: invalid params"); // add free
+	}
+	free(tmp);
+	tmp = ft_strsub(source, 7, ft_strlen(source));
+	if (*tmp != '[')
+		error_manadge("Error: invalid params");
+	free(tmp);
+	return (0);
+
+
 }
 
-void		read_from_file(char *av, t_src *s)
+	
+
+void		get_parameters(char *str, t_src *src)
+{
+	//ft_putendl(str);
+	if (str[0] == '#' || str[0] == '\n')
+		return ;
+	else if (str[0] == '-' && str[1] == '>')
+		fill_data(&str[2], src);
+	else if (str[9] == ' ')
+		error_manadge("Error: invalid format of data");
+}
+
+void		read_from_file(char *av, t_src *src)
 {
 	int		i;
 	int		fd;
@@ -51,15 +78,19 @@ void		read_from_file(char *av, t_src *s)
 	int		size;
 
 	fd = open(av, O_RDONLY);
+	if (read(fd, av, 0 ))
+		error_manadge("Error: You argunent are shit");
 	size = get_size(av);
-	s = NULL;
+	src = NULL;
 	params = (char **)ft_memalloc(sizeof(char *) * size + 1);
 	i = 0;
 	while (ft_getline(fd, &params[i]))
 	{
-		get_parameters(params[i]);
+		get_parameters(params[i], src);
+		free(params[i]);
 		i++;
 	}
-	params[i] = NULL;
+	free(params);
+
 	close(fd);
 }

@@ -21,3 +21,4 @@ int	ft_strcmp(const char *str1, const char *str2)
 		i++;
 	return ((unsigned char)str1[i] - (unsigned char)str2[i]);
 }
+ 

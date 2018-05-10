@@ -61,15 +61,18 @@ typedef	struct	s_src
 
 typedef	struct	s_cam
 {
-	
+	int		x;
+	int		y;
+	int		z;
 }				t_cam;
 
 void		read_from_file(char *tmp, t_src *s);
 void		error_manadge(char *str);
 int			get_size(char *av);
-void		get_parameters(char *str);
+void		get_parameters(char *str, t_src *src);
 
 void		init_host(t_src *src);
 int			expose_hook(t_src *src);
+int			fill_data(char *source, t_src *src);
 
 #endif
