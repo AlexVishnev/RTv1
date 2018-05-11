@@ -58,7 +58,7 @@ int		main(int ac, char **av)
 	src = (t_src *)ft_memalloc(sizeof(t_src));
 	read_from_file(av[1], src);
 	init_host(src);
-	while (42)
+	while (DICK)
 	{
 		if (!expose_hook(src))
 			break ;

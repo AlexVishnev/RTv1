@@ -18,8 +18,8 @@
 # include <SDL2/SDL.h>
 # include <math.h>
 # include "libft.h"
-#  define WIN_WD  1280
-#  define WIN_HG  1280
+#  define WIN_WD 1280
+#  define WIN_HG 1280
 # ifdef __APPLE__
 #  include <OpenCL/opencl.h>
 #  include "SDL_image.h"
@@ -35,6 +35,8 @@
 # define MSG_PARSE "Error: You argunent are shit"
 # define MSG_FORMAT "Error: invalid format of data"
 # define MSG_PARAMS "Error: invalid params"
+# define MSG_CAM "Error: invalid camera position"
+# define DICK 42
 
 
 typedef struct	s_ligth
@@ -59,6 +61,13 @@ typedef	struct	s_obj
 	int		y;	
 }				t_obj;
 
+typedef	struct	s_cam
+{
+	int		x;
+	int		y;
+	int		z;
+}				t_cam;
+
 typedef	struct	s_src
 {
 	SDL_Window		*wind;
@@ -67,15 +76,10 @@ typedef	struct	s_src
 
 	t_obj		*object;
 	t_ligth 	*ligth;
+	t_cam 		camera;
 
 }				t_src;
 
-typedef	struct	s_cam
-{
-	int		x;
-	int		y;
-	int		z;
-}				t_cam;
 
 void		read_from_file(char *tmp, t_src *s);
 void		error_manadge(char *str, int flag, char *src);
@@ -87,5 +91,6 @@ int			expose_hook(t_src *src);
 int			validate_data(char *source, t_src *src);
 
 int			get_data_values(char *tmp, t_src *src);
+void		get_camera_position(char *cord, t_src *src);
 
 #endif

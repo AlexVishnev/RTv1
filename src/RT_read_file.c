@@ -57,26 +57,65 @@ int			validate_data(char *source, t_src *src)
 	free(tmp);
 	tmp = ft_strsub(source, 0, ft_strlen(source));
 	get_data_values(tmp, src);
-	free(tmp);
+	free(tmp); 
 	return (0);
 }
 
 void		get_parameters(char *str, t_src *src)
 {
-	if (str[0] == '#' || str[0] == '\0') /*ignore coments*/
+	if (str[0] == '#' || str[0] == '\0') /*ignore blyad coments*/
 		return ;
 	else if (str[0] == '-' && str[1] == '>')
 		validate_data(&str[2], src);
 }
 
-int			get_data_values(char *str, t_src *src)
+
+void		get_camera_position(char *cord, t_src *src)
+{
+	int		len;
+
+	len = ft_strlen(cord);
+	//printf("len == %d cord[0] == %c cord[len] == %c\n", len, cord[0], cord[len - 1]);
+	if (len > 15 || len < 9 || cord[0] != '[' || cord[len - 1] != ']')
+		error_manadge(MSG_FORMAT, 0, cord);
+	while (*cord)
+	{
+		if (*cord == '{')
+		{
+			src->camera.x = ft_atoi(++cord);
+			printf("src->camera.x == %d\n", src->camera.x);
+		}
+		// printf("CORD == %c\n", *cord);
+		else if (*cord == ',')
+		{
+			src->camera.y = ft_atoi(++cord);
+			printf("src->camera.y == %d\n", src->camera.y);
+		}
+		else if (*cord == ',' && (*(cord + 2) == '}' ||
+				*(cord + 4) == '}' || *(cord + 3) == '}'))
+		{
+			src->camera.z = ft_atoi(++cord);
+			printf("src->camera.z == %d\n", src->camera.z);
+		}
+		cord++;
+	}
+	if (src->camera.x < -50 || src->camera.x > 50 ||
+		src->camera.y < -50 || src->camera.y > 50 ||
+		src->camera.z < -50 || src->camera.z > 50)
+		error_manadge(MSG_CAM, 0, cord);
+}
+
+
+int			get_data_values(char *string, t_src *src)
 {
 	char		*tmp;
 
-	tmp = ft_strsub(str, 0, 6);
-	if (!ft_strcmp(tmp, "camera"))
+	tmp = ft_strsub(string, 0, 6);
+	if (ft_strcmp(tmp, "camera") == 0)
 	{
-		ft_putendl(str);
+		get_camera_position(&string[7], src);
+		ft_putendl(string);
+	
 	}
 	free(tmp);
 	return (0);
