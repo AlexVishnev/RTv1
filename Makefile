@@ -12,7 +12,7 @@
 
 NAME = RTv1
 CC = gcc
-FILES = main RT_read_file
+FILES = main rt_read_file rt_init rt_parser rt_errors
 LIBA = libft/libft.a
 LIB_D_FT = libft/
 SRC = $(addprefix scr/, $(addsuffix .c, $(FILES)))

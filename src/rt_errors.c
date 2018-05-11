@@ -1,18 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_rgb.c                                           :+:      :+:    :+:   */
+/*   rt_errors.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: avishnev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/14 19:46:37 by avishnev          #+#    #+#             */
-/*   Updated: 2018/04/14 19:59:22 by avishnev         ###   ########.fr       */
+/*   Created: 2018/05/11 19:21:54 by avishnev          #+#    #+#             */
+/*   Updated: 2018/05/11 19:21:55 by avishnev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "rtv1.h"
 
-int	rgb_to_hex(int r, int g, int b)
+void		error_manadge(char *str, int flag, char *src)
 {
-	return ((r & 0xff) << 16 | (g & 0xff) << 8 | (b & 0xff));
+	if (flag == 1)
+		free(src);
+	ft_putendl(str);
+	system("leaks -q RTv1");
+	exit(1);
+}
+
+void		check_adecvate(int limit, t_pos *cord, int flag, char *free)
+{
+	if (cord->x < -limit || cord->y < -limit ||	cord->z < -limit ||
+		cord->x > limit || cord->y > limit || cord->z > limit )
+	{
+		if (flag == 1)
+			error_manadge(MSG_CAM, 0, free);
+	}
 }

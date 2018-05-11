@@ -1,13 +1,23 @@
-#nbr spotlight
+#Rules:
+# [#] symbol for comments
+# [->] for geting data. Must start after newline.
+# newlines spaces and tabs (without [->]) are ignored
 
-#camera start position
+#camera start position {x,y,z}
 
-->camera [{13,23,43}]
+->camera [{-1,0,0}]
+
+#spotligth [{position1};{posintion2};...{position_5}]
 
 ->sligth [{0,0,0};{1,1,1}]
 
-#(type){size}{colour}{shadows}
-->object [(plane){10}{255, 255, 255}{on}]
-->object [(cylinder){10}{255, 255, 255}{on}]
-->object [(sphere){10}{255, 255, 255}{on}]
-->object [(cone){10}{255, 255, 255}{on}]
+#(type){size in pixels}{colour}{position}{shadows}
+# 1 == plane
+# 2 == cylinder
+# 3 == sphere
+# 4 == cone
+
+->object [(1){10}{255,255,255}{0,0,0}{on}]
+->object [(2){10}{255,255,255}{0,0,0}{on}]
+->object [(3){10}{255, 255,255}{0,0,0}{on}]
+->object [(4){10}{255,255,255}{0,0,0}{on}]

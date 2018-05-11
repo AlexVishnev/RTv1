@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RT_read_file.c                                     :+:      :+:    :+:   */
+/*   rt_read_file.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: avishnev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,15 +11,6 @@
 /* ************************************************************************** */
 
 #include "rtv1.h"
-
-void		error_manadge(char *str, int flag, char *src)
-{
-	if (flag == 1)
-		free(src);
-	ft_putendl(str);
-	system("leaks -q RTv1");
-	exit(1);
-}
 
 int			get_size(char *av)
 {
@@ -39,7 +30,7 @@ int			get_size(char *av)
 	return (i);
 }
 
-int			validate_data(char *source, t_src *src)
+void		validate_data(char *source, t_src *src)
 {
 	char		*tmp;
 
@@ -58,53 +49,18 @@ int			validate_data(char *source, t_src *src)
 	tmp = ft_strsub(source, 0, ft_strlen(source));
 	get_data_values(tmp, src);
 	free(tmp); 
-	return (0);
 }
 
 void		get_parameters(char *str, t_src *src)
 {
-	if (str[0] == '#' || str[0] == '\0') /*ignore blyad coments*/
+	if (str[0] == '#' || str[0] == '\0'	|| str[0] == ' ' ||
+		str[0] == '\t' || str[0] == '\b') /*ignore blyad coments*/
 		return ;
 	else if (str[0] == '-' && str[1] == '>')
 		validate_data(&str[2], src);
+	if (str[0] != '-' && str[1] != '>')
+		error_manadge(MSG_RULES, 1, str);
 }
-
-
-void		get_camera_position(char *cord, t_src *src)
-{
-	int		len;
-
-	len = ft_strlen(cord);
-	//printf("len == %d cord[0] == %c cord[len] == %c\n", len, cord[0], cord[len - 1]);
-	if (len > 15 || len < 9 || cord[0] != '[' || cord[len - 1] != ']')
-		error_manadge(MSG_FORMAT, 0, cord);
-	while (*cord)
-	{
-		if (*cord == '{')
-		{
-			src->camera.x = ft_atoi(++cord);
-			printf("src->camera.x == %d\n", src->camera.x);
-		}
-		// printf("CORD == %c\n", *cord);
-		else if (*cord == ',')
-		{
-			src->camera.y = ft_atoi(++cord);
-			printf("src->camera.y == %d\n", src->camera.y);
-		}
-		else if (*cord == ',' && (*(cord + 2) == '}' ||
-				*(cord + 4) == '}' || *(cord + 3) == '}'))
-		{
-			src->camera.z = ft_atoi(++cord);
-			printf("src->camera.z == %d\n", src->camera.z);
-		}
-		cord++;
-	}
-	if (src->camera.x < -50 || src->camera.x > 50 ||
-		src->camera.y < -50 || src->camera.y > 50 ||
-		src->camera.z < -50 || src->camera.z > 50)
-		error_manadge(MSG_CAM, 0, cord);
-}
-
 
 int			get_data_values(char *string, t_src *src)
 {
@@ -112,10 +68,15 @@ int			get_data_values(char *string, t_src *src)
 
 	tmp = ft_strsub(string, 0, 6);
 	if (ft_strcmp(tmp, "camera") == 0)
-	{
 		get_camera_position(&string[7], src);
+	if (ft_strcmp(tmp, "sligth") == 0)
+	{
+		get_spotlights_params(&string[7], src);
+		ft_putendl(string);	
+	}
+	if (ft_strcmp(tmp, "object") == 0)
+	{
 		ft_putendl(string);
-	
 	}
 	free(tmp);
 	return (0);
@@ -123,7 +84,6 @@ int			get_data_values(char *string, t_src *src)
 
 void		read_from_file(char *av, t_src *src)
 {
-	int		i;
 	int		fd;
 	char	**params;
 	int		size;
@@ -136,12 +96,11 @@ void		read_from_file(char *av, t_src *src)
 	}
 	size = get_size(av);
 	params = (char **)ft_memalloc(sizeof(char *) * size + 1);
-	i = 0;
-	while (ft_getline(fd, &params[i]))
+	while (ft_getline(fd, &(*params)))
 	{
-		get_parameters(params[i], src);
-		free(params[i]);
-		i++;
+		get_parameters(*params, src);
+		free(*params);
+		(*params)++;
 	}
 	free(params);
 	close(fd);

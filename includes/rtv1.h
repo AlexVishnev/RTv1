@@ -36,37 +36,40 @@
 # define MSG_FORMAT "Error: invalid format of data"
 # define MSG_PARAMS "Error: invalid params"
 # define MSG_CAM "Error: invalid camera position"
+# define MSG_RULES "Rerspect rules!  "
 # define DICK 42
 
 
-typedef struct	s_ligth
-{
-	float	x;
-	float	y;
-	float	z;
-}				t_ligth;
-
-typedef struct s_color
-{
-	int		red;
-	int		green;
-	int		blue;
-}				t_color;
-
-typedef	struct	s_obj
-{
-	char	*obj_type;
-	int 	radius;
-	int		x;
-	int		y;	
-}				t_obj;
-
-typedef	struct	s_cam
+typedef	struct		s_pos
 {
 	int		x;
 	int		y;
 	int		z;
-}				t_cam;
+}					t_pos;
+
+typedef	struct		s_ligth
+{
+	t_pos	**l_pos;
+}					t_ligth;
+
+typedef	struct		s_color
+{
+	int		red;
+	int		green;
+	int		blue;
+}					t_color;
+
+typedef	struct		s_obj
+{
+	int		obj_type;
+	int		radius;
+	t_pos	object_pos;
+}					t_obj;
+
+typedef	struct		s_cam
+{
+	t_pos	cam_pos;
+}					t_cam;
 
 typedef	struct	s_src
 {
@@ -75,22 +78,23 @@ typedef	struct	s_src
 	unsigned int	*img_pxl;
 
 	t_obj		*object;
-	t_ligth 	*ligth;
+	t_ligth 	ligth;
 	t_cam 		camera;
-
 }				t_src;
 
 
-void		read_from_file(char *tmp, t_src *s);
-void		error_manadge(char *str, int flag, char *src);
-int			get_size(char *av);
-void		get_parameters(char *str, t_src *src);
+void			read_from_file(char *data, t_src *s);
+void			error_manadge(char *str, int flag, char *src);
+int				get_size(char *av);
+void			get_parameters(char *str, t_src *src);
 
-void		init_host(t_src *src);
-int			expose_hook(t_src *src);
-int			validate_data(char *source, t_src *src);
+void			init_host(t_src *src);
+int				expose_hook(t_src *src);
+void			validate_data(char *source, t_src *src);
 
-int			get_data_values(char *tmp, t_src *src);
-void		get_camera_position(char *cord, t_src *src);
+int				get_data_values(char *data, t_src *src);
+void			get_camera_position(char *cord, t_src *src);
+void			get_spotlights_params(char *params, t_src *src);
+void			check_adecvate(int limit, t_pos *p, int flag, char *free);
 
 #endif
