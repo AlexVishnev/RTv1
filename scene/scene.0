@@ -9,7 +9,7 @@
 
 #spotligth [{position1};{posintion2};...{position_5}]
 
-->sligth [{0,0,0};{1,1,1}]
+->slight [{2,2,2};{1,1,1};{0,0,0};{0,0,0}]
 
 #(type){size in pixels}{colour}{position}{shadows}
 # 1 == plane

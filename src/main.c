@@ -14,12 +14,12 @@
 
 int		expose_hook(t_src *src)
 {
-	SDL_Event	key;
+	SDL_Event	event_key;
 
-	while (SDL_PollEvent(&key))
+	while (SDL_PollEvent(&event_key))
 	{
-		if ((key.type == SDL_QUIT) ||
-		key.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+		if ((event_key.type == SDL_QUIT) ||
+		event_key.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 			return (0);
 	}
 	return (1);

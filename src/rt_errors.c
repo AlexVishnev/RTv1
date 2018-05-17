@@ -6,7 +6,7 @@
 /*   By: avishnev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/11 19:21:54 by avishnev          #+#    #+#             */
-/*   Updated: 2018/05/11 19:21:55 by avishnev         ###   ########.fr       */
+/*   Updated: 2018/05/17 18:06:10 by avishnev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,13 @@ void		error_manadge(char *str, int flag, char *src)
 	exit(1);
 }
 
-void		check_adecvate(int limit, t_pos *cord, int flag, char *free)
+int			check_adecvate(int limit, t_pos *cord, int flag, char *free)
 {
-	if (cord->x < -limit || cord->y < -limit ||	cord->z < -limit ||
-		cord->x > limit || cord->y > limit || cord->z > limit )
+	if (cord->x < -limit || cord->y < -limit || cord->z < -limit
+		|| cord->x > limit || cord->y > limit || cord->z > limit)
 	{
 		if (flag == 1)
 			error_manadge(MSG_CAM, 0, free);
 	}
+	return (0);
 }

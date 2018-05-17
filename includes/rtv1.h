@@ -6,7 +6,7 @@
 /*   By: avishnev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/14 12:44:26 by avishnev          #+#    #+#             */
-/*   Updated: 2018/04/14 12:45:13 by avishnev         ###   ########.fr       */
+/*   Updated: 2018/05/17 18:43:43 by avishnev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,11 @@ typedef	struct		s_pos
 	int		z;
 }					t_pos;
 
-typedef	struct		s_ligth
+typedef	struct		s_light
 {
-	t_pos	**l_pos;
-}					t_ligth;
+	t_pos	*light_p;
+	int		nbr;
+}					t_light;
 
 typedef	struct		s_color
 {
@@ -78,7 +79,7 @@ typedef	struct	s_src
 	unsigned int	*img_pxl;
 
 	t_obj		*object;
-	t_ligth 	ligth;
+	t_light 	light;
 	t_cam 		camera;
 }				t_src;
 
@@ -94,7 +95,7 @@ void			validate_data(char *source, t_src *src);
 
 int				get_data_values(char *data, t_src *src);
 void			get_camera_position(char *cord, t_src *src);
-void			get_spotlights_params(char *params, t_src *src);
-void			check_adecvate(int limit, t_pos *p, int flag, char *free);
+void			get_spotlights_params(char *params, t_src *src, int index);
+int				check_adecvate(int limit, t_pos *p, int flag, char *free);
 
 #endif
