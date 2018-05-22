@@ -28,6 +28,10 @@ int			check_adecvate(int limit, t_pos *cord, int flag, char *free)
 	{
 		if (flag == 1)
 			error_manadge(MSG_CAM, 0, free);
+		if (flag == 2)
+			error_manadge(MSG_LGHT, 0, free);
+		if (flag == 3)
+			error_manadge(MSG_OBJ, 0, free);
 	}
 	return (0);
 }

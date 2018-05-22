@@ -62,6 +62,27 @@ void		get_parameters(char *str, t_src *src)
 		error_manadge(MSG_RULES, 1, str);
 }
 
+int			kostyl(char *s, int chr, int index)
+{
+	int		i;
+
+	i = 0;
+	while (index != 0)
+	{
+		while (s[i] && s[i] != chr)
+			i++;
+		if (s[i] == chr)
+		{
+			index--;
+			i++;
+		}
+		else if (s[i] == '\0' && index != 0)
+			break ;
+	}
+	return (i);
+
+}
+
 int			get_data_values(char *string, t_src *src)
 {
 	char		*tmp;
@@ -73,11 +94,12 @@ int			get_data_values(char *string, t_src *src)
 		get_camera_position(&string[7], src);
 	if (ft_strcmp(tmp, "slight") == 0)
 	{
-		src->light.nbr = ft_count_chars(string, ';') + 1;
-		while (++index < src->light.nbr + 1)
+		if ((src->light.nbr = ft_count_chars(string, ';') + 1) > 5)
+			error_manadge("Erorr: ", 0, string);
+		while (++index < src->light.nbr)
 		{
-			get_spotlights_params(&string[7 + 9 * index], src, index);// fix:
-			ft_putendl(string);
+			get_spotlights_params(&string[kostyl(string, ';', index)], src, index);// fixed "need some test"
+			//ft_putendl(string);
 		}
 	}
 	if (ft_strcmp(tmp, "object") == 0)

@@ -36,9 +36,10 @@
 # define MSG_FORMAT "Error: invalid format of data"
 # define MSG_PARAMS "Error: invalid params"
 # define MSG_CAM "Error: invalid camera position"
+# define MSG_LGHT "Error: invalid spotlight position"
 # define MSG_RULES "Rerspect rules!  "
+# define MSG_OBJ "Error: invalid object position"
 # define DICK 42
-
 
 typedef	struct		s_pos
 {
@@ -97,5 +98,5 @@ int				get_data_values(char *data, t_src *src);
 void			get_camera_position(char *cord, t_src *src);
 void			get_spotlights_params(char *params, t_src *src, int index);
 int				check_adecvate(int limit, t_pos *p, int flag, char *free);
-
+int				kostyl(char *s, int chr, int index);
 #endif

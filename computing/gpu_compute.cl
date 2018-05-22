@@ -18,7 +18,6 @@
 # define PLANE 2
 # define CYLINDER 3
 # define CONE 4
-
 # define DEEP 1
 
 typedef	struct	s_vec2

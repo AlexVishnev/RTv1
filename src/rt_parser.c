@@ -40,12 +40,13 @@ void	get_camera_position(char *cord, t_src *src)
 
 void	get_spotlights_params(char *cord, t_src *src, int ind)
 {
-	//try to rework whit strsplit
-	printf("cor ========== %s\n", cord);
+	printf("corD ========== %s\n", cord);
 	src->light.light_p = (t_pos *)malloc(sizeof(t_pos) * src->light.nbr + 1);
 	src->light.light_p[ind].y = 0;
 	src->light.light_p[ind].z = 0;
 	src->light.light_p[ind].x = 0;
+	while (*cord != '[' && *cord != '{')
+		cord++;
 	while (*cord && (*cord != ';' || *cord != ']'))
 	{
 		if (*cord == '{' && src->light.light_p[ind].x == 0)
@@ -64,6 +65,5 @@ void	get_spotlights_params(char *cord, t_src *src, int ind)
 	}
 	printf("WHILEEEEES == [%d]\n",ind);
 	printf("x == [%d]\ny == [%d]\nz == [%d]\n", src->light.light_p[ind].x, src->light.light_p[ind].y,src->light.light_p[ind].z);
-	//printf("x == [%d]\ny == [%d]\nz == [%d]\n", src->light.light_p[1].x, src->light.light_p[1].y,src->light.light_p[1].z);
 	free(src->light.light_p);
 }
