@@ -12,7 +12,7 @@
 
 NAME = RTv1
 CC = gcc
-FILES = main rt_read_file rt_init rt_parser rt_errors
+FILES = main rt_read_file rt_init rt_parser rt_errors rt_tools
 LIBA = libft/libft.a
 LIB_D_FT = libft/
 SRC = $(addprefix scr/, $(addsuffix .c, $(FILES)))
@@ -43,7 +43,7 @@ all: $(NAME)
 
 $(NAME): $(LIBA) $(OBJ) $(HED)
 	@$(CC) -o $(NAME) -O3 $(OBJ) $(CGFLAGS) $(FRWORKS) $(LIBA)
-	@echo "SUKSEES"
+	@echo "\033[31mS------U=====K>>>>>S}}}}}}E++++E>>>>>>>S"
 $(LIBA):
 	@make $(MK_LIB) $(LIB_D_FT)
 $(OBJ): obj/%.o: src/%.c $(HED)

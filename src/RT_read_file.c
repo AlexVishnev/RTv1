@@ -62,25 +62,7 @@ void		get_parameters(char *str, t_src *src)
 		error_manadge(MSG_RULES, 1, str);
 }
 
-int			kostyl(char *s, int chr, int index)
-{
-	int		i;
 
-	i = 0;
-	while (index != 0)
-	{
-		while (s[i] && s[i] != chr)
-			i++;
-		if (s[i] == chr)
-		{
-			index--;
-			i++;
-		}
-		else if (s[i] == '\0' && index != 0)
-			break ;
-	}
-	return (i);
-}
 
 int			get_data_values(char *string, t_src *src)
 {
@@ -96,15 +78,16 @@ int			get_data_values(char *string, t_src *src)
 		if ((src->light.nbr = ft_count_chars(string, ';') + 1) > 5)
 			error_manadge("Erorr: ", 0, string);
 		while (++index < src->light.nbr)
-			get_spotlights_params(&string[kostyl(string, ';', index)], src, index);// fixed "need some test"
+			get_spotlights_params(&string[kostyl(string, ';', index)], src, index);// это просто,блять, пиздец. я ненавижу себя за этот бред. Прости меня будущий я который эту хуету прочтет и, блять, не взудмай так больше писать
 	}
+	printf("%d\n", src->objects_cnt);
+	src->objects = (t_obj *)ft_memalloc(sizeof(t_obj) * src->objects_cnt + 1); /////// leak
 	if (ft_strcmp(tmp, "object") == 0)
 	{
-		src->object = (t_obj *)ft_memalloc(sizeof(t_obj)); /////// leak
-		src->object = get_object_params(&string[7], src->object);
+		src->objects = get_object_params(&string[7], src->objects);
 		ft_putendl(string);
 	}
-	free(src->object);/// for first time
+	free(src->objects);/// for first time
 	free(tmp);
 	return (0);
 }
@@ -123,6 +106,7 @@ void		read_from_file(char *av, t_src *src)
 	}
 	size = get_size(av);
 	params = (char **)ft_memalloc(sizeof(char *) * size + 1);
+	check_nbrs_object(av, src, size);
 	while (ft_getline(fd, &(*params)))
 	{
 		get_parameters(*params, src);

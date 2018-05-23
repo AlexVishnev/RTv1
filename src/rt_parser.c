@@ -81,7 +81,6 @@ t_pos	get_position_object(char *cord, t_pos pos)
 			pos.z = ft_atoi(++cord);
 		cord++;
 	}
-
 	return (pos);
 }
 
@@ -125,10 +124,8 @@ t_obj	*get_object_params(char *params, t_obj *obj)
 			printf("x = [%d]\ny = [%d]\nz = [%d]\n",obj->object_pos.x,obj->object_pos.y,obj->object_pos.z );
 			params += 6;
 		}
-
 		params++;
 	}
-//	printf("%d\n", obj->type);
 	printf("red [%d]\ngreen [%d]\nblue [%d]\n", obj->color.red, obj->color.green, obj->color.blue);
 	return (obj);
 }

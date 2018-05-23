@@ -80,11 +80,14 @@ typedef	struct		s_src
 	SDL_Window		*wind;
 	SDL_Surface		*surf;
 	unsigned int	*img_pxl;
-
-	t_obj			*object;
+	int 			objects_cnt;
+	t_obj			*objects;
 	t_light 		light;
 	t_cam 			camera;
 }					t_src;
+
+int					cnt_objects(char *params, t_src *src);
+void				check_nbrs_object(char *av, t_src *src, int size);
 
 t_pos				get_position_object(char *cord, t_pos position);
 t_obj				*get_object_params(char *cord, t_obj *object);
