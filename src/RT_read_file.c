@@ -80,7 +80,6 @@ int			kostyl(char *s, int chr, int index)
 			break ;
 	}
 	return (i);
-
 }
 
 int			get_data_values(char *string, t_src *src)
@@ -97,15 +96,15 @@ int			get_data_values(char *string, t_src *src)
 		if ((src->light.nbr = ft_count_chars(string, ';') + 1) > 5)
 			error_manadge("Erorr: ", 0, string);
 		while (++index < src->light.nbr)
-		{
 			get_spotlights_params(&string[kostyl(string, ';', index)], src, index);// fixed "need some test"
-			//ft_putendl(string);
-		}
 	}
 	if (ft_strcmp(tmp, "object") == 0)
 	{
+		src->object = (t_obj *)ft_memalloc(sizeof(t_obj)); /////// leak
+		src->object = get_object_params(&string[7], src->object);
 		ft_putendl(string);
 	}
+	free(src->object);/// for first time
 	free(tmp);
 	return (0);
 }

@@ -32,7 +32,7 @@
  #  include <CL/cl.h>
  # endif
 # define MSG "Usage: scenes/scene.1"
-# define MSG_PARSE "Error: You argunent are shit"
+# define MSG_PARSE "Error: You'r argunents are shit"
 # define MSG_FORMAT "Error: invalid format of data"
 # define MSG_PARAMS "Error: invalid params"
 # define MSG_CAM "Error: invalid camera position"
@@ -56,47 +56,51 @@ typedef	struct		s_light
 
 typedef	struct		s_color
 {
-	int		red;
-	int		green;
-	int		blue;
+	unsigned int	red;
+	unsigned int	green;
+	unsigned int	blue;
 }					t_color;
 
 typedef	struct		s_obj
 {
-	int		obj_type;
-	int		radius;
-	t_pos	object_pos;
+	int				type;
+	int				radius;
+	t_pos			object_pos;
+	t_color			color;
 }					t_obj;
 
 typedef	struct		s_cam
 {
-	t_pos	cam_pos;
+	t_pos			cam_pos;
+	int 			angle;
 }					t_cam;
 
-typedef	struct	s_src
+typedef	struct		s_src
 {
 	SDL_Window		*wind;
 	SDL_Surface		*surf;
 	unsigned int	*img_pxl;
 
-	t_obj		*object;
-	t_light 	light;
-	t_cam 		camera;
-}				t_src;
+	t_obj			*object;
+	t_light 		light;
+	t_cam 			camera;
+}					t_src;
 
+t_pos				get_position_object(char *cord, t_pos position);
+t_obj				*get_object_params(char *cord, t_obj *object);
+void				read_from_file(char *data, t_src *s);
+void				error_manadge(char *str, int flag, char *src);
+int					get_size(char *av);
+void				get_parameters(char *str, t_src *src);
 
-void			read_from_file(char *data, t_src *s);
-void			error_manadge(char *str, int flag, char *src);
-int				get_size(char *av);
-void			get_parameters(char *str, t_src *src);
+void				init_host(t_src *src);
+int					expose_hook(t_src *src);
+void				validate_data(char *source, t_src *src);
 
-void			init_host(t_src *src);
-int				expose_hook(t_src *src);
-void			validate_data(char *source, t_src *src);
+int					get_data_values(char *data, t_src *src);
+void				get_camera_position(char *cord, t_src *src);
+void				get_spotlights_params(char *params, t_src *src, int index);
+int					check_adecvate(int limit, t_pos *p, int flag, char *free);
+int					kostyl(char *s, int chr, int index);
 
-int				get_data_values(char *data, t_src *src);
-void			get_camera_position(char *cord, t_src *src);
-void			get_spotlights_params(char *params, t_src *src, int index);
-int				check_adecvate(int limit, t_pos *p, int flag, char *free);
-int				kostyl(char *s, int chr, int index);
 #endif

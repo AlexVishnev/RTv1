@@ -43,7 +43,7 @@ typedef	struct	s_light
 	t_vec3		direction;
 }				t_light;
 
-typedef	struct	s_object
+typedef	struct	s_obj
 {
 	int			name;
 	t_vec3		center;
@@ -53,19 +53,19 @@ typedef	struct	s_object
 	float		radius;
 	float		reflection;
 	float		angle;
-}				t_object;
+}				t_obj;
 
-typedef struct	s_viewport
+typedef struct	s_cam
 {
 	float		w;
 	float		h;
 	float		dist;
-}				t_viewport;
+}				t_cam;
 
 typedef	struct	s_traceray
 {
 	double		closest_t;
-	t_object	closest_obj;
+	t_obj		closest_obj;
 	t_vec2		t;
 }				t_traceray;
 
@@ -81,11 +81,10 @@ typedef	struct	s_geom
 	int			lights;
 	long		kal;
 	long		kal2;
-	t_viewport	vp;
+	t_cam	vp;
 	int			screenw;
 	int			screenh;
 }				t_geom;
-
 
 
 t_vec3	global_normal(t_vec3 P, t_traceray *tr);
@@ -99,18 +98,18 @@ t_vec3	normal(t_vec3 a);
 t_vec3	ReflectRay(t_vec3 R, t_vec3 N);
 t_vec3	CanvasToViewport(t_geom *geom, float x, float y);
 t_vec2	find_discriminant(float k[3]);
-t_vec2	IntersectRayCylinder(t_vec3 P, t_vec3 V, __constant t_object *obj);
-t_vec2	IntersectRayCone(t_vec3 P, t_vec3 V, __constant t_object *obj);
-t_vec2	IntersectRaySphere(t_vec3 O, t_vec3 D, __constant t_object *obj);
-t_vec2	IntersectRayPlane(t_vec3 O, t_vec3 D, __constant t_object *obj);
+t_vec2	IntersectRayCylinder(t_vec3 P, t_vec3 V, __constant t_obj *obj);
+t_vec2	IntersectRayCone(t_vec3 P, t_vec3 V, __constant t_obj *obj);
+t_vec2	IntersectRaySphere(t_vec3 O, t_vec3 D, __constant t_obj *obj);
+t_vec2	IntersectRayPlane(t_vec3 O, t_vec3 D, __constant t_obj *obj);
 float	vec_lenght(t_vec3 struc);
-float	deg_to_rad(float degree);
+float	conv_degr_rad(float degree);
 float	ft_dot(t_vec3 a, t_vec3 b);
 int		rgb_to_int(int red, int green, int blue);
-double	ComputeLighting(t_geom *geom, __constant t_object *obj, __constant t_light *light, t_vec3 P, t_vec3 N, t_vec3 V, float specular);
-double	get_lim_solution(double t, t_vec3 P, t_vec3 V, t_vec3 VA, __constant t_object *obj);
-int		RayTrace(t_geom geom, __constant t_object *obj, __constant t_light *light, float t_min, float t_max);
-void	ClosestIntersection(t_traceray *tr, t_geom *geom, __constant t_object *obj,
+double	ComputeLighting(t_geom *geom, __constant t_obj *obj, __constant t_light *light, t_vec3 P, t_vec3 N, t_vec3 V, float specular);
+double	get_lim_solution(double t, t_vec3 P, t_vec3 V, t_vec3 VA, __constant t_obj *obj);
+int		RayTrace(t_geom geom, __constant t_obj *obj, __constant t_light *light, float t_min, float t_max);
+void	ClosestIntersection(t_traceray *tr, t_geom *geom, __constant t_obj *obj,
 							t_vec3 O, t_vec3 D, float t_min, float t_max);
 
 t_vec3	vec_f_mult(double a, t_vec3 b)
@@ -215,7 +214,7 @@ t_vec3	CanvasToViewport(t_geom *geom, float x, float y)
 	return (D);
 }
 
-float	deg_to_rad(float degree)
+float	conv_degr_rad(float degree)
 {
 	float	radians;
 
@@ -236,7 +235,7 @@ t_vec3	ReflectRay(t_vec3 R, t_vec3 N)
     return (res);
 }
 
-double		ComputeLighting(t_geom *geom, __constant t_object *obj, __constant t_light *light,
+double		ComputeLighting(t_geom *geom, __constant t_obj *obj, __constant t_light *light,
 									t_vec3 P, t_vec3 N, t_vec3 V, float specular)
 {
 	double		i;
@@ -308,7 +307,7 @@ t_vec2	find_discriminant(float k[3])
 	return (t);
 }
 
-double		get_lim_solution(double t, t_vec3 P, t_vec3 V, t_vec3 VA, __constant t_object *obj)
+double		get_lim_solution(double t, t_vec3 P, t_vec3 V, t_vec3 VA, __constant t_obj *obj)
 {
 	t_vec3	Q;
 	float	k[2];
@@ -323,7 +322,7 @@ double		get_lim_solution(double t, t_vec3 P, t_vec3 V, t_vec3 VA, __constant t_o
 	return (INFINITY);
 }
 
-t_vec2	IntersectRayCone(t_vec3 P, t_vec3 V, __constant t_object *obj)
+t_vec2	IntersectRayCone(t_vec3 P, t_vec3 V, __constant t_obj *obj)
 {
 	t_vec3	PA;
 	t_vec3	VA;
@@ -336,7 +335,7 @@ t_vec2	IntersectRayCone(t_vec3 P, t_vec3 V, __constant t_object *obj)
 	float	POWCOS;
 	float	POWSIN;
 
-	angle = deg_to_rad(obj->angle);
+	angle = conv_degr_rad(obj->angle);
 	PA = obj->center;
 	VA = normal(vec_sub(PA, obj->direction));
 	deltaP = vec_sub(P, PA);
@@ -355,7 +354,7 @@ t_vec2	IntersectRayCone(t_vec3 P, t_vec3 V, __constant t_object *obj)
 	return (t);
 }
 
-t_vec2	IntersectRayCylinder(t_vec3 P, t_vec3 V, __constant t_object *obj)
+t_vec2	IntersectRayCylinder(t_vec3 P, t_vec3 V, __constant t_obj *obj)
 {
 	t_vec3	PA;
 	t_vec3	VA;
@@ -381,7 +380,7 @@ t_vec2	IntersectRayCylinder(t_vec3 P, t_vec3 V, __constant t_object *obj)
 	return (t);
 }
 
-t_vec2	IntersectRaySphere(t_vec3 O, t_vec3 D, __constant t_object *obj)
+t_vec2	IntersectRaySphere(t_vec3 O, t_vec3 D, __constant t_obj *obj)
 {
 	t_vec3	C;
 	t_vec3	OC;
@@ -398,7 +397,7 @@ t_vec2	IntersectRaySphere(t_vec3 O, t_vec3 D, __constant t_object *obj)
 	return (find_discriminant(k));
 }
 
-t_vec2	IntersectRayPlane(t_vec3 O, t_vec3 D, __constant t_object *obj)
+t_vec2	IntersectRayPlane(t_vec3 O, t_vec3 D, __constant t_obj *obj)
 {
 	t_vec3	X;
 	t_vec3	C;
@@ -420,7 +419,7 @@ t_vec2	IntersectRayPlane(t_vec3 O, t_vec3 D, __constant t_object *obj)
 	return ((t_vec2){INFINITY, INFINITY});
 }
 
-void	ClosestIntersection(t_traceray *tr, t_geom *geom, __constant t_object *obj,
+void	ClosestIntersection(t_traceray *tr, t_geom *geom, __constant t_obj *obj,
 								t_vec3 O, t_vec3 D, float t_min, float t_max)
 {
 	int			i;
@@ -476,7 +475,7 @@ t_vec3	global_normal(t_vec3 P, t_traceray *tr)
 	return (N);
 }
 
-int		RayTrace(t_geom geom, __constant t_object *obj, __constant t_light *light, float t_min, float t_max)
+int		RayTrace(t_geom geom, __constant t_obj *obj, __constant t_light *light, float t_min, float t_max)
 {
 	t_traceray	tr;
 	t_vec3		P;
@@ -533,7 +532,7 @@ int		RayTrace(t_geom geom, __constant t_object *obj, __constant t_light *light, 
 }
 
 __kernel
-void	draw(__global int *image, t_geom geom, __constant t_object *obj, __constant t_light *light)
+void	draw(__global int *image, t_geom geom, __constant t_obj *obj, __constant t_light *light)
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);

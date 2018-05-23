@@ -38,3 +38,23 @@ int	ft_atoi(const char *str)
 		return ((sign == 1) ? -1 : 0);
 	return ((int)(rez * sign));
 }
+
+unsigned int	ft_u_atoi(const char *str)
+{
+	int					i;
+	unsigned int		rez;
+
+	i = 0;
+	rez = 0;
+	while ((str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v'
+			|| str[i] == '\r' || str[i] == '\f'))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (ft_isdigit(str[i]))
+	{
+		rez = (rez * 10) + (str[i] - '0');
+		i++;
+	}
+	return (rez);
+}

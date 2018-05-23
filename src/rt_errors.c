@@ -16,6 +16,7 @@ void		error_manadge(char *str, int flag, char *src)
 {
 	if (flag == 1)
 		free(src);
+	printf("BEFORE EXIT %s\n", src);
 	ft_putendl(str);
 	system("leaks -q RTv1");
 	exit(1);
