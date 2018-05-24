@@ -534,8 +534,11 @@ int		RayTrace(t_params par, __constant t_obj *obj, __constant t_light *light, fl
 __kernel
 void	render(__global int *pixels_params, t_params par, __constant t_obj *obj, __constant t_light *light)
 {
-	int x = get_global_id(0);
-	int y = get_global_id(1);
+	int x;
+	int y; 
+
+	x = get_global_id(0);
+	y = get_global_id(1);
 
 	par.D = rot_matrix(par.camera_rot.x, par.camera_rot.y, par.camera_rot.z,
 		CanvasToViewport(&par, x - par.screenw / 2, par.screenh / 2 - y));
