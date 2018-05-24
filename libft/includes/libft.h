@@ -24,7 +24,7 @@ typedef struct	s_list
 	struct s_list	*next;
 }				t_list;
 
-
+size_t			ft_unstrlen(const char *str, int chr);
 unsigned int	ft_u_atoi(const char *str);
 int				ft_getline(const int fd, char **line);
 char			*ft_strrev(char *str);

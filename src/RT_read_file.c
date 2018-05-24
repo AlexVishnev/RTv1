@@ -80,7 +80,7 @@ int			get_data_values(char *string, t_src *src)
 		while (++index < src->light.nbr)
 			get_spotlights_params(&string[kostyl(string, ';', index)], src, index);// это просто,блять, пиздец. я ненавижу себя за этот бред. Прости меня будущий я который эту хуету прочтет и, блять, не взудмай так больше писать
 	}
-	printf("%d\n", src->objects_cnt);
+//	printf("%d\n", src->objects_cnt);
 	src->objects = (t_obj *)ft_memalloc(sizeof(t_obj) * src->objects_cnt + 1); /////// leak
 	if (ft_strcmp(tmp, "object") == 0)
 	{

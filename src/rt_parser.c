@@ -35,7 +35,7 @@ void	get_camera_position(char *cord, t_src *src)
 			src->camera.cam_pos.z = ft_atoi(++cord);
 		cord++;
 	}
-	check_adecvate(50, &src->camera.cam_pos, 1, cord);
+	check_adecvate(POS_LIM, &src->camera.cam_pos, 1, cord, NULL);
 }
 
 void	get_spotlights_params(char *cord, t_src *src, int ind)
@@ -62,12 +62,13 @@ void	get_spotlights_params(char *cord, t_src *src, int ind)
 			src->light.light_p[ind].z = ft_atoi(++cord);
 		cord++;
 	}
+	check_adecvate(POS_LIM, src->light.light_p, 2, cord, NULL);
 	free(src->light.light_p);
 }
 
 t_pos	get_position_object(char *cord, t_pos pos)
 {
-	printf("get_position_object === !!%s!! ======\n", cord);
+	// printf("get_position_object === !!%s!! ======\n", cord);
 	pos.x = 0;
 	pos.y = 0;
 	pos.z = 0;
@@ -81,6 +82,7 @@ t_pos	get_position_object(char *cord, t_pos pos)
 			pos.z = ft_atoi(++cord);
 		cord++;
 	}
+	check_adecvate(100, &pos, 0, cord, NULL);
 	return (pos);
 }
 
@@ -101,6 +103,7 @@ t_color	get_color_object(char *col)
 			color.blue = ft_u_atoi(++col);
 		col++;
 	}
+	check_adecvate(255, NULL, 1, col, &color);
 	return (color);
 }
 
@@ -118,7 +121,7 @@ t_obj	*get_object_params(char *params, t_obj *obj)
 			obj->color = get_color_object(params);
 			params += 6;
 		}
-		if (*params == '{' && ft_strlen(&(*params)) > 10)
+		if (*params == '{' && ft_unstrlen(&(*params), '}') > 10)
 		{
 			obj->object_pos = get_position_object(params, obj->object_pos);
 			printf("x = [%d]\ny = [%d]\nz = [%d]\n",obj->object_pos.x,obj->object_pos.y,obj->object_pos.z );

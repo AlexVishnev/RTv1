@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <rtv1.h>
+#include "../includes/rtv1.h"
 
 void		check_nbrs_object(char *av, t_src *src, int size)
 {

@@ -21,3 +21,13 @@ size_t	ft_strlen(const char *str)
 		len++;
 	return (len);
 }
+
+size_t	ft_unstrlen(const char *str, int chr)
+{
+	size_t	len;
+
+	len = 0;
+	while (str[len] && str[len] != chr)
+		len++;
+	return (len);
+}

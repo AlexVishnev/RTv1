@@ -12,9 +12,9 @@
 
 #include "rtv1.h"
 
-void		error_manadge(char *str, int flag, char *src)
+void	error_manadge(char *str, int fl, char *src)
 {
-	if (flag == 1)
+	if (fl == 1)
 		free(src);
 	printf("BEFORE EXIT %s\n", src);
 	ft_putendl(str);
@@ -22,17 +22,25 @@ void		error_manadge(char *str, int flag, char *src)
 	exit(1);
 }
 
-int			check_adecvate(int limit, t_pos *cord, int flag, char *free)
+int		check_adecvate(int lim, t_pos *cord, int fl, char *free, t_color *s)
 {
-	if (cord->x < -limit || cord->y < -limit || cord->z < -limit
-		|| cord->x > limit || cord->y > limit || cord->z > limit)
+	if (cord)
 	{
-		if (flag == 1)
-			error_manadge(MSG_CAM, 0, free);
-		if (flag == 2)
-			error_manadge(MSG_LGHT, 0, free);
-		if (flag == 3)
-			error_manadge(MSG_OBJ, 0, free);
+		if (cord->x < -lim || cord->y < -lim || cord->z < -lim
+			|| cord->x > lim || cord->y > lim || cord->z > lim)
+		{
+			if (fl == 1)
+				error_manadge(MSG_CAM, 0, free);
+			if (fl == 2)
+				error_manadge(MSG_LGHT, 0, free);
+			if (fl == 3)
+				error_manadge(MSG_OBJ, 0, free);
+		}
+	}
+	else if (s)
+	{
+		if (s->red > lim || s->green > lim || s->blue > lim)
+			error_manadge(MSG_CLR, 0, free);
 	}
 	return (0);
 }
