@@ -17,18 +17,18 @@ void		create_videohost(t_src *src)
 	int		fd;
 	char	*buffer;
 	size_t	size;
-	cl_int	rd;
+	cl_int	rd ;
 
 	fd = open("./computing/gpu_compute.cl", O_RDONLY); // loads instruction	
-	buffer = (char *)ft_memalloc(0x55000); // allocate memory for source file
-	size = read(fd, buffer, 0x55000); //read source file
+	buffer = ft_memalloc(2048 * 2048); // allocate memory for source file
+	size = read(fd, buffer, 2048 * 2048); //read source file
+	close(fd);
 	src->op_cl.size = src->surf->h * src->surf->w * sizeof(int); 
-//	printf("src->op_cl.size = [%zu]\nsrc->surf->h[%d]\nsrc->surf->w[%d]\n", src->op_cl.size, src->surf->h, src->surf->w);
-	rd = clGetPlatformIDs(1, &src->op_cl.id_plat, &src->op_cl.nbr_platforms);
+	rd = clGetPlatformIDs(1, &src->op_cl.id_plat, &src->op_cl.nbr_platforms); //creating hosts platform 
 	rd = clGetDeviceIDs(src->op_cl.id_plat, CL_DEVICE_TYPE_DEFAULT, 1, 
-		&src->op_cl.id_dev, &src->op_cl.nbr_device);
+		&src->op_cl.id_dev, &src->op_cl.nbr_device); // seting type of  compute unit device 
 	src->op_cl.text = clCreateContext(NULL, 1, &src->op_cl.id_dev,
-		NULL, NULL, &rd);
+		NULL, NULL, &rd); // manadge object kernel and programm
 	src->op_cl.queue = clCreateCommandQueue(src->op_cl.text, 
 		src->op_cl.id_dev, 0 , &rd);
 	src->op_cl.img = clCreateBuffer(src->op_cl.text, CL_MEM_READ_WRITE, 

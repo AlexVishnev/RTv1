@@ -3,13 +3,13 @@
 # [->] for geting data. Must start after newline.
 # newlines spaces and tabs (without [->]) are ignored
 
-#camera start position {x,y,z}
+#camera  [{position};{direction}]
 
-->camera [{-1,0,0}]
+->camera [{0,0,5};{9,2,9}]
 
-#spotligth [{position1};{posintion2};...{position_5}]
+#spotligth [(type){position1}(intensive);(type){posintion2}(intensive);...(type){position_5}(intensive)]
 
-->slight [{2,2,3};{5,-41, -31};{-12,-44,-3};{-23,-23,-23}]
+->slight [(1){2,2,3}(12);(13){5,41, 31}(1);(1){12, 4, 3}(1);(1){23, 23, 23}(1)]
 
 #(type){colour}{position}{size in pixels}{shadows}
 # 1 == plane
@@ -18,6 +18,6 @@
 # 4 == cone
 
 ->object [(1){-2,10,1}{0,0,0}{10}{on}]
-->object [(2){-255,25,55}{0,0,0}{10}{on}]
-->object [(3){255,235,155}{0,0,0}{10}{on}]
+->object [(2){5,25,55}{0,0,0}{10}{on}]
+->object [(3){5,235,155}{0,0,0}{10}{on}]
 ->object [(4){255,245,251}{0,0,0}{10}{on}]

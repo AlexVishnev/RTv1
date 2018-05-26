@@ -13,11 +13,10 @@
 #ifndef RTV1_H
 # define RTV1_H
 
-# include <time.h>
+# include "libft.h"
 # include <fcntl.h>
 # include <SDL2/SDL.h>
 # include <math.h>
-# include "libft.h"
 #  define WIN_WD 1280
 #  define WIN_HG 1280
 # ifdef __APPLE__
@@ -61,23 +60,28 @@ typedef struct			s_ray
 
 typedef	struct			s_pos
 {
-	int					x;
-	int					y;
-	int					z;
+	float				x;
+	float				y;
+	float				z;
+	float				w;
+	float				r;
 }						t_pos;
 
 typedef	struct			s_cam
 {
 	t_pos				cam_pos;
+	float				width;
+	float				height;
 	int					angle;
 }						t_cam;
 
 typedef	struct			s_light
 {
+	int					type;
 	t_pos				*light_p;
 	t_ray				direction;
 	int					nbr;
-	float 				intensive;
+	double				intensive;
 }						t_light;
 
 typedef	struct			s_color
@@ -91,29 +95,29 @@ typedef	struct			s_obj
 {
 	float				reflect;
 	int					type;
-	int					radius;
+	float				radius;
 	t_pos				object_pos;
 	t_color				color;
 	int					obj_size;
 	float				specular;
 }						t_obj;
 
-typedef	struct	s_params
+typedef	struct			s_params
 {
-	t_ray		O;
-	t_ray		D;
-	t_ray		camera_rot;
-	int			color;
-	float		t_min;
-	float		t_max;
-	int			objects;
-	int			lights;
-	t_obj		*object;
-	t_light		*light;
-	t_cam		look_pos;
-	int			width;
-	int			height;
-}				t_params;
+	t_ray				O;
+	t_ray				D;
+	t_ray				camera_rot;
+	int					color;
+	float				t_min;
+	float				t_max;
+	int					objects;
+	int					lights;
+	t_obj				*object;
+	t_light				*light;
+	t_cam				look_pos;
+	int					width;
+	int					height;
+}						t_params;
 
 
 typedef	struct			s_privat
@@ -153,7 +157,7 @@ void		create_videohost(t_src *src);
 
 
 
-
+void					init_parametrs(t_src *src);
 int						cnt_objects(char *params, t_src *src);
 void					check_nbrs_object(char *av, t_src *src, int size);
 

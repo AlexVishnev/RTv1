@@ -32,7 +32,7 @@ typedef	struct	s_ray
 	float		y;
 	float		z;
 	float		w;
-	float		reflection;
+	float		reflect;
 }				t_ray;
 
 typedef	struct	s_light
@@ -51,7 +51,7 @@ typedef	struct	s_obj
 	t_ray		color;
 	float		specular;
 	float		radius;
-	float		reflection;
+	float		reflect;
 	float		angle;
 }				t_obj;
 
@@ -88,7 +88,7 @@ typedef	struct	s_params
 
 
 t_ray	global_normal(t_ray P, t_trace *tr);
-t_ray	rot_matrix(double alpha, double beta, double gamma, t_ray r);
+t_ray	rot_matrix(double a, double b, double c, t_ray r);
 t_ray	vec_f_mult(double a, t_ray b);
 t_ray	vec_mult(t_ray a, t_ray b);
 t_ray	vec_add(t_ray a, t_ray b);
@@ -108,7 +108,7 @@ float	ft_dot(t_ray a, t_ray b);
 int		rgb_to_int(int red, int green, int blue);
 double	ComputeLighting(t_params *par, __constant t_obj *obj, __constant t_light *light, t_ray P, t_ray N, t_ray V, float specular);
 double	get_lim_solution(double t, t_ray P, t_ray V, t_ray VA, __constant t_obj *obj);
-int		RayTrace(t_params par, __constant t_obj *obj, __constant t_light *light, float t_min, float t_max);
+int		RayTracer(t_params par, __constant t_obj *obj, __constant t_light *light, float t_min, float t_max);
 void	ClosestIntersection(t_trace *tr, t_params *par, __constant t_obj *obj,
 							t_ray O, t_ray D, float t_min, float t_max);
 
@@ -127,25 +127,25 @@ int		rgb_to_int(int r, int g, int b)
 	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
 }
 
-t_ray	rot_matrix(double alpha, double beta, double gamma, t_ray r)
+t_ray	rot_matrix(double a, double b, double c, t_ray r)
 {
 	double		mat[3][3];
-	t_ray		ret;
+	t_ray		ray;
 
 	
-	mat[0][0] = cos(beta) * cos(gamma);
-	mat[1][0] = cos(gamma) * sin(alpha) * sin(beta) - cos(alpha) * sin(gamma);
-	mat[2][0] = cos(alpha) * cos(gamma) * sin(beta) + sin(alpha) * sin(gamma);
-	mat[0][1] = cos(beta) * sin(gamma);
-	mat[1][1] = cos(alpha) * cos(gamma) + sin(alpha) * sin(beta) * sin(gamma);
-	mat[2][1] = -cos(gamma) * sin(alpha) + cos(alpha) * sin(beta) * sin(gamma);
-	mat[0][2] = -sin(beta);
-	mat[1][2] = cos(beta) * sin(alpha);
-	mat[2][2] = cos(alpha) * cos(beta);
-	ret.x = (mat[0][0] * r.x) + (mat[1][0] * r.y) + (mat[2][0] * r.z);
-	ret.y = (mat[0][1] * r.x) + (mat[1][1] * r.y) + (mat[2][1] * r.z);
-	ret.z = (mat[0][2] * r.x) + (mat[1][2] * r.y) + (mat[2][2] * r.z);
-	return (ret);
+	mat[0][0] = cos(b) * cos(c);
+	mat[1][0] = cos(c) * sin(a) * sin(b) - cos(a) * sin(c);
+	mat[2][0] = cos(a) * cos(c) * sin(b) + sin(a) * sin(c);
+	mat[0][1] = cos(b) * sin(c);
+	mat[1][1] = cos(a) * cos(c) + sin(a) * sin(b) * sin(c);
+	mat[2][1] = -cos(c) * sin(a) + cos(a) * sin(b) * sin(c);
+	mat[0][2] = -sin(b);
+	mat[1][2] = cos(b) * sin(a);
+	mat[2][2] = cos(a) * cos(b);
+	ray.x = (mat[0][0] * r.x) + (mat[1][0] * r.y) + (mat[2][0] * r.z);
+	ray.y = (mat[0][1] * r.x) + (mat[1][1] * r.y) + (mat[2][1] * r.z);
+	ray.z = (mat[0][2] * r.x) + (mat[1][2] * r.y) + (mat[2][2] * r.z);
+	return (ray);
 }
 
 float	vec_lenght(t_ray vc)
@@ -245,7 +245,7 @@ double		ComputeLighting(t_params *par, __constant t_obj *obj, __constant t_light
 	float		nl;
 	float		rv;
 	float		max;
-	t_trace	shadow;
+	t_trace		shadow;
 
 	i = 0.0;
 	j = -1;
@@ -475,7 +475,7 @@ t_ray	global_normal(t_ray P, t_trace *tr)
 	return (N);
 }
 
-int		RayTrace(t_params par, __constant t_obj *obj, __constant t_light *light, float t_min, float t_max)
+int		RayTracer(t_params par, __constant t_obj *obj, __constant t_light *light, float t_min, float t_max)
 {
 	t_trace		tr;
 	t_ray		P;
@@ -491,7 +491,7 @@ int		RayTrace(t_params par, __constant t_obj *obj, __constant t_light *light, fl
 		local_color[deep].x = 0;
 		local_color[deep].y = 0;
 		local_color[deep].z = 0;
-		local_color[deep].reflection = 0;
+		local_color[deep].reflect = 0;
 		deep--;
 	}
 	deep = DEEP;
@@ -510,8 +510,8 @@ int		RayTrace(t_params par, __constant t_obj *obj, __constant t_light *light, fl
 		local_color[deep] = vec_f_mult(intensity, tr.closest_obj.color);
 
 
-		local_color[deep].reflection = tr.closest_obj.reflection;
-		if (tr.closest_obj.reflection > 0)
+		local_color[deep].reflect = tr.closest_obj.reflect;
+		if (tr.closest_obj.reflect > 0)
 		{
 			R = ReflectRay(DD, N);
 			par = (t_params){P, R, par.camera_rot, par.color, par.t_min,
@@ -524,15 +524,15 @@ int		RayTrace(t_params par, __constant t_obj *obj, __constant t_light *light, fl
 	deep = 0;
 	while (deep < DEEP)
 	{
-		local_color[deep + 1] = vec_add(vec_f_mult(1 - local_color[deep + 1].reflection, local_color[deep + 1]),
-						vec_f_mult(local_color[deep + 1].reflection, local_color[deep]));
+		local_color[deep + 1] = vec_add(vec_f_mult(1 - local_color[deep + 1].reflect, local_color[deep + 1]),
+						vec_f_mult(local_color[deep + 1].reflect, local_color[deep]));
 		deep++;
 	}
 	return (rgb_to_int(local_color[deep].x, local_color[deep].y, local_color[deep].z));
 }
 
 __kernel
-void	render(__global int *pixels_params, t_params par, __constant t_obj *obj, __constant t_light *light)
+void	render(__global int *img_pxl, t_params par, __constant t_obj *obj, __constant t_light *light)
 {
 	int x;
 	int y; 
@@ -542,6 +542,6 @@ void	render(__global int *pixels_params, t_params par, __constant t_obj *obj, __
 
 	par.D = rot_matrix(par.camera_rot.x, par.camera_rot.y, par.camera_rot.z,
 		CanvasToViewport(&par, x - par.screenw / 2, par.screenh / 2 - y));
-	par.color = RayTrace(par, obj, light, 0.001f, INFINITY);
-	pixels_params[x + y * par.screenw] = par.color;
+	par.color = RayTracer(par, obj, light, 0.001f, INFINITY);
+	img_pxl[x + y * par.screenw] = par.color;
 }

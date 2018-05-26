@@ -17,7 +17,8 @@ void	get_camera_position(char *cord, t_src *src)
 	int		len;
 
 	len = ft_strlen(cord);
-	if (len > 15 || len < 9 || cord[0] != '[' || cord[len - 1] != ']')
+	printf("cord cam = %s\nlen = [%d]\n",cord, len );
+	if (len > 33 || len < 9 || cord[0] != '[' || cord[len - 1] != ']')
 		error_manadge(MSG_FORMAT, 0, cord);
 	while (*cord)
 	{
@@ -40,7 +41,7 @@ void	get_camera_position(char *cord, t_src *src)
 
 void	get_spotlights_params(char *cord, t_src *src, int ind)
 {
-	src->light.light_p = (t_pos *)malloc(sizeof(t_pos) * src->light.nbr + 1);
+	src->light.light_p = malloc(sizeof(t_pos) * src->light.nbr);
 	src->light.light_p[ind].y = 0;
 	src->light.light_p[ind].z = 0;
 	src->light.light_p[ind].x = 0;
@@ -68,7 +69,6 @@ void	get_spotlights_params(char *cord, t_src *src, int ind)
 
 t_pos	get_position_object(char *cord, t_pos pos)
 {
-	// printf("get_position_object === !!%s!! ======\n", cord);
 	pos.x = 0;
 	pos.y = 0;
 	pos.z = 0;
@@ -90,7 +90,7 @@ t_color	get_color_object(char *col)
 {
 	t_color	color;
 
-	col = ft_strchr(col,'{');
+	col = ft_strchr(col, '{');
 	color.green = -255;
 	color.blue = -255;
 	while (*col != '}' && *col)
@@ -104,6 +104,7 @@ t_color	get_color_object(char *col)
 		col++;
 	}
 	check_adecvate(255, NULL, 1, col, &color);
+	//free(col);
 	return (color);
 }
 
@@ -124,11 +125,11 @@ t_obj	*get_object_params(char *params, t_obj *obj)
 		if (*params == '{' && ft_unstrlen(&(*params), '}') > 10)
 		{
 			obj->object_pos = get_position_object(params, obj->object_pos);
-			printf("x = [%d]\ny = [%d]\nz = [%d]\n",obj->object_pos.x,obj->object_pos.y,obj->object_pos.z );
+			printf("x = [%f]\ny = [%f]\nz = [%f]\n",obj->object_pos.x,obj->object_pos.y,obj->object_pos.z );
 			params += 6;
 		}
 		params++;
 	}
-	printf("red [%d]\ngreen [%d]\nblue [%d]\n", obj->color.red, obj->color.green, obj->color.blue);
+	printf("red [%u]\ngreen [%u]\nblue [%u]\n", obj->color.red, obj->color.green, obj->color.blue);
 	return (obj);
 }

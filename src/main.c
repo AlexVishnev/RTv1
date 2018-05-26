@@ -22,6 +22,7 @@ int		expose_hook(t_src *src)
 		event_key.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 			return (0);
 	}
+
 	return (1);
 }
 
@@ -30,7 +31,6 @@ void	exit_work(t_src *src)
 	SDL_DestroyWindow(src->wind);
 	IMG_Quit();
 	SDL_Quit();
-	//SDL_FreeSurface(src->surf);
 // 	free(src->light.light_p);
 //	free(src->objects);
 	free(src);
@@ -46,14 +46,14 @@ int		main(int ac, char **av)
 	src = (t_src *)ft_memalloc(sizeof(t_src));
 	read_from_file(av[1], src);
 	init_host(src);
-	create_videohost(src);
-	while (DICK)
-	{
-		if (!expose_hook(src))
-			break ;
-		kernel_function(src);
-		SDL_UpdateWindowSurface(src->wind);
-	}
+//	create_videohost(src);
+//	while (DICK)
+//	{
+//		if (!expose_hook(src))
+//			break ;
+//		kernel_function(src);
+//		SDL_UpdateWindowSurface(src->wind);
+//	}
 	exit_work(src);
 	return (0);
 }
