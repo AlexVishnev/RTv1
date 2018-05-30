@@ -33,6 +33,7 @@ void	exit_work(t_src *src)
 	SDL_Quit();
 // 	free(src->light.light_p);
 //	free(src->objects);
+//	free(src->params.object);
 	free(src);
 	system("leaks -q RTv1");
 }

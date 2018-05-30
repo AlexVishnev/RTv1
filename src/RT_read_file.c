@@ -58,7 +58,7 @@ void		get_parameters(char *str, t_src *src)
 		return ;
 	else if (str[0] == '-' && str[1] == '>')
 		validate_data(&str[2], src);
-	if (str[0] != '-' && str[1] != '>')
+	else if (str[0] != '-' && str[1] != '>')
 		error_manadge(MSG_RULES, 1, str);
 }
 
@@ -81,13 +81,14 @@ int			get_data_values(char *string, t_src *src)
 			get_spotlights_params(&string[kostyl(string, ';', index)], src, index);// это просто,блять, пиздец. я ненавижу себя за этот бред. Прости меня будущий я который эту хуету прочтет и, блять, не взудмай так больше писать
 	}
 //	printf("%d\n", src->objects_cnt);
-	src->objects = (t_obj *)ft_memalloc(sizeof(t_obj) * src->objects_cnt + 1); /////// leak
+//	src->objects = (t_obj *)ft_memalloc(sizeof(t_obj) * src->objects_cnt + 1); /////// leak
 	if (ft_strcmp(tmp, "object") == 0)
 	{
-		src->objects = get_object_params(&string[7], src->objects);
+		src->params.object = get_object_params(&string[7], src->params.object);
 		ft_putendl(string);
 	}
-	free(src->objects);/// for first time
+	//free(src->objects);/// for first time
+//	free(src->params.object);
 	free(tmp);
 	return (0);
 }
@@ -107,6 +108,7 @@ void		read_from_file(char *av, t_src *src)
 	size = get_size(av);
 	params = (char **)ft_memalloc(sizeof(char *) * size + 1);
 	check_nbrs_object(av, src, size);
+	src->params.object = (t_obj *)ft_memalloc(sizeof(t_obj) * src->objects_cnt + 1);
 	while (ft_getline(fd, &(*params)))
 	{
 		get_parameters(*params, src);
@@ -114,5 +116,6 @@ void		read_from_file(char *av, t_src *src)
 		(*params)++;
 	}
 	free(params);
+	free(src->params.object);
 	close(fd);
 }

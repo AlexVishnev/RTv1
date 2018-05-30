@@ -69,7 +69,7 @@ typedef	struct			s_pos
 
 typedef	struct			s_cam
 {
-	t_pos				cam_pos;
+	t_ray				cam_pos;
 	float				width;
 	float				height;
 	int					angle;
@@ -136,6 +136,13 @@ typedef	struct			s_privat
 	size_t				size;
 }						t_private;
 
+typedef	struct			s_garbage
+{
+	int					h;
+	int					e;
+	int					r;
+}						t_garbage;
+
 typedef	struct			s_src
 {
 	SDL_Window			*wind;
@@ -149,6 +156,7 @@ typedef	struct			s_src
 	t_params			params;
 }						t_src;
 
+void					get_camera_direction(char *cord, t_src *src);
 void					kernel_function(t_src *src);
 void					create_videohost(t_src *src);
 void					init_parametrs(t_src *src);
