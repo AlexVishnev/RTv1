@@ -334,8 +334,8 @@ t_vector	IntersectRayCone(t_ray P, t_ray V, __constant t_obj *obj)
 	t_vector	t;
 	float	k[3];
 	float	angle;
-	float	POWCOS;
-	float	POWSIN;
+	float	cospw;
+	float	sinpw;
 
 	angle = conv_degr_rad(obj->angle);
 	PA = obj->center;
@@ -344,12 +344,12 @@ t_vector	IntersectRayCone(t_ray P, t_ray V, __constant t_obj *obj)
 
 	A = vec_sub(V, vec_f_mult(ft_dot(V, VA), VA));
 	B = vec_sub(deltaP, vec_f_mult(ft_dot(deltaP, VA), VA));
-	POWCOS = cos(angle) * cos(angle);
-	POWSIN = sin(angle) * sin(angle);
+	cospw = cos(angle) * cos(angle);
+	sinpw = sin(angle) * sin(angle);
 
-	k[0] = POWCOS * ft_dot(A, A) - POWSIN * ft_dot(V, VA) * ft_dot(V, VA);
-	k[1] = 2.0f * POWCOS * ft_dot(A, B) - 2.0f * POWSIN * ft_dot(V, VA) * ft_dot(deltaP, VA);
-	k[2] = POWCOS * ft_dot(B, B) - POWSIN * ft_dot(deltaP, VA) * ft_dot(deltaP, VA);
+	k[0] = cospw * ft_dot(A, A) - sinpw * ft_dot(V, VA) * ft_dot(V, VA);
+	k[1] = 2.0f * cospw * ft_dot(A, B) - 2.0f * sinpw * ft_dot(V, VA) * ft_dot(deltaP, VA);
+	k[2] = cospw * ft_dot(B, B) - sinpw * ft_dot(deltaP, VA) * ft_dot(deltaP, VA);
 	t = find_discriminant(k);
 	t.x = get_lim_solution(t.x, P, V, VA, obj);
 	t.y = get_lim_solution(t.y, P, V, VA, obj);
