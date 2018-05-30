@@ -5,7 +5,7 @@
 
 #camera  [{position};{direction}]
 
-->camera [{0,0,5};{9,2,9}]
+->camera [{110,111,111111111111};{9,2,9}]
 
 #spotligth [(type){position1}(intensive);(type){posintion2}(intensive);...(type){position_5}(intensive)]
 

@@ -14,7 +14,6 @@
 
 void	get_camera_direction(char *cord, t_src *src)
 {
-	//printf("======== %s\n", cord);
 	src->params.look_pos.cam_pos = (t_ray){-500, -505, -501, -500, 0};
 	while (*cord && *cord != ']')
 	{
@@ -24,15 +23,14 @@ void	get_camera_direction(char *cord, t_src *src)
 			src->params.look_pos.cam_pos.y = ft_atoi(++cord);
 		else if (src->params.look_pos.cam_pos.z == -501 && *cord == ',')
 			src->params.look_pos.cam_pos.z = ft_atoi(++cord);
-		//printf("======== %s\n", cord);
 		cord++;
 	}
-	check_adecvate(POS_LIM, (t_pos *)&src->params.look_pos.cam_pos, 1, cord, NULL);
+	check_adecvate(POS_LIM, (t_pos *)&src->params.look_pos.cam_pos, 1, 
+		cord, NULL);
 	src->params.D = (t_ray){(src->params.look_pos.cam_pos.x * M_PI) / 180,
 		(src->params.look_pos.cam_pos.y * M_PI) / 180,
 		(src->params.look_pos.cam_pos.z * M_PI) / 180, 0, 0 };
-	//printf("src->params.look_pos.cam_pos.x %f\nsrc->params.look_pos.cam_pos.y %f\nsrc->params.look_pos.cam_pos.z %f\n", src->params.look_pos.cam_pos.x, src->params.look_pos.cam_pos.y, src->params.look_pos.cam_pos.z );
-	//printf("src->params.D.x %f\nsrc->params.D.y %f\nsrc->params.D.z %f\n", src->params.D.x, src->params.D.y, src->params.D.z );
+	src->params.look_pos.cam_pos = (t_ray){	0, 0, 0, 0, 0};
 }
 
 void	get_camera_position(char *cord, t_src *src)
@@ -40,33 +38,21 @@ void	get_camera_position(char *cord, t_src *src)
 	int		len;
 
 	len = ft_strlen(cord);
-	src->params.look_pos.cam_pos = (t_ray){-500, -505, -501, -500, 0};
-	//printf("cord cam = %s\nlen = [%d]\n",cord, len );
 	if (len > 33 || len < 9 || cord[0] != '[' || cord[len - 1] != ']')
 		error_manadge(MSG_FORMAT, 0, cord);
 	get_camera_direction(&cord[len / 2], src);
-	//printf("%s\n", cord);
-	while (*cord)
+	while (*cord && *cord != ';' && *(cord - 1) != '}')
 	{
 		if (*cord == '{')
 			src->params.look_pos.cam_pos.x = ft_atoi(++cord);
-		if (*cord == '-' || ft_isdigit(*cord))
-		{
-			cord++;
-			while (ft_isdigit(*cord))
-				cord++;
-		}
-		if (*cord == ',' && src->params.look_pos.cam_pos.y == -505)
+		else if (*cord == ',' && src->params.look_pos.cam_pos.y == 0)
 			src->params.look_pos.cam_pos.y = ft_atoi(++cord);
-		if (*cord == ',' && src->params.look_pos.cam_pos.z == -501)
+		else if (*cord == ',' && src->params.look_pos.cam_pos.z == 0)
 			src->params.look_pos.cam_pos.z = ft_atoi(++cord);
 		cord++;
 	}
-	//printf("src->params.look_pos.cam_pos.z = [%f]\nsrc->params.look_pos.cam_pos.x = [%f]\nsrc->params.look_pos.cam_pos.y = [%f]\n", src->params.look_pos.cam_pos.z, src->params.look_pos.cam_pos.y, src->params.look_pos.cam_pos.x );
-	src->params.O = (t_ray){src->params.look_pos.cam_pos.x,
-	src->params.look_pos.cam_pos.y, src->params.look_pos.cam_pos.z, 0, 0};
+	src->params.O = (t_ray){src->params.look_pos.cam_pos.x,	src->params.look_pos.cam_pos.y, src->params.look_pos.cam_pos.z, 0, 0};
 	check_adecvate(POS_LIM, (t_pos *)&src->params.look_pos.cam_pos, 1, cord, NULL);
-	//printf("src->params.O.x %f\nsrc->params.O.y %f\nsrc->params.O.z %f\n", src->params.O.x, src->params.O.y, src->params.O.z );
 }
 
 
