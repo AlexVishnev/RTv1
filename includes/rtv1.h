@@ -78,7 +78,7 @@ typedef	struct			s_cam
 typedef	struct			s_light
 {
 	int					type;
-	t_pos				*light_p;
+	t_pos				light_p;
 	t_ray				direction;
 	int					nbr;
 	double				intensive;
@@ -149,18 +149,12 @@ typedef	struct			s_src
 	t_params			params;
 }						t_src;
 
-
-
-
-void		kernel_function(t_src *src);
-void		create_videohost(t_src *src);
-
-
-
+void					kernel_function(t_src *src);
+void					create_videohost(t_src *src);
 void					init_parametrs(t_src *src);
+
 int						cnt_objects(char *params, t_src *src);
 void					check_nbrs_object(char *av, t_src *src, int size);
-
 t_pos					get_position_object(char *cord, t_pos position);
 t_obj					*get_object_params(char *cord, t_obj *object);
 void					read_from_file(char *data, t_src *s);

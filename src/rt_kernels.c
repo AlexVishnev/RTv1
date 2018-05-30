@@ -59,7 +59,7 @@ void		kernel_function(t_src *src)
 	rd = clSetKernelArg(src->op_cl.kernel, 3, sizeof(cl_mem),
 		(void *)&src->op_cl.light);
 	rd = clEnqueueNDRangeKernel(src->op_cl.queue, src->op_cl.kernel, 2,
-		NULL, (size_t[3]){src->surf->w,src->surf->h, 0}, NULL, 0, NULL, NULL); 
+		NULL, (size_t[3]){src->surf->w,src->surf->h, 0}, NULL, 0, NULL, NULL);
 	rd = clEnqueueReadBuffer(src->op_cl.queue, src->op_cl.img, CL_TRUE,
 		 0, src->op_cl.size, (int*)src->surf->pixels, 0, NULL, NULL );
 }

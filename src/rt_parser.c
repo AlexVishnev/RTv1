@@ -41,31 +41,35 @@ void	get_camera_position(char *cord, t_src *src)
 
 void	get_spotlights_params(char *cord, t_src *src, int ind)
 {
-	src->light.light_p = malloc(sizeof(t_pos) * src->light.nbr);
-	src->light.light_p[ind].y = 0;
-	src->light.light_p[ind].z = 0;
-	src->light.light_p[ind].x = 0;
-	while (*cord != '{')
-		cord++;
-	while (*cord && (*cord != ';' || *cord != ']'))
-	{
-		if (*cord == '{' && src->light.light_p[ind].x == 0)
-			src->light.light_p[ind].x = ft_atoi(++cord);
-		if (*cord == '-' || ft_isdigit(*cord))
-		{
-			cord++;
-			while (ft_isdigit(*cord))
-				cord++;
-		}
-		if (*cord == ',' && src->light.light_p[ind].y == 0)
-			src->light.light_p[ind].y = ft_atoi(++cord);
-		if (*cord == ',' && src->light.light_p[ind].z == 0)
-			src->light.light_p[ind].z = ft_atoi(++cord);
-		cord++;
-	}
-	check_adecvate(POS_LIM, src->light.light_p, 2, cord, NULL);
-	free(src->light.light_p);
+
 }
+// void	get_spotlights_params(char *cord, t_src *src, int ind)
+// {
+// 	src->light.light_p = malloc(sizeof(t_pos) * src->light.nbr);
+// 	src->light.light_p[ind].y = 0;
+// 	src->light.light_p[ind].z = 0;
+// 	src->light.light_p[ind].x = 0;
+// 	while (*cord != '{')
+// 		cord++;
+// 	while (*cord && (*cord != ';' || *cord != ']'))
+// 	{
+// 		if (*cord == '{' && src->light.light_p[ind].x == 0)
+// 			src->light.light_p[ind].x = ft_atoi(++cord);
+// 		if (*cord == '-' || ft_isdigit(*cord))
+// 		{
+// 			cord++;
+// 			while (ft_isdigit(*cord))
+// 				cord++;
+// 		}
+// 		if (*cord == ',' && src->light.light_p[ind].y == 0)
+// 			src->light.light_p[ind].y = ft_atoi(++cord);
+// 		if (*cord == ',' && src->light.light_p[ind].z == 0)
+// 			src->light.light_p[ind].z = ft_atoi(++cord);
+// 		cord++;
+// 	}
+// 	check_adecvate(POS_LIM, src->light.light_p, 2, cord, NULL);
+// 	free(src->light.light_p);
+// }
 
 t_pos	get_position_object(char *cord, t_pos pos)
 {
@@ -125,11 +129,11 @@ t_obj	*get_object_params(char *params, t_obj *obj)
 		if (*params == '{' && ft_unstrlen(&(*params), '}') > 10)
 		{
 			obj->object_pos = get_position_object(params, obj->object_pos);
-			printf("x = [%f]\ny = [%f]\nz = [%f]\n",obj->object_pos.x,obj->object_pos.y,obj->object_pos.z );
+//			printf("x = [%f]\ny = [%f]\nz = [%f]\n",obj->object_pos.x,obj->object_pos.y,obj->object_pos.z );
 			params += 6;
 		}
 		params++;
 	}
-	printf("red [%u]\ngreen [%u]\nblue [%u]\n", obj->color.red, obj->color.green, obj->color.blue);
+//	printf("red [%u]\ngreen [%u]\nblue [%u]\n", obj->color.red, obj->color.green, obj->color.blue);
 	return (obj);
 }

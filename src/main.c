@@ -45,7 +45,7 @@ int		main(int ac, char **av)
 		error_manadge(MSG, 0, NULL);
 	src = (t_src *)ft_memalloc(sizeof(t_src));
 	read_from_file(av[1], src);
-	init_host(src);
+//	init_host(src);
 //	create_videohost(src);
 //	while (DICK)
 //	{

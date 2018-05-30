@@ -79,8 +79,8 @@ typedef	struct	s_params
 	float		t_max;
 	int			objects;
 	int			lights;
-	long		kal;
-	long		kal2;
+	long		obj;
+	long		light;
 	t_cam		vp;
 	int			screenw;
 	int			screenh;
@@ -150,18 +150,20 @@ t_ray	rot_matrix(double a, double b, double c, t_ray r)
 
 float	vec_lenght(t_ray vc)
 {
-	return (sqrt(vc.x * vc.x +
-		vc.y * vc.y + vc.z * vc.z));
+	float rez;
+
+	rez = sqrt(vc.x * vc.x + vc.y * vc.y + vc.z * vc.z);
+	return (rez);
 }
 
 t_ray	vec_mult(t_ray a, t_ray b)
 {
-	t_ray c;
+	t_ray rez;
 
-	c.x = a.x * b.x;
-	c.y = a.y * b.y;
-	c.z = a.z * b.z;
-	return (c);
+	rez.x = a.x * b.x;
+	rez.y = a.y * b.y;
+	rez.z = a.z * b.z;
+	return (rez);
 }
 
 t_ray	vec_add(t_ray a, t_ray b)
@@ -236,7 +238,7 @@ t_ray	ReflectRay(t_ray R, t_ray N)
 }
 
 double		ComputeLighting(t_params *par, __constant t_obj *obj, __constant t_light *light,
-									t_ray P, t_ray N, t_ray V, float specular)
+									t_ray P, t_ray N, t_ray V, float spec)
 {
 	double		i;
 	int			j;
@@ -281,7 +283,7 @@ double		ComputeLighting(t_params *par, __constant t_obj *obj, __constant t_light
 				i += light[j].intensity * nl / (vec_lenght(N) * vec_lenght(L));
 
 			// Зеркальность
-			if (specular >= 0)
+			if (spec >= 0)
 			{
 				R = vec_sub(vec_f_mult(ft_dot(N, L), vec_f_mult(2.0, N)), L); //vec_sub(vec_f_mult((ft_dot(N, L) * 2), N), L);
 				rv = ft_dot(R, V);
@@ -515,7 +517,7 @@ int		RayTracer(t_params par, __constant t_obj *obj, __constant t_light *light, f
 		{
 			R = ReflectRay(DD, N);
 			par = (t_params){P, R, par.camera_rot, par.color, par.t_min,
-				par.t_max, par.objects, par.lights, par.kal, par.kal2, par.vp, par.screenw, par.screenh};
+				par.t_max, par.objects, par.lights, par.obj, par.light, par.vp, par.screenw, par.screenh};
 			deep--;
 		}
 		else
