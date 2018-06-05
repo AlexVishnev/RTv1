@@ -55,6 +55,7 @@ int		main(int ac, char **av)
 //		kernel_function(src);
 //		SDL_UpdateWindowSurface(src->wind);
 //	}
+	printf("%f\n ",ft_atof("1.511"));
 	exit_work(src);
 	return (0);
 }

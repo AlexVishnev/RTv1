@@ -77,11 +77,11 @@ typedef	struct			s_cam
 
 typedef	struct			s_light
 {
-	int					type;
-	t_pos				light_p;
 	t_ray				direction;
-	int					nbr;
+	t_ray				position;
 	double				intensive;
+	int					type;
+	int					nbr;
 }						t_light;
 
 typedef	struct			s_color
@@ -93,13 +93,13 @@ typedef	struct			s_color
 
 typedef	struct			s_obj
 {
-	float				reflect;
-	int					type;
-	float				radius;
 	t_pos				object_pos;
 	t_color				color;
-	int					obj_size;
+	float				reflect;
+	float				radius;
 	float				specular;
+	int					type;
+	int					obj_size;
 }						t_obj;
 
 typedef	struct			s_params
@@ -107,14 +107,14 @@ typedef	struct			s_params
 	t_ray				O;
 	t_ray				D;
 	t_ray				camera_rot;
-	int					color;
-	float				t_min;
-	float				t_max;
-	int					objects;
-	int					lights;
 	t_obj				*object;
 	t_light				*light;
 	t_cam				look_pos;
+	float				t_min;
+	float				t_max;
+	int					color;
+	int					objects;
+	int					lights;
 	int					width;
 	int					height;
 }						t_params;
@@ -147,15 +147,18 @@ typedef	struct			s_src
 {
 	SDL_Window			*wind;
 	SDL_Surface			*surf;
-	unsigned int		*img_pxl;
-	int					objects_cnt;
 	t_obj				*objects;
 	t_light				light;
 	t_cam				camera;
 	t_private			op_cl;
 	t_params			params;
+	unsigned int		*img_pxl;
+	int					objects_cnt;
+	int 				lights_cnt;
+	int 				index;
 }						t_src;
 
+void					get_spotlights_direction(char *h, t_src *e, int r);
 void					get_camera_direction(char *cord, t_src *src);
 void					kernel_function(t_src *src);
 void					create_videohost(t_src *src);

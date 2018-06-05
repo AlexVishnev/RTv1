@@ -17,7 +17,7 @@ void		create_videohost(t_src *src)
 	int		fd;
 	char	*buffer;
 	size_t	size;
-	cl_int	rd ;
+	cl_int	rd;
 
 	fd = open("./computing/gpu_compute.cl", O_RDONLY); // loads instruction	
 	buffer = ft_memalloc(2048 * 2048); // allocate memory for source file

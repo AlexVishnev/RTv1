@@ -67,28 +67,33 @@ void		get_parameters(char *str, t_src *src)
 int			get_data_values(char *string, t_src *src)
 {
 	char		*tmp;
-	int			index;
+//	int			index;
 
-	index = -1;
+//	index = 0;
 	tmp = ft_strsub(string, 0, 6);
 	if (ft_strcmp(tmp, "camera") == 0)
 		get_camera_position(&string[7], src);
 	if (ft_strcmp(tmp, "slight") == 0)
 	{
-		if ((src->light.nbr = ft_count_chars(string, ';') + 1) > 5)
-			error_manadge("Erorr: ", 0, string);
-		while (++index < src->light.nbr)
-			get_spotlights_params(&string[kostyl(string, ';', index)], src, index);// это просто,блять, пиздец. я ненавижу себя за этот бред. Прости меня будущий я который эту хуету прочтет и, блять, не взудмай так больше писать
+		//while (++index < src->lights_cnt + 1)
+		get_spotlights_params(string, src, src->index);
+		src->index++;
 	}
-//	printf("%d\n", src->objects_cnt);
-//	src->objects = (t_obj *)ft_memalloc(sizeof(t_obj) * src->objects_cnt + 1); /////// leak
+//	if (ft_strcmp(tmp, "slight") == 0)
+//	{
+//		if ((src->light.nbr = ft_count_chars(string, ';') + 1) > 5)
+//			error_manadge("Erorr: ", 0, string);
+//		while (++index < src->light.nbr)
+//			get_spotlights_params(&string[kostyl(string, ';', index)], src, index);// это просто,блять, пиздец. я ненавижу себя за этот бред. Прости меня будущий я который эту хуету прочтет и, блять, не взудмай так больше писать
+//	}
+	//index = -1;
 	if (ft_strcmp(tmp, "object") == 0)
 	{
-		src->params.object = get_object_params(&string[7], src->params.object);
+	//	while (++index  < src->objects_cnt + 1)
+			src->params.object = get_object_params(&string[7], src->params.object);
 		ft_putendl(string);
 	}
-	//free(src->objects);/// for first time
-//	free(src->params.object);
+
 	free(tmp);
 	return (0);
 }
@@ -109,6 +114,7 @@ void		read_from_file(char *av, t_src *src)
 	params = (char **)ft_memalloc(sizeof(char *) * size + 1);
 	check_nbrs_object(av, src, size);
 	src->params.object = (t_obj *)ft_memalloc(sizeof(t_obj) * src->objects_cnt + 1);
+	src->params.light = (t_light *)ft_memalloc(sizeof(t_light) * src->lights_cnt + 1);
 	while (ft_getline(fd, &(*params)))
 	{
 		get_parameters(*params, src);
@@ -117,5 +123,6 @@ void		read_from_file(char *av, t_src *src)
 	}
 	free(params);
 	free(src->params.object);
+	free(src->params.light);
 	close(fd);
 }

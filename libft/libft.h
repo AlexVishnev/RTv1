@@ -17,13 +17,14 @@
 # include <string.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <math.h>
 # define BUFF_SIZE 256
 
 typedef struct	s_list
 {
 	void			*content;
 	size_t			content_size;
-	struct s_list	*next;
+	struct	s_list	*next;
 }				t_list;
 
 typedef struct	s_gnl
@@ -101,6 +102,7 @@ int				ft_isdigit(int c);
 int				ft_isprint(int c);
 int				ft_atoi_base(char *str, int base);
 
+float			ft_atof(char *str);
 size_t			ft_strlen(const char *str);
 size_t			ft_strlcat(char *dst, const char *src, size_t dstsize);
 

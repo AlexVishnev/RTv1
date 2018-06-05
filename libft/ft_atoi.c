@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-int	ft_atoi(const char *str)
+int				ft_atoi(const char *str)
 {
 	int					i;
 	int					sign;
@@ -56,5 +56,25 @@ unsigned int	ft_u_atoi(const char *str)
 		rez = (rez * 10) + (str[i] - '0');
 		i++;
 	}
+	return (rez);
+}
+
+float			ft_atof(char *str)
+{
+	float	rez;
+	float	tmp;
+	int		limit;
+	int		i;
+	char	*dot;
+
+	limit = 0;
+	i = -1;
+	rez = ft_atoi(str);
+	if (!(dot = ft_strchr(str, '.')))
+		return rez;
+	while (str[++i] != '.' && *str)
+		limit++;
+	tmp = ft_atoi(ft_strchr(str, '.') + 1) / pow(10, ft_strlen(str) - limit - 1);
+	rez += tmp;
 	return (rez);
 }

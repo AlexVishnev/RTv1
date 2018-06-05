@@ -16,7 +16,7 @@ void		check_nbrs_object(char *av, t_src *src, int size)
 {
 	int		fd;
 	int		i;
-	char 	**params;
+	char	**params;
 	
 	i = 0;
 	fd = open(av, O_RDONLY);
@@ -26,6 +26,7 @@ void		check_nbrs_object(char *av, t_src *src, int size)
 		error_manadge(MSG_PARSE, 0, NULL);
 	}
 	src->objects_cnt = 0;
+	src->lights_cnt = 0;
 	params = (char **)ft_memalloc(sizeof(char*) * size + 1);
 	while (ft_getline(fd, &(params[i])))
 	{
@@ -70,6 +71,12 @@ int			cnt_objects(char *str, t_src *src)
 	if (ft_strcmp(lox, "object") == 0)
 	{
 		src->objects_cnt++;
+		free(lox);
+		return (1);
+	}
+	if (ft_strcmp(lox, "slight") == 0)
+	{
+		src->lights_cnt++;
 		free(lox);
 		return (1);
 	}
