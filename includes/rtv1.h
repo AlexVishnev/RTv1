@@ -94,12 +94,14 @@ typedef	struct			s_color
 typedef	struct			s_obj
 {
 	t_pos				object_pos;
-	t_color				color;
-	float				reflect;
-	float				radius;
+	t_ray				mid;
+	t_ray				direction;
+	t_ray				color;
 	float				specular;
-	int					type;
-	int					obj_size;
+	float				radius;
+	float				reflection;
+	float				angle;
+	int 				type;
 }						t_obj;
 
 typedef	struct			s_params
@@ -119,7 +121,6 @@ typedef	struct			s_params
 	int					height;
 }						t_params;
 
-
 typedef	struct			s_privat
 {
 	cl_command_queue	queue;
@@ -136,12 +137,12 @@ typedef	struct			s_privat
 	size_t				size;
 }						t_private;
 
-typedef	struct			s_garbage
-{
-	int					h;
-	int					e;
-	int					r;
-}						t_garbage;
+// typedef	struct			s_garbage
+// {
+// 	int					h;
+// 	int					e;
+// 	int					r;
+// }						t_garbage;
 
 typedef	struct			s_src
 {
@@ -152,11 +153,18 @@ typedef	struct			s_src
 	t_cam				camera;
 	t_private			op_cl;
 	t_params			params;
+	t_color				color;
+	t_pos				pos;
 	unsigned int		*img_pxl;
 	int					objects_cnt;
-	int 				lights_cnt;
-	int 				index;
+	int					lights_cnt;
+	int					index;
+	int					index1;
 }						t_src;
+
+t_ray					get_position_object(char *cord, t_src *object);
+void					get_spetial_params(t_obj *obj, char *params);
+t_obj					get_object_params(char *cord, t_obj *object, t_src *src);
 
 void					get_spotlights_direction(char *h, t_src *e, int r);
 void					get_camera_direction(char *cord, t_src *src);
@@ -166,11 +174,9 @@ void					init_parametrs(t_src *src);
 
 int						cnt_objects(char *params, t_src *src);
 void					check_nbrs_object(char *av, t_src *src, int size);
-t_pos					get_position_object(char *cord, t_pos position);
-t_obj					*get_object_params(char *cord, t_obj *object);
 void					read_from_file(char *data, t_src *s);
 void					error_manadge(char *str, int flag, char *src);
-int						get_size(char *av);
+int						get_size(char *av, t_src *src);
 void					get_parameters(char *str, t_src *src);
 
 void					init_host(t_src *src);
@@ -182,5 +188,5 @@ void					get_camera_position(char *cord, t_src *src);
 void					get_spotlights_params(char *params, t_src *src, int index);
 int						check_adecvate(int l, t_pos *p, int fl, char *f, t_color *s);
 int						kostyl(char *s, int chr, int index);
-
+t_color					get_color_object(char *col);
 #endif
