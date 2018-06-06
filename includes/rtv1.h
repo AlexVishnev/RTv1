@@ -49,6 +49,15 @@ typedef struct 			s_vector
 	float				y;
 }						t_vector;
 
+typedef	struct			s_pos
+{
+	float				x;
+	float				y;
+	float				z;
+	float				w;
+	float				r;
+}						t_pos;
+
 typedef struct			s_ray
 {
 	float				x;
@@ -66,22 +75,12 @@ typedef	struct			s_light
 	t_ray				direction;
 }						t_light;
 
-typedef	struct			s_pos
-{
-	float				x;
-	float				y;
-	float				z;
-	float				w;
-	float				r;
-}						t_pos;
-
 typedef	struct			s_cam
 {
 	float				width;
 	float				height;
 	float				dist;
 }						t_cam;
-
 
 typedef	struct			s_color
 {
@@ -100,7 +99,6 @@ typedef	struct			s_obj
 	float				radius;
 	float				reflection;
 	float				angle;
-	t_pos				object_pos;
 }						t_obj;
 
 typedef	struct			s_params
@@ -119,22 +117,6 @@ typedef	struct			s_params
 	int					width;
 	int					height;
 }						t_params;
-// typedef	struct	s_params
-// {
-// 	t_ray		O;
-// 	t_ray		D;
-// 	t_ray		camera_rot;
-// 	long		obj;
-// 	long		light;
-// 	t_cam		vp;
-// 	float		t_min;
-// 	float		t_max;
-// 	int			color;
-// 	int			objects;
-// 	int			lights;
-// 	int			screenw;
-// 	int			screenh;
-// }				t_params;
 
 typedef	struct			s_privat
 {

@@ -36,4 +36,6 @@ void	init_parametrs(t_src *src)
 	src->params.look_pos.dist = 1.0f;
 	src->params.width = src->surf->w;
 	src->params.height = src->surf->h;
+	src->params.lights = src->lights_cnt;
+	src->params.objects = src->objects_cnt;
 }

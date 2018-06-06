@@ -43,30 +43,29 @@ typedef	struct			s_light
 	t_ray				direction;
 }						t_light;
 
-typedef	struct	s_obj
+typedef	struct			s_obj
 {
-	int			type;
-	t_ray		mid;
-	t_ray		direction;
-	t_ray		color;
-	float		specular;
-	float		radius;
-	float		reflect;
-	float		angle;
-	long		shit;
-}				t_obj;
+	int					type;
+	t_ray				mid;
+	t_ray				direction;
+	t_ray				color;
+	float				specular;
+	float				radius;
+	float				reflect;
+	float				angle;
+}						t_obj;
 
-typedef struct	s_cam
+typedef struct			s_cam
 {
-	float		w;
-	float		h;
-	float		dist;
-}				t_cam;
+	float				w;
+	float				h;
+	float				dist;
+}						t_cam;
 
 typedef	struct	s_trace
 {
-	double		closest_t;
-	t_obj		closest_obj;
+	double			closest_t;
+	t_obj			closest_obj;
 	t_vector		t;
 }				t_trace;
 
