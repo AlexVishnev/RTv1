@@ -20,39 +20,40 @@
 # define CONE 4
 # define DEEP 1
 
-typedef	struct	s_vector
+typedef struct 			s_vector
 {
-	float		x;
-	float		y;
-}				t_vector;
+	float				x;
+	float				y;
+}						t_vector;
 
-typedef	struct	s_ray
+typedef struct			s_ray
 {
-	float		x;
-	float		y;
-	float		z;
-	float		w;
-	float		reflect;
-}				t_ray;
+	float				x;
+	float				y;
+	float				z;
+	float				w;
+	float				reflect;
+}						t_ray;
 
-typedef	struct	s_light
+typedef	struct			s_light
 {
-	int			type;
-	double		intensity;
-	t_ray		position;
-	t_ray		direction;
-}				t_light;
+	int					type;
+	double				intensity;
+	t_ray				position;
+	t_ray				direction;
+}						t_light;
 
 typedef	struct	s_obj
 {
-	int			name;
-	t_ray		center;
+	int			type;
+	t_ray		mid;
 	t_ray		direction;
 	t_ray		color;
 	float		specular;
 	float		radius;
 	float		reflect;
 	float		angle;
+	long		shit;
 }				t_obj;
 
 typedef struct	s_cam
@@ -62,7 +63,7 @@ typedef struct	s_cam
 	float		dist;
 }				t_cam;
 
-typedef	struct	s_traceray
+typedef	struct	s_trace
 {
 	double		closest_t;
 	t_obj		closest_obj;
@@ -74,14 +75,14 @@ typedef	struct	s_params
 	t_ray		O;
 	t_ray		D;
 	t_ray		camera_rot;
-	int			color;
-	float		t_min;
-	float		t_max;
-	int			objects;
-	int			lights;
 	long		obj;
 	long		light;
 	t_cam		vp;
+	float		t_min;
+	float		t_max;
+	int			color;
+	int			objects;
+	int			lights;
 	int			screenw;
 	int			screenh;
 }				t_params;
@@ -288,7 +289,7 @@ double		ComputeLighting(t_params *par, __constant t_obj *obj, __constant t_light
 				R = vec_sub(vec_f_mult(ft_dot(N, L), vec_f_mult(2.0, N)), L); //vec_sub(vec_f_mult((ft_dot(N, L) * 2), N), L);
 				rv = ft_dot(R, V);
 				if (rv > 0)
-					i += light[j].intensity * pow(rv / (vec_lenght(R) * vec_lenght(V)), specular);
+					i += light[j].intensity * pow(rv / (vec_lenght(R) * vec_lenght(V)), spec);
 			}
 		}
 	}
@@ -317,7 +318,7 @@ double		get_lim_solution(double t, t_ray P, t_ray V, t_ray VA, __constant t_obj 
 	if (t < 0)
 		return (INFINITY);
 	Q = vec_add(P, vec_f_mult(t, V));
-	k[0] = ft_dot(VA, vec_sub(Q, obj->center));
+	k[0] = ft_dot(VA, vec_sub(Q, obj->mid));
 	k[1] = ft_dot(VA, vec_sub(Q, obj->direction));
 	if (k[0] < 0.0 && k[1] > 0.0)
 		return (t);
@@ -338,7 +339,7 @@ t_vector	IntersectRayCone(t_ray P, t_ray V, __constant t_obj *obj)
 	float	sinpw;
 
 	angle = conv_degr_rad(obj->angle);
-	PA = obj->center;
+	PA = obj->mid;
 	VA = normal(vec_sub(PA, obj->direction));
 	deltaP = vec_sub(P, PA);
 
@@ -366,7 +367,7 @@ t_vector	IntersectRayCylinder(t_ray P, t_ray V, __constant t_obj *obj)
 	t_vector	t;
 	float	k[3];
 
-	PA = obj->center;
+	PA = obj->mid;
 	VA = normal(vec_sub(PA, obj->direction));
 	deltaP = vec_sub(P, PA);
 
@@ -389,7 +390,7 @@ t_vector	IntersectRaySphere(t_ray O, t_ray D, __constant t_obj *obj)
 	double	r;
 	float	k[3];
 
-	C = obj->center;
+	C = obj->mid;
 	r = obj->radius;
 	OC = vec_sub(O, C);
 
@@ -407,7 +408,7 @@ t_vector	IntersectRayPlane(t_ray O, t_ray D, __constant t_obj *obj)
 	t_vector	t;
 	float	k[2];
 
-	C = obj->center;
+	C = obj->mid;
 	N = obj->direction;
 	X = vec_sub(O, C);
 	k[0] = ft_dot(D, N);
@@ -431,13 +432,13 @@ void	ClosestIntersection(t_trace *tr, t_params *par, __constant t_obj *obj,
 	i = -1;
 	while (++i < par->objects)
 	{
-		if (obj[i].name == SPHERE)
+		if (obj[i].type == SPHERE)
 			t = IntersectRaySphere(O, D, &obj[i]);
-		else if (obj[i].name == PLANE)
+		else if (obj[i].type == PLANE)
 			t = IntersectRayPlane(O, D, &obj[i]);
-		else if (obj[i].name == CYLINDER)
+		else if (obj[i].type == CYLINDER)
 			t = IntersectRayCylinder(O, D, &obj[i]);
-		else if (obj[i].name == CONE)
+		else if (obj[i].type == CONE)
 			t = IntersectRayCone(O, D, &obj[i]);
 		if (t.x > t_min && t.x < t_max && t.x < tr->closest_t)
 		{
@@ -458,16 +459,16 @@ t_ray	global_normal(t_ray P, t_trace *tr)
 	t_ray	os;
 	t_ray	proj;
 
-	if (tr->closest_obj.name == SPHERE)
+	if (tr->closest_obj.type == SPHERE)
 	{
-		N = vec_sub(P, tr->closest_obj.center);
+		N = vec_sub(P, tr->closest_obj.mid);
 		N = normal(N);
 		return (N);
 	}
-	if (tr->closest_obj.name == CYLINDER || tr->closest_obj.name == CONE)
+	if (tr->closest_obj.type == CYLINDER || tr->closest_obj.type == CONE)
 	{
-		os = normal(vec_sub(tr->closest_obj.direction, tr->closest_obj.center));
-		N = vec_sub(P, tr->closest_obj.center);
+		os = normal(vec_sub(tr->closest_obj.direction, tr->closest_obj.mid));
+		N = vec_sub(P, tr->closest_obj.mid);
 		proj = vec_f_mult(ft_dot(N, os), os);
 		N = vec_sub(N, proj);
 		N = normal(N);
@@ -516,8 +517,8 @@ int		RayTracer(t_params par, __constant t_obj *obj, __constant t_light *light, f
 		if (tr.closest_obj.reflect > 0)
 		{
 			R = ReflectRay(DD, N);
-			par = (t_params){P, R, par.camera_rot, par.color, par.t_min,
-				par.t_max, par.objects, par.lights, par.obj, par.light, par.vp, par.screenw, par.screenh};
+			par = (t_params){P, R, par.camera_rot, par.obj, par.light, par.vp,  par.t_min,
+				par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh};
 			deep--;
 		}
 		else
@@ -534,16 +535,13 @@ int		RayTracer(t_params par, __constant t_obj *obj, __constant t_light *light, f
 }
 
 __kernel
-void	render(__global int *img_pxl, t_params par, __constant t_obj *obj, __constant t_light *light)
+void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __constant t_light *light)
 {
-	int x;
-	int y; 
+	int x = get_global_id(0);
+	int y = get_global_id(1);
 
-	x = get_global_id(0);
-	y = get_global_id(1);
-
-	par.D = rot_matrix(par.camera_rot.x, par.camera_rot.y, par.camera_rot.z,
-		CanvasToViewport(&par, x - par.screenw / 2, par.screenh / 2 - y));
-	par.color = RayTracer(par, obj, light, 0.001f, INFINITY);
-	img_pxl[x + y * par.screenw] = par.color;
+	params.D = rot_matrix(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
+		CanvasToViewport(&params, x - params.screenw / 2, params.screenh / 2 - y));
+	params.color = RayTracer(params, obj, light, 0.001f, INFINITY);
+	img_pxl[x + y * params.screenw] = params.color;
 }

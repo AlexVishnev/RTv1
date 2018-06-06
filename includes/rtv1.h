@@ -58,6 +58,14 @@ typedef struct			s_ray
 	float				reflect;
 }						t_ray;
 
+typedef	struct			s_light
+{
+	int					type;
+	double				intensive;
+	t_ray				position;
+	t_ray				direction;
+}						t_light;
+
 typedef	struct			s_pos
 {
 	float				x;
@@ -69,20 +77,11 @@ typedef	struct			s_pos
 
 typedef	struct			s_cam
 {
-	t_ray				cam_pos;
 	float				width;
 	float				height;
-	int					angle;
+	float				dist;
 }						t_cam;
 
-typedef	struct			s_light
-{
-	t_ray				direction;
-	t_ray				position;
-	double				intensive;
-	int					type;
-	int					nbr;
-}						t_light;
 
 typedef	struct			s_color
 {
@@ -93,7 +92,7 @@ typedef	struct			s_color
 
 typedef	struct			s_obj
 {
-	t_pos				object_pos;
+	int 				type;
 	t_ray				mid;
 	t_ray				direction;
 	t_ray				color;
@@ -101,7 +100,7 @@ typedef	struct			s_obj
 	float				radius;
 	float				reflection;
 	float				angle;
-	int 				type;
+	t_pos				object_pos;
 }						t_obj;
 
 typedef	struct			s_params
@@ -120,11 +119,27 @@ typedef	struct			s_params
 	int					width;
 	int					height;
 }						t_params;
+// typedef	struct	s_params
+// {
+// 	t_ray		O;
+// 	t_ray		D;
+// 	t_ray		camera_rot;
+// 	long		obj;
+// 	long		light;
+// 	t_cam		vp;
+// 	float		t_min;
+// 	float		t_max;
+// 	int			color;
+// 	int			objects;
+// 	int			lights;
+// 	int			screenw;
+// 	int			screenh;
+// }				t_params;
 
 typedef	struct			s_privat
 {
 	cl_command_queue	queue;
-	cl_mem				img;
+	cl_mem				img_pxl;
 	cl_mem				obj;
 	cl_mem				light;
 	cl_program			prog;
@@ -137,12 +152,12 @@ typedef	struct			s_privat
 	size_t				size;
 }						t_private;
 
-// typedef	struct			s_garbage
-// {
-// 	int					h;
-// 	int					e;
-// 	int					r;
-// }						t_garbage;
+typedef	struct			s_trace
+{
+	double				closest_t;
+	t_obj				closest_obj;
+	t_vector			t;
+}						t_trace;
 
 typedef	struct			s_src
 {
@@ -155,13 +170,18 @@ typedef	struct			s_src
 	t_params			params;
 	t_color				color;
 	t_pos				pos;
+	t_trace				tr;
 	unsigned int		*img_pxl;
 	int					objects_cnt;
 	int					lights_cnt;
 	int					index;
 	int					index1;
+	char				*buffer;
+	t_ray				cam_pos;
 }						t_src;
 
+
+void					debugger(t_src *src);
 t_ray					get_position_object(char *cord, t_src *object);
 void					get_spetial_params(t_obj *obj, char *params);
 t_obj					get_object_params(char *cord, t_obj *object, t_src *src);

@@ -59,22 +59,23 @@ unsigned int	ft_u_atoi(const char *str)
 	return (rez);
 }
 
-float			ft_atof(char *str)
+#include <stdio.h>
+float			ft_atof(char *s, char c)
 {
-	float	rez;
-	float	tmp;
-	int		limit;
+	float	r;
+	float	t;
+	int		l;
 	int		i;
-	char	*dot;
+	char	*d;
 
-	limit = 0;
+	l = 0;
 	i = -1;
-	rez = ft_atoi(str);
-	if (!(dot = ft_strchr(str, '.')))
-		return rez;
-	while (str[++i] != '.' && *str)
-		limit++;
-	tmp = ft_atoi(ft_strchr(str, '.') + 1) / pow(10, ft_strlen(str) - limit - 1);
-	rez += tmp;
-	return (rez);
+	r = ft_atoi(s);
+	if (!(d = ft_strchr(s, '.')))
+		return r;
+	while (s[++i] != '.' && *s)
+		l++;
+	t = ft_atoi(ft_strchr(s, '.') + 1) / pow(10, ft_unstrlen(s, c) - l - 1);
+	r += t;
+	return (r);
 }

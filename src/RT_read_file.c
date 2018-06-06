@@ -64,8 +64,6 @@ void		get_parameters(char *str, t_src *src)
 		error_manadge(MSG_RULES, 1, str);
 }
 
-
-
 int			get_data_values(char *string, t_src *src)
 {
 	char		*tmp;
@@ -80,12 +78,10 @@ int			get_data_values(char *string, t_src *src)
 	}
 	if (ft_strcmp(tmp, "object") == 0)
 	{
-		ft_putendl(string);
-		src->params.object[src->index1] = get_object_params(&string[7], src->params.object, src);
+		src->params.object[src->index1] = get_object_params(&string[7], &src->params.object[src->index1], src);
 		printf("src->params.object[%d].type == [%d]\n",src->index1,src->params.object[src->index1].type);
 		src->index1++;
 	}
-
 	free(tmp);
 	return (0);
 }
@@ -114,7 +110,5 @@ void		read_from_file(char *av, t_src *src)
 		(*params)++;
 	}
 	free(params);
-	free(src->params.object);
-	free(src->params.light);
 	close(fd);
 }

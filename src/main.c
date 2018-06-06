@@ -31,9 +31,10 @@ void	exit_work(t_src *src)
 	SDL_DestroyWindow(src->wind);
 	IMG_Quit();
 	SDL_Quit();
-// 	free(src->light.light_p);
-//	free(src->objects);
-//	free(src->params.object);
+ 	free(src->params.light);
+	free(src->objects);
+	free(src->params.object);
+	//free(src->buffer);
 	free(src);
 	system("leaks -q RTv1");
 }
@@ -45,17 +46,17 @@ int		main(int ac, char **av)
 	if (ac != 2)
 		error_manadge(MSG, 0, NULL);
 	src = (t_src *)ft_memalloc(sizeof(t_src));
+	src->buffer = ft_memalloc(0x40000);
 	read_from_file(av[1], src);
-	// init_host(src);
-	// create_videohost(src);
-	// while (DICK)
-	// {
-	// 	if (!expose_hook(src))
-	// 		break ;
-	// 	kernel_function(src);
-	// 	SDL_UpdateWindowSurface(src->wind);
-	// }
-	printf("%f\n ",ft_atof("1.511"));
+	init_host(src);
+	create_videohost(src);
+	while (DICK)
+	{
+		if (!expose_hook(src))
+			break ;
+		kernel_function(src);
+		SDL_UpdateWindowSurface(src->wind);
+	}
 	exit_work(src);
 	return (0);
 }

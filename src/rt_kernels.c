@@ -12,54 +12,93 @@
 
 #include "rtv1.h"
 
+void		debugger(t_src *src)
+{
+	char	*msg;
+	size_t	message_len;
+
+	clGetProgramBuildInfo(src->op_cl.prog, src->op_cl.id_dev, 
+		CL_PROGRAM_BUILD_LOG, 0, NULL, &message_len);
+	msg = (char *)ft_memalloc(message_len);
+	clGetProgramBuildInfo(src->op_cl.prog, src->op_cl.id_dev, 
+		CL_PROGRAM_BUILD_LOG, message_len, msg, NULL);
+	ft_putendl(msg);
+	ft_memdel((void **)&msg);
+	free(msg);
+	error_manadge("SMOTRI V COMPUTAX", 0, NULL);
+}
+
 void		create_videohost(t_src *src)
 {
 	int		fd;
-	char	*buffer;
 	size_t	size;
-	cl_int	rd;
+	cl_int	check;
 
-	fd = open("./computing/gpu_compute.cl", O_RDONLY); // loads instruction	
-	buffer = ft_memalloc(2048 * 2048); // allocate memory for source file
-	size = read(fd, buffer, 2048 * 2048); //read source file
+	if ((fd = open("./computing/gpu_compute.cl", O_RDONLY)) <= 0) // loads instruction	
+		error_manadge("Error: cant open ./computing/gpu_compute.cl", 0, NULL);
+	if (!src->buffer)
+		error_manadge("Error: malloc in creating_videohost", 0, NULL);
+	size = read(fd, src->buffer, 0x40000); //read source file
 	close(fd);
 	src->op_cl.size = src->surf->h * src->surf->w * sizeof(int); 
-	rd = clGetPlatformIDs(1, &src->op_cl.id_plat, &src->op_cl.nbr_platforms); //creating hosts platform 
-	rd = clGetDeviceIDs(src->op_cl.id_plat, CL_DEVICE_TYPE_DEFAULT, 1, 
-		&src->op_cl.id_dev, &src->op_cl.nbr_device); // seting type of  compute unit device 
+	 //creating hosts platform 
+	if ((check = clGetPlatformIDs(1, &src->op_cl.id_plat, &src->op_cl.nbr_platforms)))
+		error_manadge("Error: OpenCL clGetPlatformIDs", 0, NULL);
+	if ((check = clGetDeviceIDs(src->op_cl.id_plat, CL_DEVICE_TYPE_DEFAULT, 1, 
+		&src->op_cl.id_dev, &src->op_cl.nbr_device))) // seting type of  compute unit device 
+			error_manadge("Error: OpenCL clGetDeviceIDs", 0, NULL);
 	src->op_cl.text = clCreateContext(NULL, 1, &src->op_cl.id_dev,
-		NULL, NULL, &rd); // manadge object kernel and programm
+		NULL, NULL, &check); // manadge object kernel and programm
+	if (check)
+		error_manadge("Error: OpenCL clCreateContext", 0, NULL);
 	src->op_cl.queue = clCreateCommandQueue(src->op_cl.text, 
-		src->op_cl.id_dev, 0 , &rd);
-	src->op_cl.img = clCreateBuffer(src->op_cl.text, CL_MEM_READ_WRITE, 
-		src->op_cl.size, NULL, &rd);
+		src->op_cl.id_dev, 0 , &check);
+	if (check)
+		error_manadge("Error: OpenCL clCreateCommandQueue", 0, NULL);
+	src->op_cl.img_pxl = clCreateBuffer(src->op_cl.text, CL_MEM_READ_WRITE, 
+		src->op_cl.size, NULL, &check);
+	if (check)
+		error_manadge("Error: Falied creating buffer {img_pxl}", 0, NULL);
 	src->op_cl.obj = clCreateBuffer(src->op_cl.text, CL_MEM_USE_HOST_PTR, 
-		src->objects_cnt * sizeof(t_params), src->params.object, &rd);
+		src->objects_cnt * sizeof(t_params), src->params.object, &check);
+	if (check)
+		error_manadge("Error: Falied creating buffer {obj}", 0, NULL);
 	src->op_cl.light = clCreateBuffer(src->op_cl.text, CL_MEM_USE_HOST_PTR, 
-		sizeof(t_params), src->params.light, &rd);
+		sizeof(t_params), src->params.light, &check);
+	if (check)
+		error_manadge("Error: Falied creating buffer {ligth}", 0, NULL);
 	src->op_cl.prog = clCreateProgramWithSource(src->op_cl.text, 1,
-		(const char **)&buffer, (const size_t *)&size, &rd);
-	src->op_cl.kernel = clCreateKernel(src->op_cl.prog, "render", &rd);
-	free(buffer);
+		(const char **)&src->buffer, (const size_t *)&size, &check);
+	if (check)
+		error_manadge("Error: cant creat a programm", 0, NULL);
+	if ((check = clBuildProgram(src->op_cl.prog, 1, &src->op_cl.id_dev, NULL, NULL, NULL)) > 0)
+		debugger(src);
+	src->op_cl.kernel = clCreateKernel(src->op_cl.prog, "render", &check);
+	if (check)
+		error_manadge("Error: kant create kernel", 0, NULL);
+	free(src->buffer);
 }
 
 void		kernel_function(t_src *src)
 {
-	cl_int		rd;
+	cl_int		check;
 
-	rd = clSetKernelArg(src->op_cl.kernel, 0, sizeof(cl_mem),
-		(void *)&src->op_cl.img);
-
-	rd = clSetKernelArg(src->op_cl.kernel, 1, sizeof(t_params),
+	check = clSetKernelArg(src->op_cl.kernel, 0, sizeof(cl_mem),
+		(void *)&src->op_cl.img_pxl);
+	check ? error_manadge("Error: OpenCL set params", 0, NULL) : 0;
+	check = clSetKernelArg(src->op_cl.kernel, 1, sizeof(t_params),
 		(void *)&src->params);
-
-	rd = clSetKernelArg(src->op_cl.kernel, 2, sizeof(cl_mem),
+	check ? error_manadge("Error: OpenCL set params", 0, NULL) : 0;
+	check = clSetKernelArg(src->op_cl.kernel, 2, sizeof(cl_mem),
 		(void *)&src->op_cl.obj);
-
-	rd = clSetKernelArg(src->op_cl.kernel, 3, sizeof(cl_mem),
+	check ? error_manadge("Error: OpenCL set params", 0, NULL) : 0;
+	check = clSetKernelArg(src->op_cl.kernel, 3, sizeof(cl_mem),
 		(void *)&src->op_cl.light);
-	rd = clEnqueueNDRangeKernel(src->op_cl.queue, src->op_cl.kernel, 2,
+	check ? error_manadge("Error: OpenCL set params", 0, NULL) : 0;
+	check = clEnqueueNDRangeKernel(src->op_cl.queue, src->op_cl.kernel, 2,
 		NULL, (size_t[3]){src->surf->w,src->surf->h, 0}, NULL, 0, NULL, NULL);
-	rd = clEnqueueReadBuffer(src->op_cl.queue, src->op_cl.img, CL_TRUE,
+	check ? error_manadge("Error: clEnqueueNDRangeKernel", 0, NULL) : 0;
+	check = clEnqueueReadBuffer(src->op_cl.queue, src->op_cl.img_pxl, CL_TRUE,
 		 0, src->op_cl.size, (int*)src->surf->pixels, 0, NULL, NULL );
+	check ? error_manadge("Error: clEnqueueReadBuffer", 0, NULL) : 0;
 }

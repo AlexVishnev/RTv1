@@ -33,9 +33,7 @@ void	init_parametrs(t_src *src)
 	src->params.t_min = 0.001f;
 	src->params.look_pos.width = 1.0f;
 	src->params.look_pos.height = 1.0f;
+	src->params.look_pos.dist = 1.0f;
 	src->params.width = src->surf->w;
 	src->params.height = src->surf->h;
-	src->params.O.x = 0.0000;
-	src->params.O.y = 2.0000;
-	src->params.O.y = -5.0000;
 }

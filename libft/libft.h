@@ -34,6 +34,8 @@ typedef struct	s_gnl
 	int			start;
 }				t_gnl;
 
+float			ft_atof(char *str, char c);
+size_t			ft_unstrlen(const char *str, int chr);
 char			*ft_strpjoin(char *a, char *b);
 char			*ft_itoa_base(int value, int base);
 char			*ft_strrev(char *str);
@@ -102,7 +104,6 @@ int				ft_isdigit(int c);
 int				ft_isprint(int c);
 int				ft_atoi_base(char *str, int base);
 
-float			ft_atof(char *str);
 size_t			ft_strlen(const char *str);
 size_t			ft_strlcat(char *dst, const char *src, size_t dstsize);
 
