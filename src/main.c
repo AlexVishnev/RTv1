@@ -34,29 +34,37 @@ void	exit_work(t_src *src)
  	free(src->params.light);
 	free(src->objects);
 	free(src->params.object);
-	//free(src->buffer);
-	free(src);
+	free(src->buffer);
+//	free(src);
 	system("leaks -q RTv1");
+}
+static		void  print(t_src *src)
+{
+	int i = 0;
+	printf("src->params.O{x =[%f] y = [%f] z = [%f]}\nsrc->params.D{x =[%f] y = [%f] z = [%f]}\n",src->params.O.x,src->params.O.y,src->params.O.z,src->params.D.x,src->params.D.y,src->params.D.z);
+	printf("src->params.camera_rot{x =[%f] y = [%f] z = [%f]}\n",src->params.camera_rot.x,src->params.camera_rot.y,src->params.camera_rot.z);
+	printf("src->object->type = [%d]\nsrc->object->mid{x = [%f] y = [%f] z = [%f]}\n",src->params.object->type,src->params.object->mid.x,src->params.object->mid.y,src->params.object->mid.z);
 }
 
 int		main(int ac, char **av)
 {
-	t_src	*src;
+	t_src	src;
 
 	if (ac != 2)
 		error_manadge(MSG, 0, NULL);
-	src = (t_src *)ft_memalloc(sizeof(t_src));
-	src->buffer = ft_memalloc(0x40000);
-	read_from_file(av[1], src);
-	init_host(src);
-	create_videohost(src);
+//	src = (t_src *)ft_memalloc(sizeof(t_src));
+	src.buffer = ft_memalloc(0x40000);
+	read_from_file(av[1], &src);
+	print(&src);
+	init_host(&src);
+	create_videohost(&src);
 	while (DICK)
 	{
-		if (!expose_hook(src))
+		if (!expose_hook(&src))
 			break ;
-		kernel_function(src);
-		SDL_UpdateWindowSurface(src->wind);
+		kernel_function(&src);
+		SDL_UpdateWindowSurface(src.wind);
 	}
-	exit_work(src);
+	exit_work(&src);
 	return (0);
 }

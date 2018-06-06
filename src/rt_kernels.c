@@ -76,7 +76,7 @@ void		create_videohost(t_src *src)
 	src->op_cl.kernel = clCreateKernel(src->op_cl.prog, "render", &check);
 	if (check)
 		error_manadge("Error: kant create kernel", 0, NULL);
-	free(src->buffer);
+	// free(src->buffer);
 }
 
 void		kernel_function(t_src *src)
