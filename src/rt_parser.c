@@ -77,7 +77,7 @@ void	get_spotlights_direction(char *cord, t_src *src, int ind)
 		cord++;
 	}
 	check_adecvate(POS_LIM, (t_pos *)&src->params.light[ind].direction, 2, cord, NULL);
-//	printf("src->params.light[%d].intensive = %f\nsrc->params.light[ind].direction.x = [%f]\nsrc->params.light[ind].direction.y = [%f]\nsrc->params.light[ind].direction.z = [%f]\n", ind, src->params.light[ind].intensive, src->params.light[ind].direction.x, src->params.light[ind].direction.y, src->params.light[ind].direction.z);
+	printf("src->params.light[%d].intensive = %f\nsrc->params.light[ind].direction.x = [%f]\nsrc->params.light[ind].direction.y = [%f]\nsrc->params.light[ind].direction.z = [%f]\n", ind, src->params.light[ind].intensive, src->params.light[ind].direction.x, src->params.light[ind].direction.y, src->params.light[ind].direction.z);
 //CHECK ME
 }
 
