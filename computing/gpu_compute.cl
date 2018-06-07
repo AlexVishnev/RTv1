@@ -91,7 +91,6 @@ typedef	struct	s_params
 t_ray	global_normal(t_ray P, t_trace *tr);
 t_ray	rot_matrix(double a, double b, double c, t_ray r);
 t_ray	ray_multipl(double a, t_ray b);
-//t_ray	vec_mult(t_ray a, t_ray b);
 t_ray	ray_summary(t_ray a, t_ray b);
 t_ray	divide_ray(t_ray a, float b);
 t_ray	ray_subs(t_ray a, t_ray b);
@@ -149,11 +148,6 @@ float	ft_raylen(t_ray ray)
 {
 	return (sqrt(ray.x * ray.x + ray.y * ray.y + ray.z * ray.z));
 }
-
-// t_ray	vec_mult(t_ray a, t_ray b)
-// {
-// 	return ((t_ray){a.x * b.x, a.y * b.y, a.z * b.z});
-// }
 
 t_ray	ray_summary(t_ray a, t_ray b)
 {
@@ -435,7 +429,7 @@ t_ray	global_normal(t_ray P, t_trace *tr)
 		N = normal(N);
 		return (N);
 	}
-	N = tr->closest_obj.direction; // PLANE
+	N = tr->closest_obj.direction;
 	return (N);
 }
 
