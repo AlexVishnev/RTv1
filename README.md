@@ -1,1 +1,8 @@
-# RTv1 SLD OpenCL
+# RTv1 
+
+requirements:
+MacOS siera || Linux
+
+SLD libary
+OpenCL framework
+
