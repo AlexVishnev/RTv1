@@ -141,10 +141,19 @@ typedef	struct			s_trace
 	t_vector			t;
 }						t_trace;
 
+typedef struct 			s_control
+{
+	int 				flag;
+	int					mouse_on;	
+	int					mouse_x;
+	int					mouse_y;
+}						t_control;
+
 typedef	struct			s_src
 {
 	SDL_Window			*wind;
 	SDL_Surface			*surf;
+	SDL_Cursor			*curs;
 	t_obj				*objects;
 	t_light				light;
 	t_cam				camera;
@@ -159,10 +168,11 @@ typedef	struct			s_src
 	int					index;
 	int					index1;
 	char				*buffer;
+	t_control 			c;
 	t_ray				cam_pos;
 }						t_src;
 
-
+SDL_Cursor				*init_system_cursor(const char *image[]);
 void					debugger(t_src *src);
 t_ray					get_position_object(char *cord, t_src *object);
 void					get_spetial_params(t_obj *obj, char *params);

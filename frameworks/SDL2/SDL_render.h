@@ -899,6 +899,7 @@ extern DECLSPEC int SDLCALL SDL_GL_BindTexture(SDL_Texture *texture, float *texw
 extern DECLSPEC int SDLCALL SDL_GL_UnbindTexture(SDL_Texture *texture);
 
 
+
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }

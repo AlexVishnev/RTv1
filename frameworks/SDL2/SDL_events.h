@@ -52,6 +52,8 @@ extern "C" {
 /**
  * \brief The types of events that can be delivered.
  */
+
+    
 typedef enum
 {
     SDL_FIRSTEVENT     = 0,     /**< Unused (do not remove) */

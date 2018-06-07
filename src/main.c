@@ -14,24 +14,79 @@
 
 int		expose_hook(t_src *src)
 {
-	SDL_Event	event_key;
+	SDL_Event	e_k;
+	SDL_Event 	event_mouse;
+	int tmp_x;
+	int tmp_y;
 
-	while (SDL_PollEvent(&event_key))
-	{
-		if ((event_key.type == SDL_QUIT) ||
-		event_key.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-			return (0);
+	if (SDL_GetMouseState(&src->c.mouse_x, &src->c.mouse_y)){
+		SDL_WarpMouseInWindow(src->wind, src->c.mouse_x, src->c.mouse_y);
+		printf("x = [%d]\ny = %d\n", src->c.mouse_x, src->c.mouse_y);
 	}
+	if (SDL_PollEvent(&e_k))
+	{
+		tmp_x = src->c.mouse_x;
+		tmp_y = src->c.mouse_y;
+		printf("%u\n", e_k.key.keysym.scancode );
+		if ((e_k.type == SDL_QUIT) ||
+		e_k.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+			return (0);
+		else if (e_k.key.keysym.scancode == SDL_SCANCODE_UP)
+			src->params.O.z += 0.1;
+		else if (e_k.key.keysym.scancode == SDL_SCANCODE_LEFT)
+			src->params.O.x -= 0.1;
+		else if (e_k.key.keysym.scancode == SDL_SCANCODE_RIGHT)
+			src->params.O.x += 0.1;
+		else if (e_k.key.keysym.scancode == SDL_SCANCODE_DOWN)
+			src->params.O.z -= 0.1;
+		else if (e_k.key.keysym.scancode == SDL_SCANCODE_KP_PLUS)
+			src->params.O.y += 0.1;
+		else if (e_k.key.keysym.scancode == SDL_SCANCODE_KP_MINUS)
+			src->params.O.y -= 0.1;
+		else if (e_k.key.keysym.scancode == SDL_SCANCODE_KP_4)
+			src->params.camera_rot.y -= 0.042;		
+		else if (e_k.key.keysym.scancode == SDL_SCANCODE_KP_6)
+			src->params.camera_rot.y += 0.042;
+		else if (e_k.key.keysym.scancode == SDL_SCANCODE_KP_8)
+			src->params.camera_rot.x -= 0.042;
+		else if (e_k.key.keysym.scancode == SDL_SCANCODE_KP_2)
+			src->params.camera_rot.x += 0.042;
+		else if (e_k.key.keysym.scancode == 55) //fix it
+		{
+			src->c.flag = src->params.object->type;
+		//	printf("src->c.flag %d\n", src->c.flag);
+		}
+		else if (e_k.key.keysym.scancode == 54)
+		{
+			src->params.object[0].color.x = 0;
+			src->params.object[0].color.y = 0;
+			src->params.object[0].color.z = 0;
 
+		}
+		if (e_k.key.keysym.scancode == 1)
+		{
+			printf("tmpx = %d\ntmp_y = %d\n",tmp_x , tmp_y);
+			if (src->c.mouse_x < tmp_x)
+				src->params.camera_rot.x -= 0.042;
+			else if (src->c.mouse_y < tmp_y)
+				src->params.camera_rot.y -= 0.042;
+			if (src->c.mouse_x > tmp_x)
+				src->params.camera_rot.x += 0.042;
+			else if (src->c.mouse_y > tmp_y)
+				src->params.camera_rot.y += 0.042;
+
+		}
+	}
 	return (1);
 }
 
 void	exit_work(t_src *src)
 {
+	SDL_FreeCursor(src->curs);
 	SDL_DestroyWindow(src->wind);
 	IMG_Quit();
 	SDL_Quit();
- 	free(src->params.light);
+	free(src->params.light);
 	free(src->objects);
 	free(src->params.object);
 	free(src->buffer);
