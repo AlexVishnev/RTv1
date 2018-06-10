@@ -78,8 +78,8 @@ int			get_data_values(char *string, t_src *src)
 	}
 	if (ft_strcmp(tmp, "object") == 0)
 	{
-		src->params.object[src->index1] = get_object_params(&string[7], &src->params.object[src->index1], src);
-		printf("src->params.object[%d].type == [%d]\n",src->index1,src->params.object[src->index1].type);
+		src->params.object[src->index1] = get_object_params(&string[7],
+			&src->params.object[src->index1], src);
 		src->index1++;
 	}
 	free(tmp);
@@ -94,15 +94,14 @@ void		read_from_file(char *av, t_src *src)
 
 	fd = open(av, O_RDONLY);
 	if (read(fd, av, 0))
-	{
-		close(fd);
 		error_manadge(MSG_PARSE, 0, NULL);
-	}
 	size = get_size(av, src);
 	params = (char **)ft_memalloc(sizeof(char *) * size + 1);
 	check_nbrs_object(av, src, size);
-	src->params.object = (t_obj *)ft_memalloc(sizeof(t_obj) * src->objects_cnt + 1);
-	src->params.light = (t_light *)ft_memalloc(sizeof(t_light) * src->lights_cnt + 1);
+	src->params.object = (t_obj *)ft_memalloc(sizeof(t_obj) *
+		src->objects_cnt + 1);
+	src->params.light = (t_light *)ft_memalloc(sizeof(t_light) *
+		src->lights_cnt + 1);
 	while (ft_getline(fd, &(*params)))
 	{
 		get_parameters(*params, src);

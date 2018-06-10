@@ -12,17 +12,16 @@
 
 #include "rtv1.h"
 
-void	error_manadge(char *str, int fl, char *src)
+void	error_manadge(char *message, int flag, char *src)
 {
-	if (fl == 1)
+	if (flag == 1)
 		free(src);
-	printf("BEFORE EXIT %s\n", src);
-	ft_putendl(str);
+	ft_putendl(message);
 	system("leaks -q RTv1");
 	exit(1);
 }
 
-int		check_adecvate(int lim, t_pos *cord, int fl, char *free, t_color *s)
+int		check_adecvate(int lim, t_pos *cord, int fl, t_color *s)
 {
 	if (cord)
 	{
@@ -30,17 +29,17 @@ int		check_adecvate(int lim, t_pos *cord, int fl, char *free, t_color *s)
 			|| cord->x > lim || cord->y > lim || cord->z > lim)
 		{
 			if (fl == 1)
-				error_manadge(MSG_CAM, 0, free);
+				error_manadge(MSG_CAM, 0, NULL);
 			if (fl == 2)
-				error_manadge(MSG_LGHT, 0, free);
+				error_manadge(MSG_LGHT, 0, NULL);
 			if (fl == 3)
-				error_manadge(MSG_OBJ, 0, free);
+				error_manadge(MSG_OBJ, 0, NULL);
 		}
 	}
 	else if (s)
 	{
 		if (s->red > lim || s->green > lim || s->blue > lim)
-			error_manadge(MSG_CLR, 0, free);
+			error_manadge(MSG_CLR, 0, NULL);
 	}
 	return (0);
 }

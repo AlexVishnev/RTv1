@@ -12,7 +12,7 @@
 
 #include "rtv1.h"
 
-static	const	char	*arrow[] = {
+static	const	char	*g_arrow[] = {
 	"    32    32        3            1",
 	"X c #f49842",
 	". c #000000",
@@ -38,21 +38,21 @@ static	const	char	*arrow[] = {
 	"         .XXXXXXXXX.                ",
 	"         .XXXXXXXXX.                ",
 	"         .XXXXXXXXX.                ",
-	"   .XXX. .XXXXXXXXX. .XXXX.         ",
-	"  .XXXXX..XXXXXXXXX..XXXXXXX.       ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXXXX.      ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXXXXX.     ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXXXXX.     ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXXXX.      ",
-	"  .XXXXXXXXXXXXXXXXXXXXXXXXX.       ",
-	"   .XXXXXXXXXXX. .XXXXXXXXX.        ",
-	"     .XXXXXXXX.   .XXXXXXX.         ",
-	"      .XXXXX.      .XXXXX.          ",
+	"   .XXX. .XXXXXXXXX. .XXX.         ",
+	"  .XXXXXXXXXXXXXXXXXXXXXXX.       ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.      ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.     ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.     ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.      ",
+	"  .XXXXXXXXXXXXXXXXXXXXXXX.       ",
+	"   .XXXXXXXXXXXXXXXXXXXXX.        ",
+	"     .XXXXXXXX..XXXXXXXX.         ",
+	"      .XXXXXXX..XXXXXXX.          ",
 	"                                    ",
 	"0,0"
 };
 
-void	init_host(t_src *src)
+void		init_host(t_src *src)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		error_manadge((char *)SDL_GetError(), 0, NULL);
@@ -65,12 +65,11 @@ void	init_host(t_src *src)
 					SDL_WINDOW_ALLOW_HIGHDPI);
 	src->surf = SDL_GetWindowSurface(src->wind);
 	src->img_pxl = src->surf->pixels;
-	src->curs = init_system_cursor(arrow);
+	src->curs = init_system_cursor(g_arrow, src);
 	SDL_SetCursor(src->curs);
-
 }
 
-void	init_parametrs(t_src *src)
+void		init_parametrs(t_src *src)
 {
 	src->params.t_max = INFINITY;
 	src->params.t_min = 0.001f;
@@ -81,48 +80,48 @@ void	init_parametrs(t_src *src)
 	src->params.height = src->surf->h;
 	src->params.lights = src->lights_cnt;
 	src->params.objects = src->objects_cnt;
+	src->buffer = ft_memalloc(0x40000);
+	src->c.row = 0;
+	src->c.i = -1;
 }
 
-
-SDL_Cursor	*init_system_cursor(const char *image[])
+void		wr_data(Uint8 data[], Uint8 mask[], const char *im[], t_src *s)
 {
-	int		i;
-	int		row;
-	int		col;
-	Uint8	data[4*32];
-	Uint8	mask[4*32];
-	int		hot_x;
-	int		hot_y;
-
-	i = -1;
-	for (row=0; row<32; ++row) 
+	if (im[s->c.row + 4][s->c.col] == 'X')
 	{
-		for (col=0; col<32; ++col)
+		s->c.data[s->c.i] |= 0x01;
+		s->c.mask[s->c.i] |= 0x01;
+	}
+	if (im[s->c.row + 4][s->c.col] == '.')
+		s->c.mask[s->c.i] |= 0x01;
+	if (im[s->c.row + 4][s->c.col] == ' ')
+		return ;
+}
+
+SDL_Cursor	*init_system_cursor(const char *image[], t_src *src)
+{
+	src->c.i = -1;
+	while (src->c.row < 32)
+	{
+		src->c.col = 0;
+		while (src->c.col < 32)
 		{
-			if (col % 8) 
+			if (src->c.col % 8)
 			{
-				data[i] <<= 1;
-				mask[i] <<= 1;
+				src->c.data[src->c.i] <<= 1;
+				src->c.mask[src->c.i] <<= 1;
 			}
 			else
 			{
-				++i;
-				data[i] = mask[i] = 0;
+				++src->c.i;
+				src->c.data[src->c.i] = 0;
+				src->c.mask[src->c.i] = 0;
 			}
-	switch (image[4+row][col])
-	{
-		case 'X':
-			data[i] |= 0x01;
-			mask[i] |= 0x01;
-			break;
-		case '.':
-			mask[i] |= 0x01;
-			break;
-		case ' ':
-			break;
+			wr_data(src->c.data, src->c.mask, image, src);
+			++src->c.col;
 		}
+		++src->c.row;
 	}
-	}
-	sscanf(image[4+row], "%d,%d", &hot_x, &hot_y);
-	return SDL_CreateCursor(data, mask, 32, 32, hot_x, hot_y);
+	return (SDL_CreateCursor(src->c.data, src->c.mask, 32, 32,
+		src->c.hot_x, src->c.hot_y));
 }

@@ -25,13 +25,11 @@ void	get_camera_direction(char *cord, t_src *src)
 			src->cam_pos.z = ft_atof(++cord, '}');
 		cord++;
 	}
-	check_adecvate(POS_LIM, (t_pos *)&src->cam_pos, 1, 
-		cord, NULL);
+	check_adecvate(POS_LIM, (t_pos *)&src->cam_pos, 1, NULL);
 	src->params.D = (t_ray){(src->cam_pos.x * M_PI) / 180,
 		(src->cam_pos.y * M_PI) / 180,
 		(src->cam_pos.z * M_PI) / 180, 0, 0};
 	src->cam_pos = (t_ray){0, 0, 0, 0, 0};
-	//CHECK ME
 }
 
 void	get_camera_position(char *cord, t_src *src)
@@ -52,13 +50,11 @@ void	get_camera_position(char *cord, t_src *src)
 			src->cam_pos.z = ft_atof(++cord, '}');
 		cord++;
 	}
-	src->params.O = (t_ray){src->cam_pos.x,	
-		src->cam_pos.y, 
+	src->params.O = (t_ray){src->cam_pos.x,
+		src->cam_pos.y,
 		src->cam_pos.z, 0, 0};
-	check_adecvate(POS_LIM, (t_pos *)&src->cam_pos, 1, cord, NULL);
-//CHECK ME
+	check_adecvate(POS_LIM, (t_pos *)&src->cam_pos, 1, NULL);
 }
-
 
 void	get_spotlights_direction(char *cord, t_src *src, int ind)
 {
@@ -76,17 +72,15 @@ void	get_spotlights_direction(char *cord, t_src *src, int ind)
 			src->params.light[ind].intensive = ft_atof(++cord, ')');
 		cord++;
 	}
-	check_adecvate(POS_LIM, (t_pos *)&src->params.light[ind].direction, 2, cord, NULL);
-	printf("src->params.light[%d].intensive = %f\nsrc->params.light[ind].direction.x = [%f]\nsrc->params.light[ind].direction.y = [%f]\nsrc->params.light[ind].direction.z = [%f]\n", ind, src->params.light[ind].intensive, src->params.light[ind].direction.x, src->params.light[ind].direction.y, src->params.light[ind].direction.z);
-//CHECK ME
+	check_adecvate(POS_LIM, (t_pos *)&src->params.light[ind].direction,
+		2, NULL);
 }
 
 void	get_spotlights_params(char *cord, t_src *src, int ind)
 {
 	get_spotlights_direction(&cord[ft_strlen(cord) / 2], src, ind);
-//	printf("%s\n", cord);
 	while (*cord != '}')
-	{	
+	{
 		if (*cord == '(' && *(cord + 3) == '{')
 			src->params.light[ind].type = ft_atoi(++cord);
 		else if (*cord == '{')
@@ -97,15 +91,14 @@ void	get_spotlights_params(char *cord, t_src *src, int ind)
 			src->params.light[ind].position.z = ft_atof(++cord, ',');
 		cord++;
 	}
-	check_adecvate(POS_LIM, (t_pos *)&src->params.light[ind].position, 2, cord, NULL);
-//CHECK ME
-//	printf("src->params.light[%d].type = %d\nsrc->params.light[ind].position.x = [%f]\nsrc->params.light[ind].position.y = [%f]\nsrc->params.light[ind].position.z = [%f]\n", ind, src->params.light[ind].type, src->params.light[ind].position.x, src->params.light[ind].position.y, src->params.light[ind].position.z);
+	check_adecvate(POS_LIM, (t_pos *)&src->params.light[ind].position, 2, NULL);
 }
 
 t_ray	get_position_object(char *cord, t_src *src)
 {
 	t_ray		ray;
-	src->pos = (t_pos){0,0,0};
+
+	src->pos = (t_pos){0, 0, 0};
 	while (*cord != '}' && *cord)
 	{
 		if (*cord == '{' && src->pos.x == 0)
@@ -116,10 +109,9 @@ t_ray	get_position_object(char *cord, t_src *src)
 			src->pos.z = ft_atof(++cord, ',');
 		cord++;
 	}
-	check_adecvate(100, &src->pos, 0, cord, NULL);
-	ray = (t_ray){src->pos.x, src->pos.y, src->pos.z, 0 , 0};
+	check_adecvate(100, &src->pos, 0, NULL);
+	ray = (t_ray){src->pos.x, src->pos.y, src->pos.z, 0, 0};
 	return (ray);
-	//CHECK ME
 }
 
 t_color	get_color_object(char *col)
@@ -132,21 +124,19 @@ t_color	get_color_object(char *col)
 	while (*col != '}' && *col)
 	{
 		if (*col == '{')
-			color.red =	ft_u_atoi(++col);
+			color.red = ft_u_atoi(++col);
 		if (*col == ',' && color.green == -255)
 			color.green = ft_u_atoi(++col);
 		if (*col == ',' && color.blue == -255)
 			color.blue = ft_u_atoi(++col);
 		col++;
 	}
-	check_adecvate(255, NULL, 1, col, &color);
+	check_adecvate(255, NULL, 1, &color);
 	return (color);
-	//CHECK ME
 }
 
 void	get_spetial_params(t_obj *obj, char *params)
 {
-//	printf("get_spetial_params == %s\n", params );
 	while (*params != ']' && *params)
 	{
 		if (*params == '(' && obj->radius == 0)
@@ -159,37 +149,33 @@ void	get_spetial_params(t_obj *obj, char *params)
 			obj->reflection = ft_atof(++params, ')');
 		params++;
 	}
-//	printf("obj->radius = [%f]\nobj->specular =[%f]\nobj->angle =[%f]\nobj->reflection =[%f]\n", obj->radius,obj->specular,obj->angle,obj->reflection);
 }
 
-t_obj	get_object_params(char *params, t_obj *obj, t_src *src)
+t_obj	get_object_params(char *par, t_obj *obj, t_src *src)
 {
-	while (*params != '(' && *params)
-		params++;
-	obj->type = ft_atoi(++params);
+	while (*par != '(' && *par)
+		par++;
+	obj->type = ft_atoi(++par);
 	if (obj->type > 4 || obj->type < 1)
-		error_manadge("Error: wrong object type", 0, params);
-	while (*params && *params != '(')
+		error_manadge("Error: wrong object type", 0, par);
+	while (*par && *par != '(')
 	{
-		if (*params == ')' && *(params + 1) == '{')
+		if (*par == ')' && *(par + 1) == '{')
 		{
-			src->color = get_color_object(params);
-			params += 6;
+			src->color = get_color_object(par);
+			par += 6;
 		}
-		else if (*params == '{' && *(params + ft_unstrlen(&(*params), '}') + 1) != '(') 
+		else if (*par == '{' && *(par + ft_unstrlen(&(*par), '}') + 1) != '(')
 		{
-			obj->mid = get_position_object(params, src);
-			params += ft_unstrlen(&(*params), '}');
+			obj->mid = get_position_object(par, src);
+			par += ft_unstrlen(&(*par), '}');
 		}
-		else if (*params == '{' && *(params + ft_unstrlen(&(*params), '}') + 1) == '(' )
-			obj->direction = get_position_object(params, src);
-		params++;
+		else if (*par == '{' && *(par + ft_unstrlen(&(*par), '}') + 1) == '(')
+			obj->direction = get_position_object(par, src);
+		par++;
 	}
-	get_spetial_params(obj, params);
-	obj->color = (t_ray){src->color.red,src->color.blue, src->color.green, 0 , 0 };
-//	printf("obj->type = %d\n", obj->type );
-//	printf("obj->direction.x = [%f]\nobj->direction.y = [%f]\nobj->direction.z = [%f]\n", obj->direction.x, obj->direction.y, obj->direction.z);
-//	printf("red [%u]\ngreen [%u]\nblue [%u]\n", src->color.red, src->color.green, src->color.blue);
-//	printf("red [%f]\ngreen [%f]\nblue [%f]\n", obj->color.x, obj->color.y, obj->color.z);
+	get_spetial_params(obj, par);
+	obj->color = (t_ray){src->color.red, src->color.blue,
+		src->color.green, 0, 0};
 	return (*obj);
 }

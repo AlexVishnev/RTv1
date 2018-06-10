@@ -6,7 +6,7 @@
 #    By: avishnev <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/14 12:41:56 by avishnev          #+#    #+#              #
-#    Updated: 2018/04/18 13:26:39 by avishnev         ###   ########.fr        #
+#    Updated: 2018/06/10 15:38:51 by avishnev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,6 +48,8 @@ $(LIBA):
 	@make $(MK_LIB) $(LIB_D_FT)
 $(OBJ): obj/%.o: src/%.c $(HED)
 	@$(CC) -o $@ $(HEADER) $(INC) -c $<
+norm:
+	norminette src/*.c
 clean:
 	@rm -f $(OBJ)
 	@make $(MK_LIB) $(LIB_D_FT) clean

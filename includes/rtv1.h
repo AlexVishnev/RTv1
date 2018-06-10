@@ -143,10 +143,18 @@ typedef	struct			s_trace
 
 typedef struct 			s_control
 {
+	SDL_Event			e_k;
 	int 				flag;
 	int					mouse_on;	
 	int					mouse_x;
 	int					mouse_y;
+	int					row;
+	int					col;
+	Uint8				data[4*32];
+	Uint8				mask[4*32];
+	int					hot_x;
+	int					hot_y;
+	int					i;
 }						t_control;
 
 typedef	struct			s_src
@@ -172,7 +180,9 @@ typedef	struct			s_src
 	t_ray				cam_pos;
 }						t_src;
 
-SDL_Cursor				*init_system_cursor(const char *image[]);
+
+void					wr_data(Uint8 d[], Uint8 m[], const char *z[], t_src *s);
+SDL_Cursor				*init_system_cursor(const char *image[], t_src *src);
 void					debugger(t_src *src);
 t_ray					get_position_object(char *cord, t_src *object);
 void					get_spetial_params(t_obj *obj, char *params);
@@ -198,7 +208,7 @@ void					validate_data(char *source, t_src *src);
 int						get_data_values(char *data, t_src *src);
 void					get_camera_position(char *cord, t_src *src);
 void					get_spotlights_params(char *params, t_src *src, int index);
-int						check_adecvate(int l, t_pos *p, int fl, char *f, t_color *s);
+int						check_adecvate(int l, t_pos *p, int fl, t_color *s);
 int						kostyl(char *s, int chr, int index);
 t_color					get_color_object(char *col);
 #endif

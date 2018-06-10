@@ -17,7 +17,7 @@ void		check_nbrs_object(char *av, t_src *src, int size)
 	int		fd;
 	int		i;
 	char	**params;
-	
+
 	i = 0;
 	fd = open(av, O_RDONLY);
 	if (read(fd, av, 0))
@@ -30,7 +30,7 @@ void		check_nbrs_object(char *av, t_src *src, int size)
 	params = (char **)ft_memalloc(sizeof(char*) * size + 1);
 	while (ft_getline(fd, &(params[i])))
 	{
-		cnt_objects(params[i], src);		
+		cnt_objects(params[i], src);
 		free(params[i]);
 		i++;
 	}
@@ -63,11 +63,12 @@ int			cnt_objects(char *str, t_src *src)
 	int		c;
 	char	*lox;
 
+	c = -2;
 	if (str[0] == '#' || str[0] == '\0' || str[0] == ' '
 		|| str[0] == '\t' || str[0] == '\b')
-		return c;
+		return (c);
 	c = 0;
-	lox = ft_strsub(str, 2 , 6);
+	lox = ft_strsub(str, 2, 6);
 	if (ft_strcmp(lox, "object") == 0)
 	{
 		src->objects_cnt++;
@@ -81,5 +82,5 @@ int			cnt_objects(char *str, t_src *src)
 		return (1);
 	}
 	free(lox);
-	return (-2); 
+	return (-2);
 }

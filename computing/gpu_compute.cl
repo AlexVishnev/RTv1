@@ -19,7 +19,7 @@
 # define PLANE 2
 # define CYLINDER 3
 # define CONE 4
-# define DEEP 1
+# define DEEP 4
 
 typedef struct 			s_vector
 {
@@ -48,7 +48,7 @@ typedef	struct			s_obj
 {
 	int					type;
 	t_ray				mid;
-	t_ray				direction;
+	t_ray				dimention;
 	t_ray				color;
 	float				specular;
 	float				radius;
@@ -65,8 +65,8 @@ typedef struct			s_cam
 
 typedef	struct	s_trace
 {
-	double			closest_inters;
-	t_obj			closest_obj;
+	double			closest_intersect;
+	t_obj			closest_object;
 	t_vector		t;
 }				t_trace;
 
@@ -103,7 +103,6 @@ t_vector	IntersectRayCone(t_ray P, t_ray V, __constant t_obj *obj);
 t_vector	IntersectRaySphere(t_ray O, t_ray D, __constant t_obj *obj);
 t_vector	IntersectRayPlane(t_ray O, t_ray D, __constant t_obj *obj);
 float	ft_raylen(t_ray struc);
-float	conv_degr_rad(float degree);
 float	itersect_dot(t_ray a, t_ray b);
 int		rgb_to_int(int red, int green, int blue);
 double	GenerateLigth(t_params *par, __constant t_obj *obj, __constant t_light *light, t_ray P, t_ray N, t_ray V, float specular);
@@ -124,24 +123,11 @@ int		rgb_to_int(int r, int g, int b)
 
 t_ray	rot_matrix(double a, double b, double c, t_ray r)
 {
-	double		mat[3][3];
-	t_ray		ray;
-
-	
-	mat[0][0] = cos(b) * cos(c);
-	mat[1][0] = cos(c) * sin(a) * sin(b) - cos(a) * sin(c);
-	mat[2][0] = cos(a) * cos(c) * sin(b) + sin(a) * sin(c);
-	mat[0][1] = cos(b) * sin(c);
-	mat[1][1] = cos(a) * cos(c) + sin(a) * sin(b) * sin(c);
-	mat[2][1] = -cos(c) * sin(a) + cos(a) * sin(b) * sin(c);
-	mat[0][2] = -sin(b);
-	mat[1][2] = cos(b) * sin(a);
-	mat[2][2] = cos(a) * cos(b);
-	ray.x = (cos(b) * cos(c) * r.x) + (cos(c) * sin(a) * sin(b)
-	 - cos(a) * sin(c) * r.y) + (cos(a) * cos(c) * sin(b) + sin(a) * sin(c) * r.z);
-	ray.y = (cos(b) * sin(c) * r.x) + (mat[1][1] * r.y) + (mat[2][1] * r.z);
-	ray.z = (mat[0][2] * r.x) + (mat[1][2] * r.y) + (mat[2][2] * r.z);
-	return (ray);
+	return ((t_ray){(cos(b) * cos(c) * r.x) + (cos(c) * sin(a) * sin(b)
+	 - cos(a) * sin(c) * r.y) + (cos(a) * cos(c) * sin(b) + sin(a) * sin(c) * r.z), 
+	(cos(b) * sin(c) * r.x) + ((cos(a) * cos(c) + sin(a) * sin(b) * sin(c)) * r.y)
+	 + ((-cos(c) * sin(a) + cos(a) * sin(b) * sin(c)) * r.z),(-sin(b) * r.x) +
+	  ((cos(b) * sin(a)) * r.y) + ((cos(a) * cos(b)) * r.z) });
 }
 
 float	ft_raylen(t_ray ray)
@@ -173,12 +159,7 @@ t_ray	normal(t_ray a)
 
 t_ray	CanvasToViewport(t_params *par, float x, float y)
 {
-	return ((t_ray){x * par->vp.w / par->screenw, y * par->vp.h / par->screenh, par->vp.dist});
-}
-
-float	conv_degr_rad(float degree)
-{
-	return ((degree * M_PI) / 180);
+	return ((t_ray){x * par->vp.w / par->screenw, y * par->vp.h / par->screenh, par->vp.dist * 2});
 }
 
 float	itersect_dot(t_ray a, t_ray b)
@@ -188,7 +169,7 @@ float	itersect_dot(t_ray a, t_ray b)
 
 t_ray	ReflectRay(t_ray R, t_ray N)
 {
-    return (ray_subs(ray_multipl(itersect_dot(N, R), ray_multipl(2.0, N)), R));
+    return (ray_subs(ray_multipl(itersect_dot(N, R), ray_multipl(5.0, N)), R));
 }
 
 double		GenerateLigth(t_params *par, __constant t_obj *obj, __constant t_light *light,
@@ -221,22 +202,14 @@ double		GenerateLigth(t_params *par, __constant t_obj *obj, __constant t_light *
 				L = light[j].direction;
 				max = INFINITY;
 			}
-
-			// Проверка нормали для света
 			if (itersect_dot(V, N) < 0)
 				continue ;
-			
-			// Проверка тени
 			ClosestIntersection(&shadow, par, obj, P, L, 0.001, max);
-			if (shadow.closest_inters != INFINITY)
+			if (shadow.closest_intersect != INFINITY)
 				continue ;
-
-			// Диффузность
 			nl = itersect_dot(N, L);
 			if (nl > 0)
 				i += light[j].intensity * nl / (ft_raylen(N) * ft_raylen(L));
-
-			// Зеркальность
 			if (spec >= 0)
 			{
 //				R = ray_subs(ray_multipl((itersect_dot(N, L) * 2), N), L);
@@ -273,7 +246,7 @@ double		get_lim_solution(double t, t_ray P, t_ray V, t_ray VA, __constant t_obj 
 		return (INFINITY);
 	Q = ray_summary(P, ray_multipl(t, V));
 	k[0] = itersect_dot(VA, ray_subs(Q, obj->mid));
-	k[1] = itersect_dot(VA, ray_subs(Q, obj->direction));
+	k[1] = itersect_dot(VA, ray_subs(Q, obj->dimention));
 	if (k[0] < 0.0 && k[1] > 0.0)
 		return (t);
 	return (INFINITY);
@@ -292,9 +265,9 @@ t_vector	IntersectRayCone(t_ray P, t_ray V, __constant t_obj *obj)
 	float	cospw;
 	float	sinpw;
 
-	angle = conv_degr_rad(obj->angle);
+	angle = (obj->angle * M_PI) / 180;
 	PA = obj->mid;
-	VA = normal(ray_subs(PA, obj->direction));
+	VA = normal(ray_subs(PA, obj->dimention));
 	deltaP = ray_subs(P, PA);
 
 	A = ray_subs(V, ray_multipl(itersect_dot(V, VA), VA));
@@ -322,7 +295,7 @@ t_vector	IntersectRayCylinder(t_ray P, t_ray V, __constant t_obj *obj)
 	float	k[3];
 
 	PA = obj->mid;
-	VA = normal(ray_subs(PA, obj->direction));
+	VA = normal(ray_subs(PA, obj->dimention));
 	deltaP = ray_subs(P, PA);
 
 	A = ray_subs(V, ray_multipl(itersect_dot(V, VA), VA));
@@ -363,7 +336,7 @@ t_vector	IntersectRayPlane(t_ray O, t_ray D, __constant t_obj *obj)
 	float	k[2];
 
 	C = obj->mid;
-	N = obj->direction;
+	N = obj->dimention;
 	X = ray_subs(O, C);
 	k[0] = itersect_dot(D, N);
 	k[1] = itersect_dot(X, N);
@@ -380,9 +353,9 @@ int		ClosestIntersection(t_trace *tr, t_params *par, __constant t_obj *obj,
 								t_ray O, t_ray D, float t_min, float t_max)
 {
 	int			i;
-	t_vector		t;
+	t_vector	t;
 
-	tr->closest_inters = INFINITY;
+	tr->closest_intersect = INFINITY;
 	i = -1;
 	while (++i < par->objects)
 	{
@@ -394,43 +367,43 @@ int		ClosestIntersection(t_trace *tr, t_params *par, __constant t_obj *obj,
 			t = IntersectRayCylinder(O, D, &obj[i]);
 		else if (obj[i].type == CONE)
 			t = IntersectRayCone(O, D, &obj[i]);
-		if (t.x > t_min && t.x < t_max && t.x < tr->closest_inters)
+		if (t.x > t_min && t.x < t_max && t.x < tr->closest_intersect)
 		{
-			tr->closest_inters = t.x;
-			tr->closest_obj = obj[i];
+			tr->closest_intersect = t.x;
+			tr->closest_object = obj[i];
 		}
-		if (t.y > t_min && t.y < t_max && t.y < tr->closest_inters)
+		if (t.y > t_min && t.y < t_max && t.y < tr->closest_intersect)
 		{
-			tr->closest_inters = t.y;
-			tr->closest_obj = obj[i];
+			tr->closest_intersect = t.y;
+			tr->closest_object = obj[i];
 		}
 	}
-	return (tr->closest_inters);
+	return (tr->closest_intersect);
 }
 
 t_ray	global_normal(t_ray P, t_trace *tr)
 {
-	t_ray	N;
+	t_ray	Normal;
 	t_ray	os;
 	t_ray	proj;
 
-	if (tr->closest_obj.type == SPHERE)
+	if (tr->closest_object.type == SPHERE)
 	{
-		N = ray_subs(P, tr->closest_obj.mid);
-		N = normal(N);
-		return (N);
+		Normal = ray_subs(P, tr->closest_object.mid);
+		Normal = normal(Normal);
+		return (Normal);
 	}
-	if (tr->closest_obj.type == CYLINDER || tr->closest_obj.type == CONE)
+	if (tr->closest_object.type == CYLINDER || tr->closest_object.type == CONE)
 	{
-		os = normal(ray_subs(tr->closest_obj.direction, tr->closest_obj.mid));
-		N = ray_subs(P, tr->closest_obj.mid);
-		proj = ray_multipl(itersect_dot(N, os), os);
-		N = ray_subs(N, proj);
-		N = normal(N);
-		return (N);
+		os = normal(ray_subs(tr->closest_object.dimention, tr->closest_object.mid));
+		Normal = ray_subs(P, tr->closest_object.mid);
+		proj = ray_multipl(itersect_dot(Normal, os), os);
+		Normal = ray_subs(Normal, proj);
+		Normal = normal(Normal);
+		return (Normal);
 	}
-	N = tr->closest_obj.direction;
-	return (N);
+	Normal = tr->closest_object.dimention;
+	return (Normal);
 }
 
 int		RayTracer(t_params par, __constant t_obj *obj, __constant t_light *light, float t_min, float t_max)
@@ -446,27 +419,27 @@ int		RayTracer(t_params par, __constant t_obj *obj, __constant t_light *light, f
 	deep = DEEP;
 	while (deep >= 0)
 	{
-		local_color[deep] = (t_ray){0,0,0,0};
+		local_color[deep] = (t_ray){0,0,0};
 		deep--;
 	}
 	deep = DEEP;
 	while (deep >= 0)
 	{
 		ClosestIntersection(&tr, &par, obj, par.O, par.D, t_min, t_max);
-		if (tr.closest_inters == INFINITY)
+		if (tr.closest_intersect == INFINITY)
 		{
-			local_color[deep] = (t_ray){0,0,0};
+			local_color[deep] = (t_ray){0, 0 ,0};
 			break ;
 		}
-		P = ray_summary(par.O, ray_multipl(tr.closest_inters, par.D)); //compute intersection
+		P = ray_summary(par.O, ray_multipl(tr.closest_intersect, par.D)); //compute intersection
 		N = global_normal(P, &tr);
 		t_ray DD = (t_ray){-par.D.x, -par.D.y, -par.D.z, 0};
-		intensity = GenerateLigth(&par, obj, light, P, N, DD, tr.closest_obj.specular); // -D
-		local_color[deep] = ray_multipl(intensity, tr.closest_obj.color);
+		intensity = GenerateLigth(&par, obj, light, P, N, DD, tr.closest_object.specular);
+		local_color[deep] = ray_multipl(intensity, tr.closest_object.color);
 
 
-		local_color[deep].reflect = tr.closest_obj.reflect;
-		if (tr.closest_obj.reflect > 0)
+		local_color[deep].reflect = tr.closest_object.reflect;
+		if (tr.closest_object.reflect > 0)
 		{
 			R = ReflectRay(DD, N);
 			par = (t_params){P, R, par.camera_rot, par.obj, par.light, par.vp,  par.t_min,
