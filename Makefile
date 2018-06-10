@@ -42,12 +42,12 @@ all: $(NAME)
 
 $(NAME): $(LIBA) $(OBJ) $(HED)
 	@$(CC) -o $(NAME) -O3 $(OBJ) $(CGFLAGS) $(FRAMES) $(LIBA)
-	@echo "USAGE: \033[0;92m./$(NAME)/scene/\033[0m"
+	@echo "USAGE: \033[0;92m\033[3m ./$(NAME) scenes/scene.\033[0m"
 $(LIBA):
 	@make $(MK_LIB) $(LIB_DIR)
 $(OBJ): obj/%.o: src/%.c $(HED)
 	@$(CC) -o $@ $(HEADER) $(INC) -c $<
-	@echo "\033[37mTrying to compile \033[4;33m$(notdir $<)\033[0m file \033[0m\033[37m\n\033[0;92m    <<<<-Success->>>> \033[0m"
+	@echo "\033[37mTrying to compile \033[4;33m\033[41m$(notdir $<)\033[0m file \033[0m\033[37m\n\033[0;92m \033[3m   <<<<-Success->>>> \033[0m"
 norm:
 	@norminette src/*.c
 	@norminette includes/*.h
