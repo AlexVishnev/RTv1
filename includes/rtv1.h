@@ -17,19 +17,20 @@
 # include <fcntl.h>
 # include <SDL2/SDL.h>
 # include <math.h>
-#  define WIN_WD 1280
-#  define WIN_HG 1280
+# define WIN_WD 1280
+# define WIN_HG 1280
+
 # ifdef __APPLE__
 #  include <OpenCL/opencl.h>
 #  include "SDL_image.h"
 #  include "SDL_mixer.h"
 #  include "SDL_ttf.h"
 # elif __linux__
- #  include <SDL2/SDL_image.h>
- #  include <SDL2/SDL_mixer.h>
- #  include <SDL2/SDL_ttf.h>
- #  include <CL/cl.h>
- # endif
+#  include <SDL2/SDL_image.h>
+#  include <SDL2/SDL_mixer.h>
+#  include <SDL2/SDL_ttf.h>
+#  include <CL/cl.h>
+# endif
 
 # define MSG "Usage: scenes/scene.1"
 # define MSG_CLR "Error: can't build color"
@@ -43,82 +44,82 @@
 # define DICK 42
 # define POS_LIM 100
 
-typedef struct 			s_vector
+typedef struct		s_vector
 {
-	float				x;
-	float				y;
-}						t_vector;
+	float			x;
+	float			y;
+}					t_vector;
 
-typedef	struct			s_pos
+typedef	struct		s_pos
 {
-	float				x;
-	float				y;
-	float				z;
-	float				w;
-	float				r;
-}						t_pos;
+	float			x;
+	float			y;
+	float			z;
+	float			w;
+	float			r;
+}					t_pos;
 
-typedef struct			s_ray
+typedef struct		s_ray
 {
-	float				x;
-	float				y;
-	float				z;
-	float				w;
-	float				reflect;
-}						t_ray;
+	float			x;
+	float			y;
+	float			z;
+	float			w;
+	float			reflect;
+}					t_ray;
 
-typedef	struct			s_light
+typedef	struct		s_light
 {
-	int					type;
-	double				intensive;
-	t_ray				position;
-	t_ray				direction;
-}						t_light;
+	int				type;
+	double			intensive;
+	t_ray			position;
+	t_ray			direction;
+}					t_light;
 
-typedef	struct			s_cam
+typedef	struct		s_cam
 {
-	float				width;
-	float				height;
-	float				dist;
-}						t_cam;
+	float			width;
+	float			height;
+	float			dist;
+}					t_cam;
 
-typedef	struct			s_color
+typedef	struct		s_color
 {
-	unsigned int		red;
-	unsigned int		green;
-	unsigned int		blue;
-}						t_color;
+	unsigned int	red;
+	unsigned int	green;
+	unsigned int	blue;
+}					t_color;
 
-typedef	struct			s_obj
+typedef	struct		s_obj
 {
-	int 				type;
-	t_ray				mid;
-	t_ray				direction;
-	t_ray				color;
-	float				specular;
-	float				radius;
-	float				reflection;
-	float				angle;
-}						t_obj;
+	int				type;
+	t_ray			mid;
+	t_ray			direction;
+	t_ray			color;
+	float			specular;
+	float			radius;
+	float			reflection;
+	float			angle;
+}					t_obj;
 
-typedef	struct			s_params
+typedef	struct		s_params
 {
-	t_ray				O;
-	t_ray				D;
-	t_ray				camera_rot;
-	t_obj				*object;
-	t_light				*light;
-	t_cam				look_pos;
-	float				t_min;
-	float				t_max;
-	int					color;
-	int					objects;
-	int					lights;
-	int					width;
-	int					height;
-}						t_params;
+	t_ray			o;
+	t_ray			d;
+	t_ray			camera_rot;
+	t_obj			*object;
+	t_light			*light;
+	t_cam			look_pos;
+	float			t_min;
+	float			t_max;
+	int				color;
+	int				objects;
+	int				lights;
+	int				width;
+	int				height;
+}					t_params;
 
-typedef	struct			s_privat
+typedef	struct		s_privat
 {
 	cl_command_queue	queue;
 	cl_mem				img_pxl;
@@ -132,83 +133,83 @@ typedef	struct			s_privat
 	cl_uint				nbr_platforms;
 	cl_uint				nbr_device;
 	size_t				size;
-}						t_private;
+}					t_private;
 
-typedef	struct			s_trace
+typedef	struct		s_trace
 {
-	double				closest_t;
-	t_obj				closest_obj;
-	t_vector			t;
-}						t_trace;
+	double			closest_t;
+	t_obj			closest_obj;
+	t_vector		t;
+}					t_trace;
 
-typedef struct 			s_control
+typedef struct		s_control
 {
-	SDL_Event			e_k;
-	int 				flag;
-	int					mouse_on;	
-	int					mouse_x;
-	int					mouse_y;
-	int					row;
-	int					col;
-	Uint8				data[4*32];
-	Uint8				mask[4*32];
-	int					hot_x;
-	int					hot_y;
-	int					i;
-}						t_control;
+	SDL_Event		e_k;
+	int				flag;
+	int				mouse_on;
+	int				mouse_x;
+	int				mouse_y;
+	int				row;
+	int				col;
+	Uint8			data[4 * 32];
+	Uint8			mask[4 * 32];
+	int				hot_x;
+	int				hot_y;
+	int				i;
+}					t_control;
 
-typedef	struct			s_src
+typedef	struct		s_src
 {
-	SDL_Window			*wind;
-	SDL_Surface			*surf;
-	SDL_Cursor			*curs;
-	t_obj				*objects;
-	t_light				light;
-	t_cam				camera;
-	t_private			op_cl;
-	t_params			params;
-	t_color				color;
-	t_pos				pos;
-	t_trace				tr;
-	unsigned int		*img_pxl;
-	int					objects_cnt;
-	int					lights_cnt;
-	int					index;
-	int					index1;
-	char				*buffer;
-	t_control 			c;
-	t_ray				cam_pos;
-}						t_src;
+	SDL_Window		*wind;
+	SDL_Surface		*surf;
+	SDL_Cursor		*curs;
+	t_obj			*objects;
+	t_light			light;
+	t_cam			camera;
+	t_private		op_cl;
+	t_params		params;
+	t_color			color;
+	t_pos			pos;
+	t_trace			tr;
+	unsigned int	*img_pxl;
+	int				objects_cnt;
+	int				lights_cnt;
+	int				index;
+	int				index1;
+	char			*buffer;
+	t_control		c;
+	t_ray			cam_pos;
+}					t_src;
 
+void				wr_data(Uint8 d[], Uint8 m[], const char *z[], t_src *s);
+SDL_Cursor			*init_system_cursor(const char *image[], t_src *src);
+void				debugger(t_src *src);
+t_ray				get_position_object(char *cord, t_src *object);
+void				get_spetial_params(t_obj *obj, char *params);
+t_obj				get_object_params(char *cord, t_obj *object, t_src *src);
 
-void					wr_data(Uint8 d[], Uint8 m[], const char *z[], t_src *s);
-SDL_Cursor				*init_system_cursor(const char *image[], t_src *src);
-void					debugger(t_src *src);
-t_ray					get_position_object(char *cord, t_src *object);
-void					get_spetial_params(t_obj *obj, char *params);
-t_obj					get_object_params(char *cord, t_obj *object, t_src *src);
+void				get_spotlights_direction(char *h, t_src *e, int r);
+void				get_camera_direction(char *cord, t_src *src);
+void				kernel_function(t_src *src);
+void				create_videohost(t_src *src);
+void				init_parametrs(t_src *src);
+int					cnt_objects(char *params, t_src *src);
+void				check_nbrs_object(char *av, t_src *src, int size);
+void				read_from_file(char *data, t_src *s);
+void				error_manadge(char *str, int flag, char *src);
+int					get_size(char *av, t_src *src);
+void				get_parameters(char *str, t_src *src);
 
-void					get_spotlights_direction(char *h, t_src *e, int r);
-void					get_camera_direction(char *cord, t_src *src);
-void					kernel_function(t_src *src);
-void					create_videohost(t_src *src);
-void					init_parametrs(t_src *src);
+void				init_host(t_src *src);
+int					expose_hook(t_src *src);
+void				validate_data(char *source, t_src *src);
 
-int						cnt_objects(char *params, t_src *src);
-void					check_nbrs_object(char *av, t_src *src, int size);
-void					read_from_file(char *data, t_src *s);
-void					error_manadge(char *str, int flag, char *src);
-int						get_size(char *av, t_src *src);
-void					get_parameters(char *str, t_src *src);
+int					get_data_values(char *data, t_src *src);
+void				get_camera_position(char *cord, t_src *src);
+void				get_spotlights_params(char *params, t_src *src, int index);
+int					check_adecvate(int l, t_pos *p, int fl, t_color *s);
+int					kostyl(char *s, int chr, int index);
+t_color				get_color_object(char *col);
+void				mouse_control(t_src *src, SDL_Event e_k);
 
-void					init_host(t_src *src);
-int						expose_hook(t_src *src);
-void					validate_data(char *source, t_src *src);
-
-int						get_data_values(char *data, t_src *src);
-void					get_camera_position(char *cord, t_src *src);
-void					get_spotlights_params(char *params, t_src *src, int index);
-int						check_adecvate(int l, t_pos *p, int fl, t_color *s);
-int						kostyl(char *s, int chr, int index);
-t_color					get_color_object(char *col);
 #endif

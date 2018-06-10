@@ -12,13 +12,12 @@
 
 NAME = RTv1
 CC = gcc
-FILES = main rt_read_file rt_init rt_parser rt_errors rt_tools rt_kernels
+FILES = main rt_read_file rt_init rt_parser rt_errors rt_tools rt_kernels rt_controllers rt_parser1
 LIBA = libft/libft.a
-LIB_D_FT = libft/
+LIB_DIR = libft/
 SRC = $(addprefix scr/, $(addsuffix .c, $(FILES)))
 OBJ = $(addprefix obj/, $(addsuffix .o, $(FILES)))
 OBJ_LIST = $(addsuffix .o, $(FILES))
-FLAGS = 
 HEADER = -I./includes -I./libft/includes
 HED = ./includes/rtv1.h
 MK_LIB = --no-print-directory -j3 -C
@@ -28,34 +27,36 @@ CGFLAGS = `sdl2-config --cflags --libs` -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_
 else
 CGFLAGS = -lmlx -framework OpenGL -framework AppKit
 INC	=	-I./frameworks/SDL2.framework/Versions/A/Headers \
-				-I./frameworks/SDL2_ttf.framework/Versions/A/Headers \
-				-I./frameworks/SDL2_image.framework/Versions/A/Headers \
-				-I./frameworks/SDL2_mixer.framework/Headers \
-				-F./frameworks/
-FRWORKS	=	-F./frameworks \
-				-rpath ./frameworks \
-				-framework OpenGL -framework AppKit -framework OpenCl \
-				-framework SDL2 -framework SDL2_ttf -framework SDL2_image \
-				-framework SDL2_mixer
+		-I./frameworks/SDL2_ttf.framework/Versions/A/Headers \
+		-I./frameworks/SDL2_image.framework/Versions/A/Headers \
+		-I./frameworks/SDL2_mixer.framework/Headers \
+		-F./frameworks/
+FRAMES	=	-F./frameworks \
+			-rpath ./frameworks \
+			-framework OpenGL -framework AppKit -framework OpenCl \
+			-framework SDL2 -framework SDL2_ttf -framework SDL2_image \
+			-framework SDL2_mixer
 endif
 
 all: $(NAME)
 
 $(NAME): $(LIBA) $(OBJ) $(HED)
-	@$(CC) -o $(NAME) -O3 $(OBJ) $(CGFLAGS) $(FRWORKS) $(LIBA)
-	@echo "\033[31mS------U=====K>>>>>S}}}}}}E++++E>>>>>>>S"
+	@$(CC) -o $(NAME) -O3 $(OBJ) $(CGFLAGS) $(FRAMES) $(LIBA)
+	@echo "USAGE: \033[0;92m./$(NAME)/scene/\033[0m"
 $(LIBA):
-	@make $(MK_LIB) $(LIB_D_FT)
+	@make $(MK_LIB) $(LIB_DIR)
 $(OBJ): obj/%.o: src/%.c $(HED)
 	@$(CC) -o $@ $(HEADER) $(INC) -c $<
+	@echo "\033[37mTrying to compile \033[4;33m$(notdir $<)\033[0m file \033[0m\033[37m\n\033[0;92m    <<<<-Success->>>> \033[0m"
 norm:
-	norminette src/*.c
+	@norminette src/*.c
+	@norminette includes/*.h
 clean:
 	@rm -f $(OBJ)
-	@make $(MK_LIB) $(LIB_D_FT) clean
+	@make $(MK_LIB) $(LIB_DIR) clean
 fclean: 
-	 @rm -rf $(OBJ)
-	 @rm -f $(NAME)
-	 @make $(MK_LIB) $(LIB_D_FT) fclean
+	@rm -rf $(OBJ)
+	@rm -f $(NAME)
+	@make $(MK_LIB) $(LIB_DIR) fclean
 re: fclean all
 	
