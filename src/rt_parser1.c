@@ -38,14 +38,14 @@ t_color	get_color_object(char *col)
 
 	col = ft_strchr(col, '{');
 	color.green = -255;
-	color.blue = -255;
+	color.blue = -245;
 	while (*col != '}' && *col)
 	{
 		if (*col == '{')
 			color.red = ft_u_atoi(++col);
 		if (*col == ',' && color.green == -255)
 			color.green = ft_u_atoi(++col);
-		if (*col == ',' && color.blue == -255)
+		if (*col == ',' && color.blue == -245)
 			color.blue = ft_u_atoi(++col);
 		col++;
 	}
@@ -67,6 +67,8 @@ void	get_spetial_params(t_obj *obj, char *params)
 			obj->reflection = ft_atof(++params, ')');
 		params++;
 	}
+	if (obj->reflection > 1 || obj->reflection < 0)
+		error_manadge(REF, 0, params);
 }
 
 t_obj	get_object_params(char *par, t_obj *obj, t_src *src)
@@ -93,7 +95,7 @@ t_obj	get_object_params(char *par, t_obj *obj, t_src *src)
 		par++;
 	}
 	get_spetial_params(obj, par);
-	obj->color = (t_ray){src->color.red, src->color.blue,
-		src->color.green, 0, 0};
+	obj->color = (t_ray){src->color.red, src->color.green,
+	src->color.blue, 0, 0};
 	return (*obj);
 }

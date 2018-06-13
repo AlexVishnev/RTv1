@@ -12,6 +12,46 @@
 
 #include "rtv1.h"
 
+static	const	char	*g_arrow[] = {
+	"    32    32        3            1",
+	"X c #f49842",
+	". c #000000",
+	"  c f49842",
+	"           .X....X.                 ",
+	"          .XX....XX.                ",
+	"        .XXXX..XXXXX.               ",
+	"       .XXXXXXXXXXXXX.              ",
+	"      .XXXXXXXXXXXXXXX.             ",
+	"       .XXXXXXXXXXXXX.              ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                 ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"         .XXXXXXXXX.                ",
+	"   .XXX. .XXXXXXXXX. .XXX.         ",
+	"  .XXXXXXXXXXXXXXXXXXXXXXX.       ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.      ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.     ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.     ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.      ",
+	"  .XXXXXXXXXXXXXXXXXXXXXXX.       ",
+	"   .XXXXXXXXXXXXXXXXXXXXX.        ",
+	"     .XXXXXXXX..XXXXXXXX.         ",
+	"      .XXXXXXX..XXXXXXX.          ",
+	"                                    ",
+	"0,0"
+};
+
 void	keyboards_control(t_src *src, Uint8 scancode)
 {
 	if (scancode == SDL_SCANCODE_UP)
@@ -32,13 +72,7 @@ void	keyboards_control(t_src *src, Uint8 scancode)
 		src->params.camera_rot.y += 0.042;
 	else if (scancode == SDL_SCANCODE_KP_8)
 		src->params.camera_rot.x -= 0.042;
-	else if (scancode == SDL_SCANCODE_KP_2)
-		src->params.camera_rot.x += 0.042;
-	else if (scancode == SDL_SCANCODE_R)
-	{
-		src->params.camera_rot.y = 0;
-		src->params.camera_rot.x = 0;
-	}
+	keyboards_control1(src, scancode);
 }
 
 void	mouse_control(t_src *src, SDL_Event e_k)
@@ -55,6 +89,23 @@ void	mouse_control(t_src *src, SDL_Event e_k)
 		else if (e_k.motion.yrel > 0)
 			src->params.camera_rot.x -= 0.015;
 		break ;
+	}
+}
+
+void	keyboards_control1(t_src *src, Uint8 scancode)
+{
+	if (scancode == SDL_SCANCODE_KP_2)
+		src->params.camera_rot.x += 0.042;
+	else if (scancode == SDL_SCANCODE_R)
+	{
+		src->params.camera_rot.y = 0;
+		src->params.camera_rot.x = 0;
+		SDL_FreeCursor(src->curs);
+	}
+	else if (scancode == SDL_SCANCODE_H)
+	{
+		src->curs = init_system_cursor(g_arrow, src);
+		SDL_SetCursor(src->curs);
 	}
 }
 

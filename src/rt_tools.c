@@ -34,6 +34,8 @@ void		check_nbrs_object(char *av, t_src *src, int size)
 		free(params[i]);
 		i++;
 	}
+	if (src->objects_cnt == 0)
+		error_manadge(MSG_OBJECT, 0, av);
 	free(params);
 	close(fd);
 }

@@ -21,6 +21,7 @@ OBJ_LIST = $(addsuffix .o, $(FILES))
 HEADER = -I./includes -I./libft/includes
 HED = ./includes/rtv1.h
 MK_LIB = --no-print-directory -j3 -C
+SOURCE_FILES = scene/scene.1-10
 OS = $(shell uname)
 ifeq ($(OS), Linux)
 CGFLAGS = `sdl2-config --cflags --libs` -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_tff -lm
@@ -42,7 +43,8 @@ all: $(NAME)
 
 $(NAME): $(LIBA) $(OBJ) $(HED)
 	@$(CC) -o $(NAME) -O3 $(OBJ) $(CGFLAGS) $(FRAMES) $(LIBA)
-	@echo "USAGE: \033[0;92m\033[3m ./$(NAME) scenes/scene.\033[0m"
+	@echo "USAGE: \033[0;92m\033[3m ./$(NAME) $(SOURCE_FILES)\033[0m"
+	@echo "ATTENTION: \033[4;31m\033[42mDO NOT PRESS 'H' WHEN BINARY RUNNING\033[0m"
 $(LIBA):
 	@make $(MK_LIB) $(LIB_DIR)
 $(OBJ): obj/%.o: src/%.c $(HED)

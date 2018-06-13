@@ -12,46 +12,6 @@
 
 #include "rtv1.h"
 
-static	const	char	*g_arrow[] = {
-	"    32    32        3            1",
-	"X c #f49842",
-	". c #000000",
-	"  c f49842",
-	"           .X....X.                 ",
-	"          .XX....XX.                ",
-	"        .XXXX..XXXXX.               ",
-	"       .XXXXXXXXXXXXX.              ",
-	"      .XXXXXXXXXXXXXXX.             ",
-	"       .XXXXXXXXXXXXX.              ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                 ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                ",
-	"   .XXX. .XXXXXXXXX. .XXX.         ",
-	"  .XXXXXXXXXXXXXXXXXXXXXXX.       ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXX.      ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXX.     ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXX.     ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXX.      ",
-	"  .XXXXXXXXXXXXXXXXXXXXXXX.       ",
-	"   .XXXXXXXXXXXXXXXXXXXXX.        ",
-	"     .XXXXXXXX..XXXXXXXX.         ",
-	"      .XXXXXXX..XXXXXXX.          ",
-	"                                    ",
-	"0,0"
-};
-
 void		init_host(t_src *src)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -63,8 +23,6 @@ void		init_host(t_src *src)
 					SDL_WINDOW_ALLOW_HIGHDPI);
 	src->surf = SDL_GetWindowSurface(src->wind);
 	src->img_pxl = src->surf->pixels;
-	src->curs = init_system_cursor(g_arrow, src);
-	SDL_SetCursor(src->curs);
 }
 
 void		init_parametrs(t_src *src)
