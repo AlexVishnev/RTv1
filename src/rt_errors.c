@@ -17,7 +17,6 @@ void	error_manadge(char *message, int flag, char *src)
 	if (flag == 1)
 		free(src);
 	ft_putendl(message);
-	system("leaks -q RTv1");
 	exit(1);
 }
 
@@ -40,6 +39,23 @@ int		check_adecvate(int lim, t_pos *cord, int fl, t_color *s)
 	{
 		if (s->red > lim || s->green > lim || s->blue > lim)
 			error_manadge(MSG_CLR, 0, NULL);
+	}
+	return (0);
+}
+
+int		br_adecvat(char *s)
+{
+	int		i;
+
+	i = 0;
+	while (s[i])
+	{
+		while (s[i] == '{' || s[i] == '(' || s[i] == '[')
+			i++;
+		if ((s[i - 1] == '{' && s[i] != '}') || (s[i - 1] == '(' && s[i] != ')')
+			|| (s[i - 1] == '[' && s[i] != ']'))
+			return (1);
+		i++;
 	}
 	return (0);
 }

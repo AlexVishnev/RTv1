@@ -37,6 +37,8 @@ void		validate_data(char *source, t_src *src)
 	char		*tmp;
 
 	tmp = ft_strsub(source, 0, 6);
+	if (!brackects(source))
+		error_manadge(MSG_FORMAT, 1, tmp);
 	if (!(ft_strcmp(tmp, "camera") || ft_strcmp(tmp, "object")
 		|| ft_strcmp(tmp, "sligth")))
 		error_manadge(MSG_FORMAT, 1, tmp);
@@ -78,6 +80,8 @@ int			get_data_values(char *string, t_src *src)
 	}
 	if (ft_strcmp(tmp, "object") == 0)
 	{
+		if (ft_count_chars(&string[7], ',') != 6)
+			error_manadge(MSG_FORMAT, 0, string);
 		src->params.object[src->index1] = get_object_params(&string[7],
 			&src->params.object[src->index1], src);
 		src->index1++;

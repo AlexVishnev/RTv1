@@ -12,7 +12,6 @@
 
 # define GLOBAL 1
 # define POINT 2
-# define DIRECTIONAL 3
 # define SPHERE 1
 # define PLANE 2
 # define CYLINDER 3
@@ -47,7 +46,7 @@ typedef	struct			s_obj
 {
 	int					type;
 	t_ray				mid;
-	t_ray				dimention;
+	t_ray				direction;
 	t_ray				color;
 	float				specular;
 	float				radius;
@@ -76,7 +75,7 @@ typedef	struct	s_params
 	t_ray		camera_rot;
 	long		obj;
 	long		light;
-	t_cam		vp;
+	t_cam		viewport;
 	float		t_min;
 	float		t_max;
 	int			color;
@@ -145,15 +144,15 @@ t_ray	ray_subs(t_ray a, t_ray b)
 
 t_ray	SetCameraPosititon(t_params par, float x, float y)
 {
-	return ((t_ray){x * par.vp.w / par.screenw, y * par.vp.h / par.screenh, par.vp.dist});
+	return ((t_ray){x * par.viewport.w / par.screenw, y * par.viewport.h / par.screenh, par.viewport.dist * 2});
 }
 
 t_ray	matrix_rotate(double a, double b, double c, t_ray r)
 {
-	return ((t_ray){(cos(b) * cos(c) * r.x) + (cos(c) * sin(a) * sin(b)
-	 - cos(a) * sin(c) * r.y) + (cos(a) * cos(c) * sin(b) + sin(a) * sin(c) * r.z), 
-	(cos(b) * sin(c) * r.x) + ((cos(a) * cos(c) + sin(a) * sin(b) * sin(c)) * r.y)
-	 + ((-cos(c) * sin(a) + cos(a) * sin(b) * sin(c)) * r.z),(-sin(b) * r.x) +
+	return ((t_ray){((cos(b) * cos(c)) * r.x) + ((cos(c) * sin(a) * sin(b)
+	 - cos(a) * sin(c)) * r.y) + ((cos(a) * cos(c) * sin(b) + sin(a) * sin(c)) * r.z), 
+	((cos(b) * sin(c)) * r.x) + ((cos(a) * cos(c) + sin(a) * sin(b) * sin(c)) * r.y)
+	 + ((-cos(c) * sin(a) + cos(a) * sin(b) * sin(c)) * r.z),((-sin(b)) * r.x) +
 	  ((cos(b) * sin(a)) * r.y) + ((cos(a) * cos(b)) * r.z)});
 }
 
@@ -212,7 +211,6 @@ double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params
 				intens += light[j].intensity * nl / (RayLenght(N) * RayLenght(L));
 			if (spec >= 0)
 			{
-//				R = ray_subs(ray_multipl((dot(N, L) * 2), N), L);
 				R = ray_subs(ray_multipl(dot(N, L), ray_multipl(2.0, N)), L);
 				rv = dot(R, V);
 				if (rv > 0)
@@ -239,7 +237,7 @@ double		GetForms(__constant t_obj *obj, double t, t_ray P, t_ray V, t_ray VA)
 	if (t < 0)
 		return (INFINITY);
 	P.k[0] = dot(VA, ray_subs(ray_summary(P, ray_multipl(t, V)), obj->mid));
-	P.k[1] = dot(VA, ray_subs(ray_summary(P, ray_multipl(t, V)), obj->dimention));
+	P.k[1] = dot(VA, ray_subs(ray_summary(P, ray_multipl(t, V)), obj->direction));
 	if (P.k[0] < 0.0 && P.k[1] > 0.0)
 		return (t);
 	return (INFINITY);
@@ -266,7 +264,7 @@ t_vector	NewCone(__constant t_obj *obj, t_ray P, t_ray V)
 	t_vector	t;
 
 	angle = (obj->angle * M_PI) / 180;
-	VA = normal(ray_subs(obj->mid, obj->dimention));
+	VA = normal(ray_subs(obj->mid, obj->direction));
 	deltaP = ray_subs(P, obj->mid);
 	A = ray_subs(V, ray_multipl(dot(V, VA), VA));
 	B = ray_subs(deltaP, ray_multipl(dot(deltaP, VA), VA));
@@ -288,7 +286,7 @@ t_vector	NewCylinder(__constant t_obj *obj, t_ray P, t_ray V)
 	t_ray	B;
 	t_vector	t;
 
-	Normal = normal(ray_subs(obj->mid, obj->dimention));
+	Normal = normal(ray_subs(obj->mid, obj->direction));
 	deltaP = ray_subs(P, obj->mid);
 
 	A = ray_subs(V, ray_multipl(dot(V, Normal), Normal));
@@ -303,10 +301,23 @@ t_vector	NewCylinder(__constant t_obj *obj, t_ray P, t_ray V)
 
 t_vector	NewPlane(__constant t_obj *obj, t_ray O, t_ray D)
 {
-	D.k[0] = dot(D, obj->dimention);
-	D.k[1] = dot(ray_subs(O, obj->mid), obj->dimention);
-	if (D.k[0])
-		return ((t_vector){-D.k[1] / D.k[0], INFINITY});
+	t_ray	X;
+	t_ray	C;
+	t_ray	N;
+	t_vector	t;
+	float	k[2];
+
+	C = obj->mid;
+	N = obj->direction;
+	X = ray_subs(O, C);
+	k[0] = dot(D, N);
+	k[1] = dot(X, N);
+	if (k[0])
+	{
+		t.x = -k[1] / k[0];
+		t.y = INFINITY;
+		return (t);		
+	}
 	return ((t_vector){INFINITY, INFINITY});
 }
 
@@ -356,14 +367,14 @@ t_ray	global_normal(t_trace *tr, t_ray P)
 	}
 	if (tr->closest_object.type == CYLINDER || tr->closest_object.type == CONE)
 	{
-		center = normal(ray_subs(tr->closest_object.dimention, tr->closest_object.mid));
+		center = normal(ray_subs(tr->closest_object.direction, tr->closest_object.mid));
 		Normal = ray_subs(P, tr->closest_object.mid);
 		projection = ray_multipl(dot(Normal, center), center);
 		Normal = ray_subs(Normal, projection);
 		Normal = normal(Normal);
 		return (Normal);
 	}
-	Normal = tr->closest_object.dimention;
+	Normal = tr->closest_object.direction;
 	return (Normal);
 }
 
@@ -372,50 +383,48 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	t_trace		tr;
 	t_ray		P;
 	t_ray		N;
-	t_ray		local_color[RECURS + 1];
+	t_ray		color[RECURS + 1];
 	int			recurs;
 	double		intensity;
 	t_ray		DD;
 
 	recurs = 0;
-	while (recurs < RECURS)
+	while (recurs <= RECURS)
 	{
-		local_color[recurs] = (t_ray){0, 0, 0};
+		color[recurs] = (t_ray){0, 0, 0, 0};
 		recurs++;
 	}
-//	recurs = RECURS;
+	recurs = RECURS;
 	while (recurs >= 0)
 	{
 		ClosestIntersection(obj, &tr, &par, par.O, par.Dimention, t_min, t_max);
 		if (tr.closest_intersect == INFINITY)
 		{
-			local_color[recurs] = (t_ray){0, 0 ,0};
+			color[recurs] = (t_ray){0, 0 ,0};
 			break ;
 		}
 		P = ray_summary(par.O, ray_multipl(tr.closest_intersect, par.Dimention)); //compute intersection
 		N = global_normal(&tr, P);
 		DD = (t_ray){-par.Dimention.x, -par.Dimention.y, -par.Dimention.z, 0};
 		intensity = GenerateLigth(obj, light, &par, P, N, DD, tr.closest_object.specular);
-		local_color[recurs] = ray_multipl(intensity, tr.closest_object.color);
-		local_color[recurs].reflect = tr.closest_object.reflect;
+		color[recurs] = ray_multipl(intensity, tr.closest_object.color);
+		color[recurs].reflect = tr.closest_object.reflect;
 		if (tr.closest_object.reflect > 0)
 		{
-			// compute reflecting
-			par = (t_params){P, ReflectRay(DD, N), par.camera_rot, par.obj, par.light, par.vp,  par.t_min,
+			par = (t_params){P, ReflectRay(DD, N), par.camera_rot, par.obj, par.light, par.viewport,  par.t_min,
 				par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh};
 			recurs--;
 		}
 		else
 			break ;
 	}
-	recurs = 0;
-	while (recurs < RECURS)
+	recurs = -1;
+	while (++recurs < RECURS)
 	{
-		local_color[recurs + 1] = ray_summary(ray_multipl(1 - local_color[recurs + 1].reflect, local_color[recurs + 1]),
-						ray_multipl(local_color[recurs + 1].reflect, local_color[recurs]));
-		recurs++;
+		color[recurs + 1] = ray_summary(ray_multipl(1 - color[recurs + 1].reflect, color[recurs + 1]),
+						ray_multipl(color[recurs + 1].reflect, color[recurs]));
 	}
-	return (RgbToInt(local_color[recurs].x, local_color[recurs].y, local_color[recurs].z));
+	return (RgbToInt(color[recurs].x, color[recurs].y, color[recurs].z));
 }
 
 __kernel

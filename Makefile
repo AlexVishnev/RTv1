@@ -6,7 +6,7 @@
 #    By: avishnev <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/14 12:41:56 by avishnev          #+#    #+#              #
-#    Updated: 2018/06/10 15:38:51 by avishnev         ###   ########.fr        #
+#    Updated: 2018/06/17 11:47:20 by avishnev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ OBJ_LIST = $(addsuffix .o, $(FILES))
 HEADER = -I./includes -I./libft/includes
 HED = ./includes/rtv1.h
 MK_LIB = --no-print-directory -j3 -C
-SOURCE_FILES = scene/scene.1-10
+SOURCE_FILES = scene/RT.
 OS = $(shell uname)
 ifeq ($(OS), Linux)
 CGFLAGS = `sdl2-config --cflags --libs` -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_tff -lm
@@ -42,17 +42,20 @@ endif
 all: $(NAME)
 
 $(NAME): $(LIBA) $(OBJ) $(HED)
+	@if [ ! -d obj ] ; then mkdir obj; fi
 	@$(CC) -o $(NAME) -O3 $(OBJ) $(CGFLAGS) $(FRAMES) $(LIBA)
 	@echo "USAGE: \033[0;92m\033[3m ./$(NAME) $(SOURCE_FILES)\033[0m"
 	@echo "ATTENTION: \033[4;31m\033[42mDO NOT PRESS 'H' WHEN BINARY RUNNING\033[0m"
 $(LIBA):
 	@make $(MK_LIB) $(LIB_DIR)
 $(OBJ): obj/%.o: src/%.c $(HED)
+	@if [ ! -d obj ] ; then mkdir obj; fi
 	@$(CC) -o $@ $(HEADER) $(INC) -c $<
 	@echo "\033[37mTrying to compile \033[4;33m\033[41m$(notdir $<)\033[0m file \033[0m\033[37m\n\033[0;92m \033[3m   <<<<-Success->>>> \033[0m"
 norm:
 	@norminette src/*.c
 	@norminette includes/*.h
+	@norminette libft/*
 clean:
 	@rm -f $(OBJ)
 	@make $(MK_LIB) $(LIB_DIR) clean

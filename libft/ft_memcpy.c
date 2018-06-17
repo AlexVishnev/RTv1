@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
+#include "../includes/libft.h"
 
 void	*ft_memcpy(void *restrict d, const void *restrict s, size_t n)
 {

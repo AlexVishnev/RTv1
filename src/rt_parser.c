@@ -37,7 +37,9 @@ void	get_camera_position(char *cord, t_src *src)
 	int		len;
 
 	len = ft_strlen(cord);
-	if (len > 33 || len < 9 || cord[0] != '[' || cord[len - 1] != ']')
+	if (ft_count_chars(cord, ',') != 4)
+		error_manadge(MSG_FORMAT, 0, cord);
+	if (len < 9 || cord[0] != '[' || cord[len - 1] != ']')
 		error_manadge(MSG_FORMAT, 0, cord);
 	get_camera_direction(&cord[len / 2], src);
 	while (*cord && *cord != ';' && *(cord - 1) != '}')
@@ -78,6 +80,8 @@ void	get_spotlights_direction(char *cord, t_src *src, int ind)
 
 void	get_spotlights_params(char *cord, t_src *src, int ind)
 {
+	if (ft_count_chars(cord, ',') != 4)
+		error_manadge(MSG_FORMAT, 0, cord);
 	get_spotlights_direction(&cord[ft_strlen(cord) / 2], src, ind);
 	while (*cord != '}')
 	{
@@ -91,5 +95,7 @@ void	get_spotlights_params(char *cord, t_src *src, int ind)
 			src->params.light[ind].position.z = ft_atof(++cord, ',');
 		cord++;
 	}
+	if (src->params.light[ind].type < 1 || src->params.light[ind].type > 3)
+		error_manadge(MSG_L, 0, NULL);
 	check_adecvate(POS_LIM, (t_pos *)&src->params.light[ind].position, 2, NULL);
 }

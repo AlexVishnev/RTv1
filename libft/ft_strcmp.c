@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
+#include "../includes/libft.h"
 
 int	ft_strcmp(const char *str1, const char *str2)
 {
@@ -21,4 +21,3 @@ int	ft_strcmp(const char *str1, const char *str2)
 		i++;
 	return ((unsigned char)str1[i] - (unsigned char)str2[i]);
 }
- 

@@ -6,7 +6,7 @@
 #    By: avishnev <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/06 15:52:45 by avishnev          #+#    #+#              #
-#    Updated: 2018/04/14 20:37:25 by avishnev         ###   ########.fr        #
+#    Updated: 2018/06/17 11:44:18 by avishnev         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -85,6 +85,7 @@ OBJ = $(addprefix obj/, $(addsuffix .o, $(FILES)))
 OBJ_F = $(addsuffix .o, $(FILES))
 
 all: $(NAME)
+	@if [ ! -d obj ] ; then mkdir obj; fi
 $(NAME):$(OBJ)
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)

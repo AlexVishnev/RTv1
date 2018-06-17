@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../includes/libft.h"
 
 static char		*find_word_end(const char *s, char c)
 {
@@ -72,7 +72,7 @@ char			**ft_strsplit(const char *s, char c)
 	if (!s)
 		return (NULL);
 	nbr = cword(s, c);
-	if (!(buff = (char **)malloc(sizeof(char*) * (nbr + 2))))
+	if (!(buff = (char **)ft_memalloc(sizeof(char*) * (nbr + 2))))
 		return (NULL);
 	i = 0;
 	while (i < nbr)

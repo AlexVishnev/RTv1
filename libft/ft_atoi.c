@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../includes/libft.h"
 
 int				ft_atoi(const char *str)
 {
@@ -59,7 +59,6 @@ unsigned int	ft_u_atoi(const char *str)
 	return (rez);
 }
 
-#include <stdio.h>
 float			ft_atof(char *s, char c)
 {
 	float	r;
@@ -72,7 +71,7 @@ float			ft_atof(char *s, char c)
 	i = -1;
 	r = ft_atoi(s);
 	if (!(d = ft_strchr(s, '.')))
-		return r;
+		return (r);
 	while (s[++i] != '.' && *s)
 		l++;
 	t = ft_atoi(ft_strchr(s, '.') + 1) / pow(10, ft_unstrlen(s, c) - l - 1);

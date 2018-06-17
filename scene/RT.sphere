@@ -1,11 +1,12 @@
 
 #camera  [{position};{direction}]
 ->camera [{0,0.1,-8};{10,0,0}]
-
+		  #(1 2 3)
 #spotligth [(type){position}{direction}(intensive)]
 
-#->slight [(2){10,40,11.5}{11,2,22}(0.96)]
-->slight [(3){0,0,0}{ 1, 1, -2.5}(0.9)]
+->slight [(2){10,40,11.5}{11,2,22}(0.56)]
+->slight [(3){0,0,0}{ 1, 1, -2.5}(0.5)]
+#->slight [(1){0,0,0}{ 1, 1, -2.5}(0.5)]
 
 #object [(type){colour}{center}{direction}(size)(specular)(angle)(reflect)]
 ->object [(1){130,10,20}{0,0, 0}{0, 0, 0}(1.85)(50)(0)(0.3)]

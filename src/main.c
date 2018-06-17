@@ -22,7 +22,6 @@ void	exit_work(t_src *src)
 	free(src->objects);
 	free(src->params.object);
 	free(src->buffer);
-	system("leaks -q RTv1");
 }
 
 int		main(int ac, char **av)
@@ -39,7 +38,7 @@ int		main(int ac, char **av)
 	{
 		if (!expose_hook(&src))
 			break ;
-		kernel_function(&src);
+		opencl_kernel_run(&src);
 		SDL_UpdateWindowSurface(src.wind);
 	}
 	exit_work(&src);

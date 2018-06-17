@@ -27,7 +27,7 @@ t_ray	get_position_object(char *cord, t_src *src)
 			src->pos.z = ft_atof(++cord, ',');
 		cord++;
 	}
-	check_adecvate(100, &src->pos, 0, NULL);
+	check_adecvate(10000, &src->pos, 0, NULL);
 	ray = (t_ray){src->pos.x, src->pos.y, src->pos.z, 0, 0};
 	return (ray);
 }

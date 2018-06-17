@@ -28,7 +28,6 @@ static	const	char	*g_arrow[] = {
 	"         .XXXXXXXXX.                ",
 	"         .XXXXXXXXX.                ",
 	"         .XXXXXXXXX.                ",
-	"         .XXXXXXXXX.                 ",
 	"         .XXXXXXXXX.                ",
 	"         .XXXXXXXXX.                ",
 	"         .XXXXXXXXX.                ",
@@ -38,71 +37,66 @@ static	const	char	*g_arrow[] = {
 	"         .XXXXXXXXX.                ",
 	"         .XXXXXXXXX.                ",
 	"         .XXXXXXXXX.                ",
-	"   .XXX. .XXXXXXXXX. .XXX.         ",
-	"  .XXXXXXXXXXXXXXXXXXXXXXX.       ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXX.      ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXX.     ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXX.     ",
-	" .XXXXXXXXXXXXXXXXXXXXXXXXX.      ",
-	"  .XXXXXXXXXXXXXXXXXXXXXXX.       ",
-	"   .XXXXXXXXXXXXXXXXXXXXX.        ",
-	"     .XXXXXXXX..XXXXXXXX.         ",
-	"      .XXXXXXX..XXXXXXX.          ",
+	"         .XXXXXXXXX.                ",
+	"   .XXX. .XXXXXXXXX. .XXX.          ",
+	"  .XXXXXXXXXXXXXXXXXXXXXXX.         ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.        ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.        ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.        ",
+	" .XXXXXXXXXXXXXXXXXXXXXXXXX.        ",
+	"  .XXXXXXXXXXXXXXXXXXXXXXX.         ",
+	"   .XXXXXXXXXXXXXXXXXXXXX.          ",
+	"     .XXXXXXXX..XXXXXXXX.           ",
+	"      .XXXXXXX..XXXXXXX.            ",
 	"                                    ",
 	"0,0"
 };
 
-void	keyboards_control(t_src *src, Uint8 scancode)
+void	keyboards_control(t_src *src, SDL_Scancode scancode)
 {
 	if (scancode == SDL_SCANCODE_UP)
-		src->params.o.z += 0.1;
+		src->params.o.z += 0.4;
 	else if (scancode == SDL_SCANCODE_LEFT)
-		src->params.o.x -= 0.1;
+		src->params.o.x -= 0.4;
 	else if (scancode == SDL_SCANCODE_RIGHT)
-		src->params.o.x += 0.1;
+		src->params.o.x += 0.4;
 	else if (scancode == SDL_SCANCODE_DOWN)
-		src->params.o.z -= 0.1;
+		src->params.o.z -= 0.4;
 	else if (scancode == SDL_SCANCODE_KP_PLUS)
-		src->params.o.y += 0.1;
+		src->params.o.y += 0.4;
 	else if (scancode == SDL_SCANCODE_KP_MINUS)
-		src->params.o.y -= 0.1;
-	else if (scancode == SDL_SCANCODE_KP_4)
-		src->params.camera_rot.y -= 0.042;
-	else if (scancode == SDL_SCANCODE_KP_6)
-		src->params.camera_rot.y += 0.042;
-	else if (scancode == SDL_SCANCODE_KP_8)
-		src->params.camera_rot.x -= 0.042;
-	keyboards_control1(src, scancode);
+		src->params.o.y -= 0.4;
+	else
+		keyboards_control1(src, scancode);
 }
 
 void	mouse_control(t_src *src, SDL_Event e_k)
 {
 	SDL_ShowCursor(0);
+	SDL_CaptureMouse(true);
 	while (DICK)
 	{
-		if (e_k.motion.xrel < 0)
-			src->params.camera_rot.y += 0.015;
-		else if (e_k.motion.x > 0)
-			src->params.camera_rot.y -= 0.015;
-		if (e_k.motion.yrel < 0)
-			src->params.camera_rot.x += 0.015;
-		else if (e_k.motion.yrel > 0)
-			src->params.camera_rot.x -= 0.015;
+		if (e_k.motion.xrel < 0 && e_k.motion.xrel > -42)
+			src->params.camera_rot.y -= MOUSE_SPEED;
+		else if (e_k.motion.xrel > 0 && e_k.motion.xrel < 42)
+			src->params.camera_rot.y += MOUSE_SPEED;
+		if (e_k.motion.yrel < 0 && e_k.motion.yrel > -42)
+			src->params.camera_rot.x -= MOUSE_SPEED;
+		else if (e_k.motion.yrel > 0 && e_k.motion.yrel < 42)
+			src->params.camera_rot.x += MOUSE_SPEED;
 		break ;
 	}
 }
 
-void	keyboards_control1(t_src *src, Uint8 scancode)
+void	keyboards_control1(t_src *src, SDL_Scancode scancode)
 {
-	if (scancode == SDL_SCANCODE_KP_2)
-		src->params.camera_rot.x += 0.042;
-	else if (scancode == SDL_SCANCODE_R)
+	if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_R)
 	{
 		src->params.camera_rot.y = 0;
 		src->params.camera_rot.x = 0;
 		SDL_FreeCursor(src->curs);
 	}
-	else if (scancode == SDL_SCANCODE_H)
+	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_H)
 	{
 		src->curs = init_system_cursor(g_arrow, src);
 		SDL_SetCursor(src->curs);
@@ -118,16 +112,19 @@ int		expose_hook(t_src *src)
 		if ((src->c.e_k.type == SDL_QUIT) ||
 		src->c.e_k.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 			return (0);
-		if (src->c.flag != 2)
+		if (src->c.e_k.key.keysym.scancode > 10 &&
+			src->c.e_k.key.keysym.scancode < 89)
 			keyboards_control(src, src->c.e_k.key.keysym.scancode);
 		if (src->c.e_k.button.button == SDL_BUTTON_LEFT)
-			src->c.flag = 2;
+			src->c.mouse_on = 2;
 		if (src->c.e_k.button.button == SDL_BUTTON_RIGHT)
-			src->c.flag = 3;
-		if (src->c.flag == 2)
-			mouse_control(src, src->c.e_k);
-		if (src->c.flag != 2)
+		{
+			SDL_CaptureMouse(false);
+			src->c.mouse_on = 42;
 			SDL_ShowCursor(1);
+		}
+		if (src->c.mouse_on == 2)
+			mouse_control(src, src->c.e_k);
 	}
 	return (1);
 }

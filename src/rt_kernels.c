@@ -28,7 +28,7 @@ void		debugger(t_src *src)
 	error_manadge("SMOTRI V COMPUTAX", 0, NULL);
 }
 
-void		create_object_buffers(t_src *src, cl_int check, size_t size)
+void		compile_kernels(t_src *src, cl_int check, size_t size)
 {
 	src->op_cl.queue = clCreateCommandQueue(src->op_cl.text,
 		src->op_cl.id_dev, 0, &check);
@@ -80,10 +80,10 @@ void		create_videohost(t_src *src)
 		NULL, NULL, &check);
 	if (check)
 		error_manadge("Error: OpenCL clCreateContext", 0, NULL);
-	create_object_buffers(src, check, size);
+	compile_kernels(src, check, size);
 }
 
-void		kernel_function(t_src *src)
+void		opencl_kernel_run(t_src *src)
 {
 	cl_int		check;
 

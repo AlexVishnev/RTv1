@@ -86,3 +86,57 @@ int			cnt_objects(char *str, t_src *src)
 	free(lox);
 	return (-2);
 }
+
+int			brackects_valide(char *s)
+{
+	int			i;
+	int			len;
+	int			op;
+	int			cl;
+
+	op = 0;
+	cl = 0;
+	i = 0;
+	len = ft_strlen(s) - 1;
+	if (s[0] == '}' || s[0] == ')' || s[0] == ']')
+		return (1);
+	else if (s[len] == '[' || s[len] == '(' || s[len] == '{')
+		return (1);
+	while (s[i])
+	{
+		if (s[i] == '}' || s[i] == ')' || s[i] == ']')
+			cl++;
+		else if (s[i] == '{' || s[i] == '(' || s[i] == '[')
+			op++;
+		i++;
+	}
+	if (br_adecvat(s) == 1)
+		return (1);
+	return (op == cl ? 0 : 1);
+}
+
+int			brackects(char *s)
+{
+	int		i;
+	int		cnt;
+	char	stack[2048];
+
+	cnt = 0;
+	i = 0;
+	while (i < 2048)
+		stack[i++] = '\0';
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '[' || s[i] == ']' || s[i] == '(' || s[i] == ')'
+				|| s[i] == '{' || s[i] == '}')
+		{
+			stack[cnt] = s[i];
+			cnt++;
+		}
+		i++;
+	}
+	if (brackects_valide(stack) == 0)
+		return (1);
+	return (0);
+}
