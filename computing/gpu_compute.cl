@@ -18,11 +18,11 @@
 # define CONE 4
 # define RECURS 1
 
-typedef struct 			s_vector
-{
-	float				x;
-	float				y;
-}						t_vector;
+// typedef struct 			s_vector
+// {
+// 	float				x;
+// 	float				y;
+// }						float2;
 
 typedef struct			s_ray
 {
@@ -65,7 +65,7 @@ typedef	struct	s_trace
 {
 	double			closest_intersect;
 	t_obj			closest_object;
-	t_vector		t;
+	float2			t;
 }				t_trace;
 
 typedef	struct	s_params
@@ -104,11 +104,11 @@ t_ray		ray_subs(t_ray a, t_ray b);
 t_ray		normal(t_ray a);
 t_ray		ReflectRay(t_ray R, t_ray N);
 t_ray		SetCameraPosititon(t_params par, float x, float y);
-t_vector	discriminant(float k[3]);
-t_vector	NewCylinder(__constant t_obj *obj, t_ray P, t_ray V);
-t_vector	NewCone(__constant t_obj *obj, t_ray P, t_ray V);
-t_vector	NewSphere(__constant t_obj *obj, t_ray O, t_ray D);
-t_vector	NewPlane(__constant t_obj *obj, t_ray O, t_ray D);
+float2	discriminant(float k[3]);
+float2	NewCylinder(__constant t_obj *obj, t_ray P, t_ray V);
+float2	NewCone(__constant t_obj *obj, t_ray P, t_ray V);
+float2	NewSphere(__constant t_obj *obj, t_ray O, t_ray D);
+float2	NewPlane(__constant t_obj *obj, t_ray O, t_ray D);
 
 float	RayLenght(t_ray ray)
 {
@@ -222,14 +222,14 @@ double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params
 	return (intens);
 }
 
-t_vector	discriminant(float k[3])
+float2	discriminant(float k[3])
 {
 	float	d;
 
 	d =  k[1] * k[1] - 4.0f * k[0] * k[2];
 	if (d < 0)
-		return ((t_vector){INFINITY, INFINITY});
-	return ((t_vector){(-k[1] + sqrt(d)) / (2.0f * k[0]), (-k[1] - sqrt(d)) / (2.0f * k[0])});
+		return ((float2){INFINITY, INFINITY});
+	return ((float2){(-k[1] + sqrt(d)) / (2.0f * k[0]), (-k[1] - sqrt(d)) / (2.0f * k[0])});
 }
 
 double		GetForms(__constant t_obj *obj, double t, t_ray P, t_ray V, t_ray VA)
@@ -243,16 +243,22 @@ double		GetForms(__constant t_obj *obj, double t, t_ray P, t_ray V, t_ray VA)
 	return (INFINITY);
 }
 
-t_vector	NewSphere(__constant t_obj *obj, t_ray O, t_ray D)
+float2	NewSphere(__constant t_obj *obj, t_ray O, t_ray D)
 {
+	float k[3];
+	float3 c;
+
 	D.k[0] = dot(D, D);
+	c.x = D.k[0];
 	D.k[1] = 2.0f * dot(ray_subs(O, obj->mid), D);
+	c.y = D.k[1];
 	D.k[2] = dot(ray_subs(O, obj->mid), ray_subs(O, obj->mid)) - obj->radius * obj->radius;
+	c.z = D.k[2];
 	return (discriminant(D.k));
 }
 
 
-t_vector	NewCone(__constant t_obj *obj, t_ray P, t_ray V)
+float2	NewCone(__constant t_obj *obj, t_ray P, t_ray V)
 {
 	float	angle;
 	float	cospw;
@@ -261,7 +267,7 @@ t_vector	NewCone(__constant t_obj *obj, t_ray P, t_ray V)
 	t_ray	deltaP;
 	t_ray	A;
 	t_ray	B;
-	t_vector	t;
+	float2	t;
 
 	angle = (obj->angle * M_PI) / 180;
 	VA = normal(ray_subs(obj->mid, obj->direction));
@@ -275,16 +281,16 @@ t_vector	NewCone(__constant t_obj *obj, t_ray P, t_ray V)
 	P.k[1] = 2.0f * cospw * dot(A, B) - 2.0f * sinpw * dot(V, VA) * dot(deltaP, VA);
 	P.k[2] = cospw * dot(B, B) - sinpw * dot(deltaP, VA) * dot(deltaP, VA);
 	t = discriminant(P.k);
-	return ((t_vector){GetForms(obj, t.x, P, V, VA), GetForms(obj, t.y, P, V, VA)});
+	return ((float2){GetForms(obj, t.x, P, V, VA), GetForms(obj, t.y, P, V, VA)});
 }
 
-t_vector	NewCylinder(__constant t_obj *obj, t_ray P, t_ray V)
+float2	NewCylinder(__constant t_obj *obj, t_ray P, t_ray V)
 {
 	t_ray	Normal;
 	t_ray	deltaP;
 	t_ray	A;
 	t_ray	B;
-	t_vector	t;
+	float2	t;
 
 	Normal = normal(ray_subs(obj->mid, obj->direction));
 	deltaP = ray_subs(P, obj->mid);
@@ -295,16 +301,16 @@ t_vector	NewCylinder(__constant t_obj *obj, t_ray P, t_ray V)
 	P.k[1] = 2.0f * dot(A, B);
 	P.k[2] = dot(B, B) - obj->radius * obj->radius;
 	t = discriminant(P.k);
-	return ((t_vector){GetForms(obj, t.x, P, V, Normal), GetForms(obj, t.y, P, V, Normal)});
+	return ((float2){GetForms(obj, t.x, P, V, Normal), GetForms(obj, t.y, P, V, Normal)});
 }
 
 
-t_vector	NewPlane(__constant t_obj *obj, t_ray O, t_ray D)
+float2	NewPlane(__constant t_obj *obj, t_ray O, t_ray D)
 {
 	t_ray	X;
 	t_ray	C;
 	t_ray	N;
-	t_vector	t;
+	float2	t;
 	float	k[2];
 
 	C = obj->mid;
@@ -318,14 +324,14 @@ t_vector	NewPlane(__constant t_obj *obj, t_ray O, t_ray D)
 		t.y = INFINITY;
 		return (t);		
 	}
-	return ((t_vector){INFINITY, INFINITY});
+	return ((float2){INFINITY, INFINITY});
 }
 
 int		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
 								t_ray O, t_ray D, float t_min, float t_max)
 {
 	int			i;
-	t_vector	t;
+	float2	t;
 
 	tr->closest_intersect = INFINITY;
 	i = -1;
@@ -412,7 +418,7 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		if (tr.closest_object.reflect > 0)
 		{
 			par = (t_params){P, ReflectRay(DD, N), par.camera_rot, par.obj, par.light, par.viewport,  par.t_min,
-				par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh};
+				par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM!
 			recurs--;
 		}
 		else
