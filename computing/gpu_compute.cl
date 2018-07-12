@@ -18,11 +18,6 @@
 # define CONE 4
 # define RECURS 1
 
-// typedef struct 			s_vector
-// {
-// 	float				x;
-// 	float				y;
-// }						float2;
 
 typedef struct			s_ray
 {
