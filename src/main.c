@@ -12,7 +12,7 @@
 
 #include "rtv1.h"
 
-void		lsync(void)
+void		time_delay(void)
 {
 	int					delay;
 	static unsigned int	time;
@@ -30,7 +30,7 @@ void		lsync(void)
 	}
 }
 
-static void	color_fps(t_src *m, unsigned int fps, TTF_Font *ttf, char *fps_str)
+static void	fps_color(t_src *src, unsigned int fps, TTF_Font *ttf, char *fps_str)
 {
 	int r;
 	int g;
@@ -54,11 +54,11 @@ static void	color_fps(t_src *m, unsigned int fps, TTF_Font *ttf, char *fps_str)
 		g = 0;
 		b = 0;
 	}
-	m->fps = TTF_RenderText_Solid(m->ttf, fps_str,
+	src->fps = TTF_RenderText_Solid(src->ttf, fps_str,
 					(SDL_Color){r, g, b, 255});
 }
 
-void		display_fps(t_src *m)
+void		init_fps(t_src *src)
 {
 	static unsigned	int	fps;
 	static unsigned	int	time_current;
@@ -74,13 +74,13 @@ void		display_fps(t_src *m)
 		fps_str = ft_itoa(fps);
 	}
 	ticks = SDL_GetTicks();
-	if (!(m->ttf = TTF_OpenFont("src/fonts/arcadeclassic.regular.ttf", 50)))
+	if (!(src->ttf = TTF_OpenFont("/Library/Fonts/Arial.ttf", 50)))
 		ft_putstr(IMG_GetError());
-	color_fps(m, fps, m->ttf, fps_str);
-	SDL_BlitSurface(m->fps, NULL, m->surf,
-		&(SDL_Rect){ 10, 0, m->fps->w, m->fps->h});
-	TTF_CloseFont(m->ttf);
-	SDL_FreeSurface(m->fps);
+	fps_color(src, fps, src->ttf, fps_str);
+	SDL_BlitSurface(src->fps, NULL, src->surf,
+		&(SDL_Rect){ 10, 0, src->fps->w, src->fps->h});
+	TTF_CloseFont(src->ttf);
+	SDL_FreeSurface(src->fps);
 }
 
 void		exit_work(t_src *src)
@@ -110,8 +110,8 @@ int			main(int ac, char **av)
 		if (!expose_hook(&src))
 			break ;
 		opencl_kernel_run(&src);
-		display_fps(&src);
-		lsync();
+		init_fps(&src);
+		time_delay();
 		SDL_UpdateWindowSurface(src.wind);
 	}
 	exit_work(&src);
