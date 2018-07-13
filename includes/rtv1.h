@@ -13,6 +13,7 @@
 #ifndef RTV1_H
 # define RTV1_H
 
+# include <time.h>
 # include "libft.h"
 # include <fcntl.h>
 # include <SDL2/SDL.h>
@@ -70,7 +71,6 @@ typedef struct		s_ray
 	float			z;
 	float			w;
 	float			reflect;
-	float			k[3];
 }					t_ray;
 
 typedef	struct		s_light
@@ -168,7 +168,9 @@ typedef	struct		s_src
 {
 	SDL_Window		*wind;
 	SDL_Surface		*surf;
+	SDL_Surface		*fps;
 	SDL_Cursor		*curs;
+	TTF_Font		*ttf;
 	t_obj			*objects;
 	t_light			light;
 	t_cam			camera;

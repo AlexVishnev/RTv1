@@ -26,7 +26,6 @@ typedef struct			s_ray
 	float				z;
 	float				w;
 	float				reflect;
-	float				k[3];
 }						t_ray;
 
 typedef	struct			s_light
@@ -99,11 +98,12 @@ t_ray		ray_subs(t_ray a, t_ray b);
 t_ray		normal(t_ray a);
 t_ray		ReflectRay(t_ray R, t_ray N);
 t_ray		SetCameraPosititon(t_params par, float x, float y);
-float2	discriminant(float k[3]);
-float2	NewCylinder(__constant t_obj *obj, t_ray P, t_ray V);
-float2	NewCone(__constant t_obj *obj, t_ray P, t_ray V);
-float2	NewSphere(__constant t_obj *obj, t_ray O, t_ray D);
-float2	NewPlane(__constant t_obj *obj, t_ray O, t_ray D);
+float2		discriminant(float3 k);
+float2		discriminant_cone(float k[3]);
+float2		Intersect_Cylinder(__constant t_obj *obj, t_ray P, t_ray V);
+float2		Intersect_Cone(__constant t_obj *obj, t_ray P, t_ray V);
+float2		Inersect_Sphere(__constant t_obj *obj, t_ray O, t_ray D);
+float2		Intersect_Plane(__constant t_obj *obj, t_ray O, t_ray D);
 
 float	RayLenght(t_ray ray)
 {
@@ -217,7 +217,7 @@ double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params
 	return (intens);
 }
 
-float2	discriminant(float k[3])
+float2	discriminant_cone(float k[3])
 {
 	float	d;
 
@@ -227,33 +227,41 @@ float2	discriminant(float k[3])
 	return ((float2){(-k[1] + sqrt(d)) / (2.0f * k[0]), (-k[1] - sqrt(d)) / (2.0f * k[0])});
 }
 
+float2	discriminant(float3 k)
+{
+	float	d;
+
+	d =  k.y * k.y - 4.0f * k.x * k.z;
+	if (d < 0)
+		return ((float2){INFINITY, INFINITY});
+	return ((float2){(-k.y + sqrt(d)) / (2.0f * k.x), (-k.y - sqrt(d)) / (2.0f * k.x)});
+}
+
 double		GetForms(__constant t_obj *obj, double t, t_ray P, t_ray V, t_ray VA)
 {
+	float2 k;
+
 	if (t < 0)
 		return (INFINITY);
-	P.k[0] = dot(VA, ray_subs(ray_summary(P, ray_multipl(t, V)), obj->mid));
-	P.k[1] = dot(VA, ray_subs(ray_summary(P, ray_multipl(t, V)), obj->direction));
-	if (P.k[0] < 0.0 && P.k[1] > 0.0)
+	k.x = dot(VA, ray_subs(ray_summary(P, ray_multipl(t, V)), obj->mid));
+	k.y = dot(VA, ray_subs(ray_summary(P, ray_multipl(t, V)), obj->direction));
+	if (k.x < 0.0 && k.y > 0.0)
 		return (t);
 	return (INFINITY);
 }
 
-float2	NewSphere(__constant t_obj *obj, t_ray O, t_ray D)
+float2	Inersect_Sphere(__constant t_obj *obj, t_ray O, t_ray D)
 {
-	float k[3];
 	float3 c;
 
-	D.k[0] = dot(D, D);
-	c.x = D.k[0];
-	D.k[1] = 2.0f * dot(ray_subs(O, obj->mid), D);
-	c.y = D.k[1];
-	D.k[2] = dot(ray_subs(O, obj->mid), ray_subs(O, obj->mid)) - obj->radius * obj->radius;
-	c.z = D.k[2];
-	return (discriminant(D.k));
+	c.x = dot(D, D);
+	c.y = 2.0f * dot(ray_subs(O, obj->mid), D);
+	c.z = dot(ray_subs(O, obj->mid), ray_subs(O, obj->mid)) - obj->radius * obj->radius;
+	return (discriminant(c));
 }
 
 
-float2	NewCone(__constant t_obj *obj, t_ray P, t_ray V)
+float2	Intersect_Cone(__constant t_obj *obj, t_ray P, t_ray V)
 {
 	float	angle;
 	float	cospw;
@@ -263,6 +271,7 @@ float2	NewCone(__constant t_obj *obj, t_ray P, t_ray V)
 	t_ray	A;
 	t_ray	B;
 	float2	t;
+	float3	v;
 
 	angle = (obj->angle * M_PI) / 180;
 	VA = normal(ray_subs(obj->mid, obj->direction));
@@ -272,55 +281,58 @@ float2	NewCone(__constant t_obj *obj, t_ray P, t_ray V)
 	cospw = cos(angle) * cos(angle);
 	sinpw = sin(angle) * sin(angle);
 
-	P.k[0] = cospw * dot(A, A) - sinpw * dot(V, VA) * dot(V, VA);
-	P.k[1] = 2.0f * cospw * dot(A, B) - 2.0f * sinpw * dot(V, VA) * dot(deltaP, VA);
-	P.k[2] = cospw * dot(B, B) - sinpw * dot(deltaP, VA) * dot(deltaP, VA);
-	t = discriminant(P.k);
+	v.x = cospw * dot(A, A) - sinpw * dot(V, VA) * dot(V, VA);
+	v.y = 2.0f * cospw * dot(A, B) - 2.0f * sinpw * dot(V, VA) * dot(deltaP, VA);
+	v.z = cospw * dot(B, B) - sinpw * dot(deltaP, VA) * dot(deltaP, VA);
+
+	t = discriminant(v);
 	return ((float2){GetForms(obj, t.x, P, V, VA), GetForms(obj, t.y, P, V, VA)});
 }
 
-float2	NewCylinder(__constant t_obj *obj, t_ray P, t_ray V)
+float2	Intersect_Cylinder(__constant t_obj *obj, t_ray P, t_ray V)
 {
 	t_ray	Normal;
 	t_ray	deltaP;
 	t_ray	A;
 	t_ray	B;
 	float2	t;
+	float3	v;
 
 	Normal = normal(ray_subs(obj->mid, obj->direction));
 	deltaP = ray_subs(P, obj->mid);
 
 	A = ray_subs(V, ray_multipl(dot(V, Normal), Normal));
 	B = ray_subs(deltaP, ray_multipl(dot(deltaP, Normal), Normal));
-	P.k[0] = dot(A, A);
-	P.k[1] = 2.0f * dot(A, B);
-	P.k[2] = dot(B, B) - obj->radius * obj->radius;
-	t = discriminant(P.k);
+		
+	v.x = dot(A, A);
+	v.y = 2.0f * dot(A, B);
+	v.z = dot(B, B) - obj->radius * obj->radius;
+	t = discriminant(v);
 	return ((float2){GetForms(obj, t.x, P, V, Normal), GetForms(obj, t.y, P, V, Normal)});
 }
 
 
-float2	NewPlane(__constant t_obj *obj, t_ray O, t_ray D)
+float2	Intersect_Plane(__constant t_obj *obj, t_ray O, t_ray D)
 {
 	t_ray	X;
 	t_ray	C;
 	t_ray	N;
 	float2	t;
-	float	k[2];
+	float2	k;
 
 	C = obj->mid;
 	N = obj->direction;
 	X = ray_subs(O, C);
-	k[0] = dot(D, N);
-	k[1] = dot(X, N);
-	if (k[0])
+	k.x = dot(D, N);
+	k.y = dot(X, N);
+	if (k.x)
 	{
-		t.x = -k[1] / k[0];
+		t.x = -k.y / k.x;
 		t.y = INFINITY;
 		return (t);		
 	}
 	return ((float2){INFINITY, INFINITY});
-}
+ }
 
 int		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
 								t_ray O, t_ray D, float t_min, float t_max)
@@ -333,13 +345,13 @@ int		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
 	while (++i < par->objects)
 	{
 		if (obj[i].type == SPHERE)
-			t = NewSphere(&obj[i], O, D);
+			t = Inersect_Sphere(&obj[i], O, D);
 		else if (obj[i].type == PLANE)
-			t = NewPlane(&obj[i], O, D);
+			t = Intersect_Plane(&obj[i], O, D);
 		else if (obj[i].type == CYLINDER)
-			t = NewCylinder(&obj[i], O, D);
+			t = Intersect_Cylinder(&obj[i], O, D);
 		else if (obj[i].type == CONE)
-			t = NewCone(&obj[i], O, D);
+			t = Intersect_Cone(&obj[i], O, D);
 		if (t.x > t_min && t.x < t_max && t.x < tr->closest_intersect)
 		{
 			tr->closest_intersect = t.x;
@@ -401,7 +413,7 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		ClosestIntersection(obj, &tr, &par, par.O, par.Dimention, t_min, t_max);
 		if (tr.closest_intersect == INFINITY)
 		{
-			color[recurs] = (t_ray){0, 0 ,0};
+			color[recurs] = (t_ray){0, 0, 0};
 			break ;
 		}
 		P = ray_summary(par.O, ray_multipl(tr.closest_intersect, par.Dimention)); //compute intersection
