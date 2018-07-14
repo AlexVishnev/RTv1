@@ -45,6 +45,8 @@ void		init_parametrs(t_src *src)
 
 void		wr_data(Uint8 data[], Uint8 mask[], const char *im[], t_src *s)
 {
+	(void)data;
+	(void)mask;
 	if (im[s->c.row + 4][s->c.col] == 'X')
 	{
 		s->c.data[s->c.i] |= 0x01;

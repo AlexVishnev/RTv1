@@ -12,37 +12,19 @@ THIS_DIR=$(PWD)
 LIBNAME = ft
 LIBDIR = ./libft
 
-INCLUDE_DIR = ./include
+INCLUDE_DIR = ./includes
 SOURCES_DIR = ./src
 OBJECTS_DIR = ./obj
 
-SOURCES = main.c \
-			boosters.c \
-			camera.c \
-			env.c \
-			light.c \
-			material.c \
-			ray.c \
-			render.c \
-			scene.c \
-			shader.c \
-			vec3.c \
-			vec3_other.c \
-			vec3_products.c \
-			objects/cone.c \
-			objects/cylinder.c \
-			objects/object.c \
-			objects/plane.c \
-			objects/sphere.c \
-			scenes/init.c \
-			scenes/scene1.c \
-			scenes/scene2.c \
-			scenes/scene3.c \
-			sdl2/sdl2_image.c \
-			sdl2/sdl2_init.c \
-			sdl2/sdl2_main_loop.c \
-			sdl2/sdl2_put_image_to_window.c \
-			sdl2/sdl2_window.c
+SOURCES = rt_parser1.c \
+          rt_controllers.c \
+          rt_kernels.c \
+          main.c \
+          rt_init.c \
+          rt_parser.c \
+          rt_errors.c \
+          rt_tools.c \
+          RT_read_file.c
 
 OBJECTS = $(SOURCES:.c=.o)
 OBJECTS := $(addprefix $(OBJECTS_DIR)/, $(OBJECTS))
@@ -64,7 +46,8 @@ IFLAGS = -I. -I$(INCLUDE_DIR) \
 
 LFLAGS = \
 		-L$(LIBDIR) -lft \
-		-L$(PREFIX)/lib -lSDL2 -lSDL2_ttf -lSDL2_image
+		-L$(PREFIX)/lib -lSDL2 -lSDL2_ttf -lSDL2_image \
+		-framework OpenGL -framework AppKit -framework OpenCl
 
 .PHONY: all download clean fclean re sdl2 install_dependencies update\
 				sdl2_download sdl2_image_download sdl2_ttf_download \

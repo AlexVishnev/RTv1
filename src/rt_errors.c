@@ -37,7 +37,7 @@ int		check_adecvate(int lim, t_pos *cord, int fl, t_color *s)
 	}
 	else if (s)
 	{
-		if (s->red > lim || s->green > lim || s->blue > lim)
+		if (s->red > (t_uint)lim || s->green > (t_uint)lim || s->blue > (t_uint)lim)
 			error_manadge(MSG_CLR, 0, NULL);
 	}
 	return (0);

@@ -36,6 +36,7 @@ static void	fps_color(t_src *src, unsigned int fps, TTF_Font *ttf, char *fps_str
 	int g;
 	int b;
 
+	(void) ttf;
 	if (fps >= 40)
 	{
 		r = 0;
@@ -48,7 +49,7 @@ static void	fps_color(t_src *src, unsigned int fps, TTF_Font *ttf, char *fps_str
 		g = 156;
 		b = 127;
 	}
-	else if (fps < 20)
+	else
 	{
 		r = 255;
 		g = 0;

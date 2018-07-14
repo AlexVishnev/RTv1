@@ -90,6 +90,7 @@ void	mouse_control(t_src *src, SDL_Event e_k)
 
 void	keyboards_control1(t_src *src, SDL_Scancode scancode)
 {
+    (void)scancode;
 	if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_R)
 	{
 		src->params.camera_rot.y = 0;

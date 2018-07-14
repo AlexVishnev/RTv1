@@ -14,9 +14,13 @@
 # define RTV1_H
 
 # include <time.h>
-# include "libft.h"
+# include "libft/includes/libft.h"
 # include <fcntl.h>
+
 # include <SDL2/SDL.h>
+# include <SDL2/SDL_image.h>
+# include <SDL2/SDL_ttf.h>
+
 # include <math.h>
 # define WIN_WD 1024
 # define WIN_HG 1024
@@ -24,9 +28,7 @@
 
 # ifdef __APPLE__
 #  include <OpenCL/opencl.h>
-#  include "SDL_image.h"
-#  include "SDL_mixer.h"
-#  include "SDL_ttf.h"
+
 # elif __linux__
 #  include <SDL2/SDL_image.h>
 #  include <SDL2/SDL_mixer.h>
@@ -48,6 +50,9 @@
 # define MSG_L "\033[4;31mError:\033[0m wrong type of light"
 # define DICK 42
 # define POS_LIM 22100
+
+
+typedef unsigned int	t_uint;
 
 typedef struct		s_vector
 {

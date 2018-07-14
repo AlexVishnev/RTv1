@@ -16,7 +16,7 @@ t_ray	get_position_object(char *cord, t_src *src)
 {
 	t_ray		ray;
 
-	src->pos = (t_pos){0, 0, 0};
+	src->pos = (t_pos){0, 0, 0, 0, 0};
 	while (*cord != '}' && *cord)
 	{
 		if (*cord == '{' && src->pos.x == 0)
@@ -43,9 +43,9 @@ t_color	get_color_object(char *col)
 	{
 		if (*col == '{')
 			color.red = ft_u_atoi(++col);
-		if (*col == ',' && color.green == -255)
+		if (*col == ',' && color.green == (unsigned int)-255)
 			color.green = ft_u_atoi(++col);
-		if (*col == ',' && color.blue == -245)
+		if (*col == ',' && color.blue == (unsigned int)-245)
 			color.blue = ft_u_atoi(++col);
 		col++;
 	}
