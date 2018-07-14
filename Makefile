@@ -1,67 +1,178 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: avishnev <marvin@42.fr>                    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2018/04/14 12:41:56 by avishnev          #+#    #+#              #
-#    Updated: 2018/06/17 11:47:20 by avishnev         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+NAME = RT
 
-NAME = RTv1
-CC = gcc
-FILES = main rt_read_file rt_init rt_parser rt_errors rt_tools rt_kernels rt_controllers rt_parser1
-LIBA = libft/libft.a
-LIB_DIR = libft/
-SRC = $(addprefix src/, $(addsuffix .c, $(FILES)))
-OBJ = $(addprefix obj/, $(addsuffix .o, $(FILES)))
-OBJ_LIST = $(addsuffix .o, $(FILES))
-HEADER = -I./includes -I./libft/includes
-HED = ./includes/rtv1.h
-MK_LIB = --no-print-directory -j3 -C
-SOURCE_FILES = scene/RT.
-OS = $(shell uname)
-ifeq ($(OS), Linux)
-CGFLAGS = `sdl2-config --cflags --libs` -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_tff -lm
-else
-CGFLAGS = -lmlx -framework OpenGL -framework AppKit
-INC	=	-I./frameworks/SDL2.framework/Versions/A/Headers \
-		-I./frameworks/SDL2_ttf.framework/Versions/A/Headers \
-		-I./frameworks/SDL2_image.framework/Versions/A/Headers \
-		-I./frameworks/SDL2_mixer.framework/Headers \
-		-F./frameworks/
-FRAMES	=	-F./frameworks \
-			-rpath ./frameworks \
-			-framework OpenGL -framework AppKit -framework OpenCl \
-			-framework SDL2 -framework SDL2_ttf -framework SDL2_image \
-			-framework SDL2_mixer
-endif
+RM = /bin/rm
+MKDIR = /bin/mkdir
+PRINTF = /usr/bin/printf
+ECHO = /bin/echo
 
-all: $(NAME)
+PREFIX=$(PWD)/build
+DEP_DIR=$(PWD)/downloads
+THIS_DIR=$(PWD)
 
-$(NAME): $(LIBA) $(OBJ) $(HED)
-	@if [ ! -d obj ] ; then mkdir obj; fi
-	@$(CC) -o $(NAME) -O3 $(OBJ) $(CGFLAGS) $(FRAMES) $(LIBA)
-	@echo "USAGE: \033[0;92m\033[3m ./$(NAME) $(SOURCE_FILES)\033[0m"
-	@echo "ATTENTION: \033[4;31m\033[42mDO NOT PRESS 'H' WHEN BINARY RUNNING\033[0m"
-$(LIBA):
-	@make $(MK_LIB) $(LIB_DIR)
-$(OBJ): obj/%.o: src/%.c $(HED)
-	@if [ ! -d obj ] ; then mkdir obj; fi
-	@$(CC) -o $@ $(HEADER) $(INC) -c $<
-	@echo "\033[37mTrying to compile \033[4;33m\033[41m$(notdir $<)\033[0m file \033[0m\033[37m\n\033[0;92m \033[3m   <<<<-Success->>>> \033[0m"
-norm:
-	@norminette src/*.c
-	@norminette includes/*.h
-	@norminette libft/*
+LIBNAME = ft
+LIBDIR = ./libft
+
+INCLUDE_DIR = ./include
+SOURCES_DIR = ./src
+OBJECTS_DIR = ./obj
+
+SOURCES = main.c \
+			boosters.c \
+			camera.c \
+			env.c \
+			light.c \
+			material.c \
+			ray.c \
+			render.c \
+			scene.c \
+			shader.c \
+			vec3.c \
+			vec3_other.c \
+			vec3_products.c \
+			objects/cone.c \
+			objects/cylinder.c \
+			objects/object.c \
+			objects/plane.c \
+			objects/sphere.c \
+			scenes/init.c \
+			scenes/scene1.c \
+			scenes/scene2.c \
+			scenes/scene3.c \
+			sdl2/sdl2_image.c \
+			sdl2/sdl2_init.c \
+			sdl2/sdl2_main_loop.c \
+			sdl2/sdl2_put_image_to_window.c \
+			sdl2/sdl2_window.c
+
+OBJECTS = $(SOURCES:.c=.o)
+OBJECTS := $(addprefix $(OBJECTS_DIR)/, $(OBJECTS))
+SOURCES := $(addprefix $(SOURCES_DIR)/, $(SOURCES))
+
+CC = clang
+AR = ar
+CFLAGS = -Wall -Werror -Wextra
+
+# Colors
+NO_COLOR = \033[0;00m
+OK_COLOR = \033[38;5;02m
+ERROR_COLOR = \033[38;5;01m
+WARN_COLOR = \033[38;5;03m
+SILENT_COLOR = \033[38;5;04m
+
+IFLAGS = -I. -I$(INCLUDE_DIR) \
+		 -I$(PREFIX)/include
+
+LFLAGS = \
+		-L$(LIBDIR) -lft \
+		-L$(PREFIX)/lib -lSDL2 -lSDL2_ttf -lSDL2_image
+
+.PHONY: all download clean fclean re sdl2 install_dependencies update\
+				sdl2_download sdl2_image_download sdl2_ttf_download \
+				sdl2_install sdl2_image_install sdl2_ttf_install
+
+all: install_dependencies $(NAME)
+
+$(NAME): install_dependencies $(LIBNAME) $(OBJECTS)
+	@$(PRINTF) "$(SILENT_COLOR)./$(NAME) binary$(NO_COLOR)"
+	@$(CC) $(CFLAGS) $(FFLAGS) $(IFLAGS) $(LFLAGS) -o $(NAME) $(OBJECTS)
+	@$(PRINTF)	"\t[$(OK_COLOR)✓$(NO_COLOR)]$(NO_COLOR)\n"
+
+$(OBJECTS_DIR)/%.o: $(SOURCES_DIR)/%.c
+	@mkdir -p $(OBJECTS_DIR)
+	@mkdir -p $(OBJECTS_DIR)/sdl2 $(OBJECTS_DIR)/scenes $(OBJECTS_DIR)/objects
+	@$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<
+	@$(PRINTF) "$(OK_COLOR)✓ $(NO_COLOR)$<\n"
+
+$(LIBNAME):
+	make -C $(LIBDIR) all
+
+sdl2_download:
+	@mkdir -p $(DEP_DIR)
+	@if [ ! -f $(PREFIX)/lib/libSDL2.a ] && [ ! -d $(DEP_DIR)/SDL2 ]; then \
+		if [ ! -f $(DEP_DIR)/SDL2.zip ]; then \
+			curl -o $(DEP_DIR)/SDL2.zip https://www.libsdl.org/release/SDL2-2.0.8.zip; \
+		fi ;\
+		unzip $(DEP_DIR)/SDL2.zip -d $(DEP_DIR); \
+		mv $(DEP_DIR)/SDL2-2.0.8 $(DEP_DIR)/SDL2; \
+		rm -rf $(DEP_DIR)/SDL2.zip; \
+	fi
+
+sdl2_image_download:
+	@mkdir -p $(DEP_DIR)
+	@if [ ! -f $(PREFIX)/lib/libSDL2_image.a ] && [ ! -d $(DEP_DIR)/SDL2_image ]; then \
+		if [ ! -f $(DEP_DIR)/SDL2_image.zip ]; then \
+			curl -o $(DEP_DIR)/SDL2_image.zip https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.3.zip; \
+		fi ;\
+		unzip $(DEP_DIR)/SDL2_image.zip -d $(DEP_DIR); \
+		mv $(DEP_DIR)/SDL2_image-2.0.3 $(DEP_DIR)/SDL2_image; \
+		rm -rf $(DEP_DIR)/SDL2_image.zip; \
+	fi
+
+sdl2_ttf_download:
+	@mkdir -p $(DEP_DIR)
+	@if [ ! -f $(PREFIX)/lib/libSDL2_ttf.a ] && [ ! -d $(DEP_DIR)/SDL2_ttf ]; then \
+		if [ ! -f $(DEP_DIR)/SDL2_ttf.zip ]; then \
+			curl -o $(DEP_DIR)/SDL2_ttf.zip https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.14.zip; \
+		fi ;\
+		unzip $(DEP_DIR)/SDL2_ttf.zip -d $(DEP_DIR); \
+		mv $(DEP_DIR)/SDL2_ttf-2.0.14 $(DEP_DIR)/SDL2_ttf; \
+		rm -rf $(DEP_DIR)/SDL2_ttf.zip; \
+	fi
+
+sdl2_install: sdl2_download
+	@mkdir -p $(PREFIX)
+	@if [ ! -f $(PREFIX)/lib/libSDL2.a ]; then \
+		cd $(DEP_DIR)/SDL2; \
+		./configure --prefix=$(PREFIX) ; \
+		cd $(THIS_DIR); \
+		make -C $(DEP_DIR)/SDL2; \
+		make -C $(DEP_DIR)/SDL2 install; \
+	fi
+
+sdl2_image_install: sdl2_image_download
+	@mkdir -p $(PREFIX)
+	@if [ ! -f $(PREFIX)/lib/libSDL2_image.a ]; then \
+		cd $(DEP_DIR)/SDL2_image; \
+		./configure --prefix=$(PREFIX) ; \
+		cd $(THIS_DIR); \
+		make -C $(DEP_DIR)/SDL2_image; \
+		make -C $(DEP_DIR)/SDL2_image install; \
+	fi
+
+
+sdl2_ttf_install: sdl2_ttf_download
+	@mkdir -p $(PREFIX)
+	@if [ ! -f $(PREFIX)/lib/libSDL2_ttf.a ]; then \
+		cd $(DEP_DIR)/SDL2_ttf; \
+		./configure --prefix=$(PREFIX) ; \
+		cd $(THIS_DIR); \
+		make -C $(DEP_DIR)/SDL2_ttf; \
+		make -C $(DEP_DIR)/SDL2_ttf install; \
+	fi
+
+download: sdl2_download sdl2_image_download sdl2_ttf_download
+
+install_dependencies: download sdl2_install sdl2_image_install sdl2_ttf_install
+
+clean_proj:
+	@$(MAKE) -C $(LIBDIR) clean
+	@$(RM) -rf $(OBJECTS)
+	@$(RM) -rf $(OBJECTS_DIR)
+
+fclean_proj: clean_proj
+	@$(MAKE) -C $(LIBDIR) fclean
+	@$(RM) -rf $(NAME)
+
+update: fclean_proj all
+
+
 clean:
-	@rm -f $(OBJ)
-	@make $(MK_LIB) $(LIB_DIR) clean
-fclean: 
-	@rm -rf $(OBJ)
-	@rm -f $(NAME)
-	@make $(MK_LIB) $(LIB_DIR) fclean
+	@$(MAKE) -C $(DEP_DIR)/SDL2 clean
+	@$(MAKE) -C $(DEP_DIR)/SDL2_image clean
+	@$(MAKE) -C $(DEP_DIR)/SDL2_ttf clean
+
+fclean: clean
+	@$(RM) -rf $(PREFIX)
+	@$(RM) -rf $(DEP_DIR)
+
 re: fclean all
-	
