@@ -24,7 +24,7 @@ SOURCES = rt_parser1.c \
           rt_parser.c \
           rt_errors.c \
           rt_tools.c \
-          RT_read_file.c
+          rt_read_file.c
 
 OBJECTS = $(SOURCES:.c=.o)
 OBJECTS := $(addprefix $(OBJECTS_DIR)/, $(OBJECTS))
