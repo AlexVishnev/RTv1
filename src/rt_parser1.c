@@ -12,11 +12,11 @@
 
 #include "rtv1.h"
 
-t_ray	get_position_object(char *cord, t_src *src)
+cl_float3	get_position_object(char *cord, t_src *src)
 {
-	t_ray		ray;
+	cl_float3		ray;
 
-	src->pos = (t_pos){0, 0, 0, 0, 0};
+	src->pos = (t_pos){0, 0, 0, 0};
 	while (*cord != '}' && *cord)
 	{
 		if (*cord == '{' && src->pos.x == 0)
@@ -28,7 +28,11 @@ t_ray	get_position_object(char *cord, t_src *src)
 		cord++;
 	}
 	check_adecvate(10000, &src->pos, 0, NULL);
-	ray = (t_ray){src->pos.x, src->pos.y, src->pos.z, 0, 0};
+	// sray = (cl_float3){src->pos.x, src->pos.y, src->pos.z};
+	ray.x = src->pos.x;
+	ray.y = src->pos.y;
+	ray.z = src->pos.z;
+
 	return (ray);
 }
 
@@ -95,7 +99,10 @@ t_obj	get_object_params(char *par, t_obj *obj, t_src *src)
 		par++;
 	}
 	get_spetial_params(obj, par);
-	obj->color = (t_ray){src->color.red, src->color.green,
-	src->color.blue, 0, 0};
+	// obj->color = (cl_float4){src->color.red, src->color.green,	src->color.blue, 0};
+	obj->color.x = src->color.red;
+	obj->color.y = src->color.green;
+	obj->color.z = src->color.blue;
+	obj->color.w = 0;
 	return (*obj);
 }

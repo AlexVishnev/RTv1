@@ -66,7 +66,7 @@ typedef	struct		s_pos
 	float			y;
 	float			z;
 	float			w;
-	float			r;
+	// float			r;
 }					t_pos;
 
 typedef struct		s_ray
@@ -74,16 +74,16 @@ typedef struct		s_ray
 	float			x;
 	float			y;
 	float			z;
-	float			w;
-	float			reflect;
+	// float			w;
+	// float			reflect;
 }					t_ray;
 
 typedef	struct		s_light
 {
 	int				type;
 	double			intensive;
-	t_ray			position;
-	t_ray			direction;
+	cl_float3		position;
+	cl_float3		direction;
 }					t_light;
 
 typedef	struct		s_cam
@@ -103,9 +103,9 @@ typedef	struct		s_color
 typedef	struct		s_obj
 {
 	int				type;
-	t_ray			mid;
-	t_ray			direction;
-	t_ray			color;
+	cl_float3		mid;
+	cl_float3		direction;
+	cl_float4		color;
 	float			specular;
 	float			radius;
 	float			reflection;
@@ -114,9 +114,9 @@ typedef	struct		s_obj
 
 typedef	struct		s_params
 {
-	t_ray			o;
-	t_ray			d;
-	t_ray			camera_rot;
+	cl_float3		o;
+	cl_float3		d;
+	cl_float3		camera_rot;
 	t_obj			*object;
 	t_light			*light;
 	t_cam			look_pos;
@@ -198,7 +198,7 @@ void				wr_data(Uint8 d[], Uint8 m[], const char *z[], t_src *s);
 SDL_Cursor			*init_system_cursor(const char *image[], t_src *src);
 
 void				get_parameters(char *str, t_src *src);
-t_ray				get_position_object(char *cord, t_src *object);
+cl_float3			get_position_object(char *cord, t_src *object);
 void				get_spetial_params(t_obj *obj, char *params);
 t_obj				get_object_params(char *cord, t_obj *object, t_src *src);
 t_color				get_color_object(char *col);

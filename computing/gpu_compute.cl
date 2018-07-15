@@ -32,21 +32,22 @@ typedef	struct			s_light
 {
 	int					type;
 	double				intensity;
-	t_ray				position;
-	t_ray				direction;
+	float3				position;
+	float3				direction;
 }						t_light;
 
-typedef	struct			s_obj
+typedef	struct		s_obj
 {
-	int					type;
-	t_ray				mid;
-	t_ray				direction;
-	t_ray				color;
-	float				specular;
-	float				radius;
-	float				reflect;
-	float				angle;
-}						t_obj;
+	int				type;
+	float3			mid;
+	float3			direction;
+	float4			color;
+	float			specular;
+	float			radius;
+	float			reflect;
+	float			angle;
+}					t_obj;
+
 
 typedef struct			s_cam
 {
@@ -64,9 +65,9 @@ typedef	struct	s_trace
 
 typedef	struct	s_params
 {
-	t_ray		O;
-	t_ray		Dimention;
-	t_ray		camera_rot;
+	float3		O;
+	float3		Direct;
+	float3		camera_rot;
 	long		obj;
 	long		light;
 	t_cam		viewport;
@@ -81,43 +82,51 @@ typedef	struct	s_params
 
 
 int			RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max);
-int			ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
-							t_ray O, t_ray D, float t_min, float t_max);
+
 int			RgbToInt(int red, int green, int blue);
-double		GetForms(__constant t_obj *obj, double t, t_ray P, t_ray V, t_ray VA);
-double		GenerateLigth(__constant t_obj *obj, __constant t_light *light,t_params *par, t_ray P, t_ray N, t_ray V, float specular);
-float		RayLenght(t_ray r);
-float		__OVERLOAD__ dot(t_ray a, t_ray b);
 
-t_ray		global_normal(t_trace *tr, t_ray P);
-t_ray		matrix_rotate(double a, double b, double c, t_ray r);
-t_ray		ray_multipl(double a, t_ray b);
-t_ray		ray_summary(t_ray a, t_ray b);
-t_ray		divide_ray(t_ray a, float b);
-t_ray		ray_subs(t_ray a, t_ray b);
-t_ray		normal(t_ray a);
-t_ray		ReflectRay(t_ray R, t_ray N);
-t_ray		SetCameraPosititon(t_params par, float x, float y);
+
 float2		discriminant(float3 k);
-float2		discriminant_cone(float k[3]);
-float2		Intersect_Cylinder(__constant t_obj *obj, t_ray P, t_ray V);
-float2		Intersect_Cone(__constant t_obj *obj, t_ray P, t_ray V);
-float2		Inersect_Sphere(__constant t_obj *obj, t_ray O, t_ray D);
-float2		Intersect_Plane(__constant t_obj *obj, t_ray O, t_ray D);
 
-float	RayLenght(t_ray ray)
+
+float3		SetCameraPosititon(t_params par, float x, float y);
+float3		matrix_rotate(double a, double b, double c, float3 r);
+int 		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
+							float3 O, float3 D, float t_min, float t_max);
+float3		GlobalNormal(t_trace *tr, float3 P);
+float3		normal(float3 a);
+float3		ReflectRay(float3 R, float3 N);
+float		RayLenght(float3 ray);
+float2		Intersect_Cylinder(__constant t_obj *obj, float3 P, float3 V);
+double		GetForms(__constant t_obj *obj, double t, float3 P, float3 V, float3 VA);
+float2		Intersect_Cone(__constant t_obj *obj, float3 P, float3 V);
+float2		Inersect_Sphere(__constant t_obj *obj, float3 O, float3 D);
+float2		Intersect_Plane(__constant t_obj *obj, float3 O, float3 D);
+double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 P, float3 N, float3 V, float spec);
+float3		ray_multipl(double a, float3 b);
+float3		ray_summary(float3 a, float3 b);
+float3		divide_ray(float3 a, float b);
+float3		ray_subs(float3 a, float3 b);
+float		ft_dot(float3 a, float3 b);
+
+
+
+
+float	RayLenght(float3 ray)
 {
 	return (sqrt(ray.x * ray.x + ray.y * ray.y + ray.z * ray.z));
 }
 
-t_ray	ray_summary(t_ray a, t_ray b)
+float3	ray_summary(float3 a, float3 b)
 {
-	return ((t_ray){a.x + b.x, a.y + b.y, a.z + b.z});
+	return ((float3){a.x + b.x, a.y + b.y, a.z + b.z});
 }
 
-t_ray	ray_multipl(double a, t_ray b)
+
+
+float3	ray_multipl(double a, float3 b)
 {
-	return ((t_ray){a * b.x, a * b.y, a * b.z});
+	return ((float3){a * b.x, a * b.y, a * b.z});
 }
 
 int		RgbToInt(int r, int g, int b)
@@ -125,54 +134,59 @@ int		RgbToInt(int r, int g, int b)
 	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
 }
 
-t_ray	divide_ray(t_ray a, float b)
+
+float3	divide_ray(float3 a, float b)
 {
 	if (b == 0)
 		return (a);
-	return ((t_ray){a.x / b, a.y / b, a.z / b});
+	return ((float3){a.x / b, a.y / b, a.z / b});
 }
 
-t_ray	ray_subs(t_ray a, t_ray b)
+
+float3	ray_subs(float3 a, float3 b)
 {
-	return ((t_ray){a.x - b.x, a.y - b.y, a.z - b.z});
+	return ((float3){a.x - b.x, a.y - b.y, a.z - b.z});
 }
 
-t_ray	SetCameraPosititon(t_params par, float x, float y)
+
+float3	SetCameraPosititon(t_params par, float x, float y)
 {
-	return ((t_ray){x * par.viewport.w / par.screenw, y * par.viewport.h / par.screenh, par.viewport.dist * 2});
+	return ((float3){x * par.viewport.w / par.screenw, y * par.viewport.h / par.screenh, par.viewport.dist * 2});
 }
 
-t_ray	matrix_rotate(double a, double b, double c, t_ray r)
+
+float3	matrix_rotate(double a, double b, double c, float3 r)
 {
-	return ((t_ray){((cos(b) * cos(c)) * r.x) + ((cos(c) * sin(a) * sin(b)
+	return ((float3){((cos(b) * cos(c)) * r.x) + ((cos(c) * sin(a) * sin(b)
 	 - cos(a) * sin(c)) * r.y) + ((cos(a) * cos(c) * sin(b) + sin(a) * sin(c)) * r.z), 
 	((cos(b) * sin(c)) * r.x) + ((cos(a) * cos(c) + sin(a) * sin(b) * sin(c)) * r.y)
 	 + ((-cos(c) * sin(a) + cos(a) * sin(b) * sin(c)) * r.z),((-sin(b)) * r.x) +
 	  ((cos(b) * sin(a)) * r.y) + ((cos(a) * cos(b)) * r.z)});
 }
 
-t_ray	normal(t_ray a)
+float3	normal(float3 a)
 {
 	return (divide_ray(a, RayLenght(a)));
 }
 
-
-float	__OVERLOAD__ dot(t_ray a, t_ray b)
+float	ft_dot(float3 a, float3 b)
 {
 	return (a.x * b.x + a.y * b.y + a.z * b.z);
 }
 
-t_ray	ReflectRay(t_ray R, t_ray N)
+
+float3	ReflectRay(float3 R, float3 N)
 {
-    return (ray_subs(ray_multipl(dot(N, R), ray_multipl(2.0, N)), R));
+	// return (dot(N, R) * (2.0f * N)) - R;
+    return (ray_subs(ray_multipl(ft_dot(N, R), ray_multipl(2.0, N)), R));
 }
 
-double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	t_ray P, t_ray N, t_ray V, float spec)
+double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 P, float3 N, float3 V, float spec)
 {
 	double		intens;
 	int			j;
-	t_ray		L;
-	t_ray		R;
+	float3		L;
+	float3		R;
 	float		nl;
 	float		rv;
 	float		max;
@@ -196,18 +210,18 @@ double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params
 				L = light[j].direction;
 				max = INFINITY;
 			}
-			if (dot(V, N) < 0)
+			if (ft_dot(V, N) < 0)
 				continue ;
 			ClosestIntersection(obj, &shadows, par, P, L, 0.001, max);
 			if (shadows.closest_intersect != INFINITY)
 				continue ;
-			nl = dot(N, L);
+			nl = ft_dot(N, L);
 			if (nl > 0)
 				intens += light[j].intensity * nl / (RayLenght(N) * RayLenght(L));
 			if (spec >= 0)
 			{
-				R = ray_subs(ray_multipl(dot(N, L), ray_multipl(2.0, N)), L);
-				rv = dot(R, V);
+				R = ray_subs(ray_multipl(ft_dot(N, L), ray_multipl(2.0, N)), L);
+				rv = ft_dot(R, V);
 				if (rv > 0)
 					intens += light[j].intensity * pow(rv / (RayLenght(R) * RayLenght(V)), spec);
 			}
@@ -215,16 +229,6 @@ double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params
 	}
 	intens > 1.0 ? intens = 1.0 : 0;
 	return (intens);
-}
-
-float2	discriminant_cone(float k[3])
-{
-	float	d;
-
-	d =  k[1] * k[1] - 4.0f * k[0] * k[2];
-	if (d < 0)
-		return ((float2){INFINITY, INFINITY});
-	return ((float2){(-k[1] + sqrt(d)) / (2.0f * k[0]), (-k[1] - sqrt(d)) / (2.0f * k[0])});
 }
 
 float2	discriminant(float3 k)
@@ -237,94 +241,97 @@ float2	discriminant(float3 k)
 	return ((float2){(-k.y + sqrt(d)) / (2.0f * k.x), (-k.y - sqrt(d)) / (2.0f * k.x)});
 }
 
-double		GetForms(__constant t_obj *obj, double t, t_ray P, t_ray V, t_ray VA)
+
+double		GetForms(__constant t_obj *obj, double t, float3 P, float3 V, float3 VA)
 {
 	float2 k;
 
 	if (t < 0)
 		return (INFINITY);
-	k.x = dot(VA, ray_subs(ray_summary(P, ray_multipl(t, V)), obj->mid));
-	k.y = dot(VA, ray_subs(ray_summary(P, ray_multipl(t, V)), obj->direction));
+	k.x = ft_dot(VA, ray_subs(ray_summary(P, ray_multipl(t, V)), obj->mid));
+	k.y = ft_dot(VA, ray_subs(ray_summary(P, ray_multipl(t, V)), obj->direction));
 	if (k.x < 0.0 && k.y > 0.0)
 		return (t);
 	return (INFINITY);
 }
 
-float2	Inersect_Sphere(__constant t_obj *obj, t_ray O, t_ray D)
+
+float2	Inersect_Sphere(__constant t_obj *obj, float3 O, float3 D)
 {
 	float3 c;
 
-	c.x = dot(D, D);
-	c.y = 2.0f * dot(ray_subs(O, obj->mid), D);
-	c.z = dot(ray_subs(O, obj->mid), ray_subs(O, obj->mid)) - obj->radius * obj->radius;
+	c.x = ft_dot(D, D);
+	c.y = 2.0f * ft_dot(ray_subs(O, obj->mid), D);
+	c.z = ft_dot(ray_subs(O, obj->mid), ray_subs(O, obj->mid)) - obj->radius * obj->radius;
 	return (discriminant(c));
 }
 
 
-float2	Intersect_Cone(__constant t_obj *obj, t_ray P, t_ray V)
+float2	Intersect_Cone(__constant t_obj *obj, float3 P, float3 V)
 {
 	float	angle;
 	float	cospw;
 	float	sinpw;
-	t_ray	VA;
-	t_ray	deltaP;
-	t_ray	A;
-	t_ray	B;
+	float3	VA;
+	float3	deltaP;
+	float3	A;
+	float3	B;
 	float2	t;
 	float3	v;
 
 	angle = (obj->angle * M_PI) / 180;
 	VA = normal(ray_subs(obj->mid, obj->direction));
 	deltaP = ray_subs(P, obj->mid);
-	A = ray_subs(V, ray_multipl(dot(V, VA), VA));
-	B = ray_subs(deltaP, ray_multipl(dot(deltaP, VA), VA));
+	A = ray_subs(V, ray_multipl(ft_dot(V, VA), VA));
+	B = ray_subs(deltaP, ray_multipl(ft_dot(deltaP, VA), VA));
 	cospw = cos(angle) * cos(angle);
 	sinpw = sin(angle) * sin(angle);
 
-	v.x = cospw * dot(A, A) - sinpw * dot(V, VA) * dot(V, VA);
-	v.y = 2.0f * cospw * dot(A, B) - 2.0f * sinpw * dot(V, VA) * dot(deltaP, VA);
-	v.z = cospw * dot(B, B) - sinpw * dot(deltaP, VA) * dot(deltaP, VA);
+	v.x = cospw * ft_dot(A, A) - sinpw * ft_dot(V, VA) * ft_dot(V, VA);
+	v.y = 2.0f * cospw * ft_dot(A, B) - 2.0f * sinpw * ft_dot(V, VA) * ft_dot(deltaP, VA);
+	v.z = cospw * ft_dot(B, B) - sinpw * ft_dot(deltaP, VA) * ft_dot(deltaP, VA);
 
 	t = discriminant(v);
 	return ((float2){GetForms(obj, t.x, P, V, VA), GetForms(obj, t.y, P, V, VA)});
 }
 
-float2	Intersect_Cylinder(__constant t_obj *obj, t_ray P, t_ray V)
+
+float2	Intersect_Cylinder(__constant t_obj *obj, float3 P, float3 V)
 {
-	t_ray	Normal;
-	t_ray	deltaP;
-	t_ray	A;
-	t_ray	B;
+	float3	Normal;
+	float3	deltaP;
+	float3	A;
+	float3	B;
 	float2	t;
 	float3	v;
 
 	Normal = normal(ray_subs(obj->mid, obj->direction));
 	deltaP = ray_subs(P, obj->mid);
 
-	A = ray_subs(V, ray_multipl(dot(V, Normal), Normal));
-	B = ray_subs(deltaP, ray_multipl(dot(deltaP, Normal), Normal));
+	A = ray_subs(V, ray_multipl(ft_dot(V, Normal), Normal));
+	B = ray_subs(deltaP, ray_multipl(ft_dot(deltaP, Normal), Normal));
 		
-	v.x = dot(A, A);
-	v.y = 2.0f * dot(A, B);
-	v.z = dot(B, B) - obj->radius * obj->radius;
+	v.x = ft_dot(A, A);
+	v.y = 2.0f * ft_dot(A, B);
+	v.z = ft_dot(B, B) - obj->radius * obj->radius;
 	t = discriminant(v);
 	return ((float2){GetForms(obj, t.x, P, V, Normal), GetForms(obj, t.y, P, V, Normal)});
+
 }
 
-
-float2	Intersect_Plane(__constant t_obj *obj, t_ray O, t_ray D)
+float2	Intersect_Plane(__constant t_obj *obj, float3 O, float3 D)
 {
-	t_ray	X;
-	t_ray	C;
-	t_ray	N;
+	float3	X;
+	float3	C;
+	float3	N;
 	float2	t;
 	float2	k;
 
 	C = obj->mid;
 	N = obj->direction;
 	X = ray_subs(O, C);
-	k.x = dot(D, N);
-	k.y = dot(X, N);
+	k.x = ft_dot(D, N);
+	k.y = ft_dot(X, N);
 	if (k.x)
 	{
 		t.x = -k.y / k.x;
@@ -335,7 +342,7 @@ float2	Intersect_Plane(__constant t_obj *obj, t_ray O, t_ray D)
  }
 
 int		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
-								t_ray O, t_ray D, float t_min, float t_max)
+								float3 O, float3 D, float t_min, float t_max)
 {
 	int			i;
 	float2	t;
@@ -366,11 +373,12 @@ int		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
 	return (tr->closest_intersect);
 }
 
-t_ray	global_normal(t_trace *tr, t_ray P)
+
+float3	GlobalNormal(t_trace *tr, float3 P)
 {
-	t_ray	Normal;
-	t_ray	center;
-	t_ray	projection;
+	float3	Normal;
+	float3	center;
+	float3	projection;
 
 	if (tr->closest_object.type == SPHERE)
 	{
@@ -382,7 +390,7 @@ t_ray	global_normal(t_trace *tr, t_ray P)
 	{
 		center = normal(ray_subs(tr->closest_object.direction, tr->closest_object.mid));
 		Normal = ray_subs(P, tr->closest_object.mid);
-		projection = ray_multipl(dot(Normal, center), center);
+		projection = ray_multipl(ft_dot(Normal, center), center);
 		Normal = ray_subs(Normal, projection);
 		Normal = normal(Normal);
 		return (Normal);
@@ -394,38 +402,42 @@ t_ray	global_normal(t_trace *tr, t_ray P)
 int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max)
 {
 	t_trace		tr;
-	t_ray		P;
-	t_ray		N;
-	t_ray		color[RECURS + 1];
+	float3		P;
+	float3		N;
+	float4		color[RECURS + 1];
 	int			recurs;
 	double		intensity;
-	t_ray		DD;
+	float3		DD;
+
 
 	recurs = 0;
 	while (recurs <= RECURS)
 	{
-		color[recurs] = (t_ray){0, 0, 0, 0};
+		color[recurs] = (float4){0, 0, 0, 0};
 		recurs++;
 	}
 	recurs = RECURS;
 	while (recurs >= 0)
 	{
-		ClosestIntersection(obj, &tr, &par, par.O, par.Dimention, t_min, t_max);
+
+		ClosestIntersection(obj, &tr, &par, par.O, par.Direct, t_min, t_max);
 		if (tr.closest_intersect == INFINITY)
 		{
-			color[recurs] = (t_ray){0, 0, 0};
+			color[recurs] = (float4){0, 0, 0, 0};
 			break ;
 		}
-		P = ray_summary(par.O, ray_multipl(tr.closest_intersect, par.Dimention)); //compute intersection
-		N = global_normal(&tr, P);
-		DD = (t_ray){-par.Dimention.x, -par.Dimention.y, -par.Dimention.z, 0};
-		intensity = GenerateLigth(obj, light, &par, P, N, DD, tr.closest_object.specular);
-		color[recurs] = ray_multipl(intensity, tr.closest_object.color);
-		color[recurs].reflect = tr.closest_object.reflect;
+		P = ray_summary(par.O, ray_multipl(tr.closest_intersect, par.Direct)); //compute intersection
+		N = GlobalNormal(&tr, P);
+		DD = (float3){-par.Direct.x, -par.Direct.y, -par.Direct.z};
+		intensity = GenerateLigth(obj, light, &par, P, N, DD, tr.closest_object.specular); //NATIVE
+		color[recurs] = (float)intensity * tr.closest_object.color;
+		color[recurs].w = tr.closest_object.reflect;
 		if (tr.closest_object.reflect > 0)
 		{
-			par = (t_params){P, ReflectRay(DD, N), par.camera_rot, par.obj, par.light, par.viewport,  par.t_min,
-				par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM!
+			// par = (t_params){P, ReflectRay(DD, N),  par.camera_rot, par.obj, par.light, par.viewport,  par.t_min, 
+			// par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM! // reflect without viewport; 
+			
+			par.Direct = ReflectRay(DD, N); // reflect with viewport; 
 			recurs--;
 		}
 		else
@@ -434,8 +446,9 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	recurs = -1;
 	while (++recurs < RECURS)
 	{
-		color[recurs + 1] = ray_summary(ray_multipl(1 - color[recurs + 1].reflect, color[recurs + 1]),
-						ray_multipl(color[recurs + 1].reflect, color[recurs]));
+		color[recurs + 1] = (color[recurs + 1].w * color[recurs + 1]) +
+						(color[recurs + 1].w * color[recurs]);
+		
 	}
 	return (RgbToInt(color[recurs].x, color[recurs].y, color[recurs].z));
 }
@@ -446,7 +459,7 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 	int x = get_global_id(0);
 	int y = get_global_id(1);
 
-	params.Dimention = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
+	params.Direct = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
 	img_pxl[x + y * params.screenw] = RayTracer(obj, light, params, 0.001f, INFINITY);
 }

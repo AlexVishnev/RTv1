@@ -14,7 +14,7 @@
 
 void	get_camera_direction(char *cord, t_src *src)
 {
-	src->cam_pos = (t_ray){-500, -505, -501, -500, 0};
+	src->cam_pos = (t_ray){-500, -505, -501};
 	while (*cord && *cord != ']')
 	{
 		if (*cord == '{')
@@ -26,10 +26,14 @@ void	get_camera_direction(char *cord, t_src *src)
 		cord++;
 	}
 	check_adecvate(POS_LIM, (t_pos *)&src->cam_pos, 1, NULL);
-	src->params.d = (t_ray){(src->cam_pos.x * M_PI) / 180,
-		(src->cam_pos.y * M_PI) / 180,
-		(src->cam_pos.z * M_PI) / 180, 0, 0};
-	src->cam_pos = (t_ray){0, 0, 0, 0 - 0, 0};
+	// src->params.d = (t_ray){(src->cam_pos.x * M_PI) / 180,
+		// (src->cam_pos.y * M_PI) / 180,
+		// (src->cam_pos.z * M_PI) / 180};
+	src->params.d.x = src->cam_pos.x * M_PI / 180;
+	src->params.d.y = src->cam_pos.y * M_PI / 180;
+	src->params.d.z = src->cam_pos.z * M_PI / 180;
+
+	src->cam_pos = (t_ray){0, 0, 0};
 }
 
 void	get_camera_position(char *cord, t_src *src)
@@ -52,16 +56,23 @@ void	get_camera_position(char *cord, t_src *src)
 			src->cam_pos.z = ft_atof(++cord, '}');
 		cord++;
 	}
-	src->params.o = (t_ray){src->cam_pos.x,
-		src->cam_pos.y,
-		src->cam_pos.z, 0, 0};
+	// src->params.o = (t_ray){src->cam_pos.x,
+		// src->cam_pos.y,
+		// src->cam_pos.z};
+	src->params.o.x = src->cam_pos.x;
+	src->params.o.y = src->cam_pos.y;
+	src->params.o.z = src->cam_pos.z;
 	check_adecvate(POS_LIM, (t_pos *)&src->cam_pos, 1, NULL);
 }
 
 void	get_spotlights_direction(char *cord, t_src *src, int ind)
 {
-	src->params.light[ind].direction = (t_ray){0, 0, 0, 0, 0};
-	src->params.light[ind].position = (t_ray){0, 0, 0, 0, 0};
+	src->params.light[ind].direction.x = 0;
+	src->params.light[ind].direction.y = 0;
+	src->params.light[ind].direction.z = 0;
+	src->params.light[ind].position.x = 0;
+	src->params.light[ind].position.y = 0;
+	src->params.light[ind].position.z = 0;
 	while (*cord != ']' && *cord)
 	{
 		if (*cord == '{')
