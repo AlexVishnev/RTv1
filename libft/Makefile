@@ -85,17 +85,22 @@ OBJ = $(addprefix obj/, $(addsuffix .o, $(FILES)))
 OBJ_F = $(addsuffix .o, $(FILES))
 
 all: $(NAME)
-	@if [ ! -d obj ] ; then mkdir obj; fi
+
 $(NAME):$(OBJ)
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 	@echo "\033[0;32m[ ✔ ] Library created!\033[0m"
+
 obj/%.o: %.c
+	@if [ ! -d obj ] ; then mkdir obj; fi
 	@$(CC) -o $@ $(FLAGS) $(HEAD) -c $^
+
 clean:
 	@rm -f $(OBJ)
 	@echo "\033[31m[ ✔ ] Cleaning succesed [ ✔ ] \033[33m(lib) \033[0m"
+
 fclean: clean
 	@rm -f $(NAME)
 	@echo  "\033[0;31mFile \033[0;33m$(NAME) \033[0;31mremoved\033[0m"
+
 re: fclean all
