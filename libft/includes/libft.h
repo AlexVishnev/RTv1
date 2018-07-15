@@ -67,7 +67,7 @@ void			ft_striteri(char *s, void (*f)(unsigned int, char *));
 void			ft_striter(char *s, void (*f)(char *));
 void			*ft_memset(void *dest, int c, size_t len);
 void			ft_bzero(void *dest, size_t len);
-void			*ft_memcpy(void *restrict d, const void *restrict s, size_t n);
+void			*ft_memcpy(void *d, const void *s, size_t n);
 void			*ft_memccpy(void *d, const void *s, int c, size_t n);
 void			*ft_memmove(void *dst, const void *src, size_t len);
 void			*ft_memchr(const void *s, int c, size_t n);
