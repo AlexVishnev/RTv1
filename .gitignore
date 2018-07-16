@@ -2,7 +2,8 @@ RTv1
 RT
 /downloads
 /build
-
+/platforms
+/devices
 
 # Created by https://www.gitignore.io/api/c,vim,c++,linux,macos,vagrant,visualstudiocode
 

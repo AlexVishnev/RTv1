@@ -47,13 +47,13 @@ IFLAGS = -I. -I$(INCLUDE_DIR) \
 LFLAGS = \
 		-L$(LIBDIR) -lft \
 		-L$(PREFIX)/lib -lSDL2 -lSDL2_ttf -lSDL2_image \
-		-framework OpenGL -framework AppKit -framework OpenCl
+		-framework OpenGL -framework AppKit -framework OpenCL
 
 .PHONY: all download clean fclean re sdl2 install_dependencies update\
 				sdl2_download sdl2_image_download sdl2_ttf_download \
 				sdl2_install sdl2_image_install sdl2_ttf_install
 
-all: install_dependencies $(NAME)
+all: $(NAME)
 
 $(NAME): install_dependencies $(LIBNAME) $(OBJECTS)
 	@$(PRINTF) "$(SILENT_COLOR)./$(NAME) binary$(NO_COLOR)"
@@ -65,6 +65,14 @@ $(OBJECTS_DIR)/%.o: $(SOURCES_DIR)/%.c
 	@mkdir -p $(OBJECTS_DIR)/sdl2 $(OBJECTS_DIR)/scenes $(OBJECTS_DIR)/objects
 	@$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<
 	@$(PRINTF) "$(OK_COLOR)✓ $(NO_COLOR)$<\n"
+
+platforms:
+	@$(CC) -framework OpenCL -o $@ -c $@.c
+	@$(PRINTF) "$(OK_COLOR)✓ $(NO_COLOR)$@.c\n"
+
+devices:
+	@$(CC) -framework OpenCL -o $@ -c $@.c
+	@$(PRINTF) "$(OK_COLOR)✓ $(NO_COLOR)$@.c\n"
 
 $(LIBNAME):
 	make -C $(LIBDIR) all

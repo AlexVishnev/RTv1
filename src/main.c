@@ -6,7 +6,7 @@
 /*   By: avishnev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/14 12:43:10 by avishnev          #+#    #+#             */
-/*   Updated: 2018/04/14 15:39:31 by avishnev         ###   ########.fr       */
+/*   Updated: 2018/07/15 16:20:04 by avishnev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,47 +16,28 @@ void		time_delay(void)
 {
 	int					delay;
 	static unsigned int	time;
-	static char			vsync = 1;
 
-	vsync == 1 ? SDL_GL_SetSwapInterval(1) : 0;
-	if (vsync)
-	{
-		delay = 16 - (SDL_GetTicks() - time);
-		if (delay < 0)
-			SDL_Delay(0);
-		else
-			SDL_Delay(delay);
-		time = SDL_GetTicks();
-	}
+	SDL_GL_SetSwapInterval(1);
+	delay = 16 - (SDL_GetTicks() - time);
+	if (delay < 0)
+		delay = 0;
+	SDL_Delay(delay);
+	time = SDL_GetTicks();
 }
 
-static void	fps_color(t_src *src, unsigned int fps, TTF_Font *ttf, char *fps_str)
+static void	fps_color(t_src *src, unsigned int fps, TTF_Font *ttf,
+	char *fps_str)
 {
-	int r;
-	int g;
-	int b;
-
-	(void) ttf;
+	(void)ttf;
 	if (fps >= 40)
-	{
-		r = 0;
-		g = 255;
-		b = 0;
-	}
+		src->fps = TTF_RenderText_Solid(src->ttf, fps_str,
+			(SDL_Color){0, 255, 0, 255});
 	else if (fps >= 20 && fps < 40)
-	{
-		r = 255;
-		g = 156;
-		b = 127;
-	}
+		src->fps = TTF_RenderText_Solid(src->ttf, fps_str,
+			(SDL_Color){255, 156, 127, 255});
 	else
-	{
-		r = 255;
-		g = 0;
-		b = 0;
-	}
-	src->fps = TTF_RenderText_Solid(src->ttf, fps_str,
-					(SDL_Color){r, g, b, 255});
+		src->fps = TTF_RenderText_Solid(src->ttf, fps_str,
+			(SDL_Color){255, 0, 0, 255});
 }
 
 void		init_fps(t_src *src)

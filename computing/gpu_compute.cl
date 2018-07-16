@@ -18,6 +18,10 @@
 # define CONE 4
 # define RECURS 1
 
+# ifndef M_PI
+#  define M_PI           3.14159265358979323846  /* pi */
+# endif
+
 
 typedef struct			s_ray
 {
@@ -90,7 +94,7 @@ float2		discriminant(float3 k);
 
 
 float3		SetCameraPosititon(t_params par, float x, float y);
-float3		matrix_rotate(double a, double b, double c, float3 r);
+float3		matrix_rotate(float a, float b, float c, float3 r);
 int 		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
 							float3 O, float3 D, float t_min, float t_max);
 float3		GlobalNormal(t_trace *tr, float3 P);
@@ -155,7 +159,7 @@ float3	SetCameraPosititon(t_params par, float x, float y)
 }
 
 
-float3	matrix_rotate(double a, double b, double c, float3 r)
+float3	matrix_rotate(float a, float b, float c, float3 r)
 {
 	return ((float3){((cos(b) * cos(c)) * r.x) + ((cos(c) * sin(a) * sin(b)
 	 - cos(a) * sin(c)) * r.y) + ((cos(a) * cos(c) * sin(b) + sin(a) * sin(c)) * r.z), 
