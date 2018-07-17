@@ -111,6 +111,7 @@ float3		ray_multipl(double a, float3 b);
 float3		ray_summary(float3 a, float3 b);
 float3		divide_ray(float3 a, float b);
 float3		ray_subs(float3 a, float3 b);
+float4 		ray_multipl1(double a, float4 b);
 float		ft_dot(float3 a, float3 b);
 
 
@@ -131,6 +132,11 @@ float3	ray_summary(float3 a, float3 b)
 float3	ray_multipl(double a, float3 b)
 {
 	return ((float3){a * b.x, a * b.y, a * b.z});
+}
+
+float4 ray_multipl1(double a, float4 b)
+{
+	return ((float4){a * b.x, a * b.y, a * b.z, a * b.w});
 }
 
 int		RgbToInt(int r, int g, int b)
@@ -430,11 +436,13 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 			color[recurs] = (float4){0, 0, 0, 0};
 			break ;
 		}
-		P = ray_summary(par.O, ray_multipl(tr.closest_intersect, par.Direct)); //compute intersection
+		// P = ray_summary(par.O, ray_multipl(tr.closest_intersect, par.Direct)); //compute intersection
+		P = par.O + (float)tr.closest_intersect * par.Direct;
 		N = GlobalNormal(&tr, P);
 		DD = (float3){-par.Direct.x, -par.Direct.y, -par.Direct.z};
 		intensity = GenerateLigth(obj, light, &par, P, N, DD, tr.closest_object.specular); //NATIVE
 		color[recurs] = (float)intensity * tr.closest_object.color;
+		// color[recurs] = ray_multipl1(intensity, tr.closest_object.color);
 		color[recurs].w = tr.closest_object.reflect;
 		if (tr.closest_object.reflect > 0)
 		{
@@ -450,8 +458,8 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	recurs = -1;
 	while (++recurs < RECURS)
 	{
-		color[recurs + 1] = (color[recurs + 1].w * color[recurs + 1]) +
-						(color[recurs + 1].w * color[recurs]);
+		color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] +
+						(color[recurs + 1].w * color[recurs]); // compute reflection
 		
 	}
 	return (RgbToInt(color[recurs].x, color[recurs].y, color[recurs].z));
