@@ -23,15 +23,6 @@
 # endif
 
 
-typedef struct			s_ray
-{
-	float				x;
-	float				y;
-	float				z;
-	float				w;
-	float				reflect;
-}						t_ray;
-
 typedef	struct			s_light
 {
 	int					type;
@@ -152,15 +143,14 @@ double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params
 
 	intens = 0.0;
 	j = -1;
-	while (++j < par->lights)
+	while (isless(++j, par->lights))
 	{
-		if (light[j].type == GLOBAL)
+		if (isequal(light[j].type, GLOBAL))
 			intens += light[j].intensity;
 		else
 		{
-			if (light[j].type == POINT)
+			if (isequal(light[j].type, POINT))
 			{
-				// L = ray_subs(light[j].position, P);
 				L = light[j].position - P;
 				max = 0.99f;
 			}
@@ -169,25 +159,24 @@ double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params
 				L = light[j].direction;
 				max = INFINITY;
 			}
-			if (dot(V, N) < 0)
+			if (isequal(dot(V, N), 0))
 				continue ;
 			ClosestIntersection(obj, &shadows, par, P, L, 0.001, max);
-			if (shadows.closest_intersect != INFINITY)
+			if (isnotequal(shadows.closest_intersect, INFINITY))
 				continue ;
 			nl = dot(N, L);
-			if (nl > 0)
+			if (isgreater(nl, 0))
 				intens += light[j].intensity * nl / (length(N) * length(L));
-			if (spec >= 0)
+			if (isgreaterequal(spec, 0))
 			{
-				// R = ray_subs(ray_multipl(dot(N, L), ray_multipl(2.0, N)), L);
-				R = ((dot(N, L) * (2.0f * N)) - L);
+				R = nl * (2.0f * N) - L;
 				rv = dot(R, V);
-				if (rv > 0)
+				if (isgreater(rv, 0))
 					intens += light[j].intensity * pow(rv / (length(R) * length(V)), spec);
 			}
 		}
 	}
-	intens > 1.0 ? intens = 1.0 : 0;
+	isgreater(intens, 1.0) ? intens = 1.0 : 0;
 	return (intens);
 }
 
@@ -198,7 +187,7 @@ float2	discriminant(float3 k)
 
 	d =  k.y * k.y - 4.0f * k.x * k.z;
 	sqrt_d = native_sqrt(d);
-	if (d < 0)
+	if (isless(d, 0))
 		return ((float2){INFINITY, INFINITY});
 	return ((float2){(-k.y + sqrt_d) / (2.0f * k.x), (-k.y - sqrt_d) / (2.0f * k.x)});
 }
@@ -208,11 +197,11 @@ double		GetForms(__constant t_obj *obj, double t, float3 P, float3 V, float3 VA)
 {
 	float2 k;
 
-	if (t < 0)
+	if (isless(t, 0))
 		return (INFINITY);
 	k.x = dot(VA, (P + (float)t * V) - obj->mid);
 	k.y = dot(VA, (P + (float)t * V) - obj->direction);
-	if (k.x < 0.0 && k.y > 0.0)
+	if (isless (k.x, 0.0) && isgreater (k.y, 0.0))
 		return (t);
 	return (INFINITY);
 }
@@ -242,7 +231,7 @@ float2	Intersect_Cone(__constant t_obj *obj, float3 P, float3 V)
 	float3	v;
 
 	angle = (obj->angle * M_PI) / 180;
-	VA = normalize(obj->mid - obj->direction);
+	VA = fast_normalize(obj->mid - obj->direction);
 	deltaP = P - obj->mid;
 	A = V - (dot(V, VA) * VA);
 	B = deltaP - (dot(deltaP, VA) * VA);
@@ -267,7 +256,7 @@ float2	Intersect_Cylinder(__constant t_obj *obj, float3 P, float3 V)
 	float2	t;
 	float3	v;
 
-	Normal = normalize(obj->mid - obj->direction);
+	Normal = fast_normalize(obj->mid - obj->direction);
 	deltaP = P - obj->mid;
 
 	A = V - (dot(V, Normal) * Normal);
@@ -283,17 +272,12 @@ float2	Intersect_Cylinder(__constant t_obj *obj, float3 P, float3 V)
 
 float2	Intersect_Plane(__constant t_obj *obj, float3 O, float3 D)
 {
-	float2	t;
 	float2	k;
 
 	k.x = dot(D, obj->direction);
 	k.y = dot(O - obj->mid, obj->direction);
 	if (k.x)
-	{
-		t.x = -k.y / k.x;
-		t.y = INFINITY;
-		return (t);		
-	}
+		return ((float2){-k.y / k.x, INFINITY});
 	return ((float2){INFINITY, INFINITY});
  }
 
@@ -305,17 +289,17 @@ int		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
 
 	tr->closest_intersect = INFINITY;
 	i = -1;
-	while (++i < par->objects)
+	while (isless(++i, par->objects))
 	{
-		if (obj[i].type == SPHERE)
+		if (isequal(obj[i].type, SPHERE))
 			t = Inersect_Sphere(&obj[i], O, D);
-		else if (obj[i].type == PLANE)
+		else if (isequal(obj[i].type, PLANE))
 			t = Intersect_Plane(&obj[i], O, D);
-		else if (obj[i].type == CYLINDER)
+		else if (isequal(obj[i].type, CYLINDER))
 			t = Intersect_Cylinder(&obj[i], O, D);
-		else if (obj[i].type == CONE)
+		else if (isequal(obj[i].type, CONE))
 			t = Intersect_Cone(&obj[i], O, D);
-		if (t.x > t_min && t.x < t_max && t.x < tr->closest_intersect)
+		if (isgreater(t.x, t_min) && isless(t.x, t_max) && isless(t.x, tr->closest_intersect))
 		{
 			tr->closest_intersect = t.x;
 			tr->closest_object = obj[i];
@@ -329,29 +313,25 @@ int		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
 	return (tr->closest_intersect);
 }
 
-
 float3	GlobalNormal(t_trace *tr, float3 P)
 {
 	float3	Normal;
 	float3	center;
 	float3	projection;
 
-	if (tr->closest_object.type == SPHERE)
+	if (isequal(tr->closest_object.type, SPHERE))
 	{
 		Normal = P - tr->closest_object.mid;
-		// Normal = normalize(Normal);
-		return (normalize(Normal));
+		return (fast_normalize(Normal));
 	}
-	if (tr->closest_object.type == CYLINDER || tr->closest_object.type == CONE)
+	if (isequal(tr->closest_object.type, CYLINDER) || isequal(tr->closest_object.type, CONE))
 	{
-		center = normalize(tr->closest_object.direction - tr->closest_object.mid);
+		center = fast_normalize(tr->closest_object.direction - tr->closest_object.mid);
 		Normal = P - tr->closest_object.mid;
 		projection = (dot(Normal, center) * center);
 		Normal -= (dot(Normal, center) * center);
-		// Normal = normalize(Normal);
-		return (normalize(Normal));
+		return (fast_normalize(Normal));
 	}
-	// Normal = tr->closest_object.direction;
 	return (tr->closest_object.direction);
 }
 
@@ -367,17 +347,17 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 
 
 	recurs = 0;
-	while (recurs <= RECURS)
+	while (islessequal(recurs, RECURS))
 	{
 		color[recurs] = 0;
 		recurs++;
 	}
 	recurs = RECURS;
-	while (recurs >= 0)
+	while (isgreaterequal(recurs, 0))
 	{
 
 		ClosestIntersection(obj, &tr, &par, par.O, par.Direct, t_min, t_max);
-		if (tr.closest_intersect == INFINITY)
+		if (isinf(tr.closest_intersect))
 		{
 			color[recurs] = 0;
 			break ;
@@ -388,7 +368,7 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		intensity = GenerateLigth(obj, light, &par, P, N, DD, tr.closest_object.specular); //NATIVE
 		color[recurs] = (float)intensity * tr.closest_object.color;
 		color[recurs].w = tr.closest_object.reflect;
-		if (tr.closest_object.reflect > 0)
+		if (isgreater(tr.closest_object.reflect, 0))
 		{
 			// par = (t_params){P, ReflectRay(DD, N),  par.camera_rot, par.obj, par.light, par.viewport,  par.t_min, 
 			// par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM! // reflect without viewport; 
@@ -400,7 +380,7 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 			break ;
 	}
 	recurs = -1;
-	while (++recurs < RECURS)
+	while (isless(++recurs, RECURS))
 	{
 		color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] +
 						(color[recurs + 1].w * color[recurs]); // compute reflection
@@ -417,5 +397,6 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 
 	params.Direct = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
+	barrier(CLK_GLOBAL_MEM_FENCE);
 	img_pxl[x + y * params.screenw] = RayTracer(obj, light, params, 0.001f, INFINITY);
 }
