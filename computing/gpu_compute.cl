@@ -304,7 +304,7 @@ int		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
 			tr->closest_intersect = t.x;
 			tr->closest_object = obj[i];
 		}
-		if (t.y > t_min && t.y < t_max && t.y < tr->closest_intersect)
+		if (isgreater(t.y, t_min) && isless(t.y, t_max) && isless(t.y, tr->closest_intersect))
 		{
 			tr->closest_intersect = t.y;
 			tr->closest_object = obj[i];
