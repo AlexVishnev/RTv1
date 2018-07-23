@@ -51,7 +51,8 @@ LFLAGS = \
 
 .PHONY: all download clean fclean re sdl2 install_dependencies update\
 				sdl2_download sdl2_image_download sdl2_ttf_download \
-				sdl2_install sdl2_image_install sdl2_ttf_install
+				sdl2_install sdl2_image_install sdl2_ttf_install \
+				sdl2_clean sdl2_image_clean sdl2_ttf_clean
 
 all: $(NAME)
 
@@ -156,11 +157,22 @@ fclean_proj: clean_proj
 
 update: fclean_proj all
 
+sdl2_clean:
+	if [ -d $(DEP_DIR)/SDL2 ]; then \
+		$(MAKE) -C $(DEP_DIR)/SDL2 clean; \
+	fi
 
-clean:
-	@$(MAKE) -C $(DEP_DIR)/SDL2 clean
-	@$(MAKE) -C $(DEP_DIR)/SDL2_image clean
-	@$(MAKE) -C $(DEP_DIR)/SDL2_ttf clean
+sdl2_image_clean:
+	if [ -d $(DEP_DIR)/SDL2_image ]; then \
+		$(MAKE) -C $(DEP_DIR)/SDL2_image clean; \
+	fi
+
+sdl2_ttf_clean:
+	if [ -d $(DEP_DIR)/SDL2_ttf ]; then \
+		$(MAKE) -C $(DEP_DIR)/SDL2_ttf clean; \
+	fi
+
+clean: sdl2_clean sdl2_image_clean sdl2_ttf_clean
 
 fclean: clean
 	@$(RM) -rf $(PREFIX)
