@@ -26,7 +26,7 @@
 typedef	struct			s_light
 {
 	int					type;
-	double				intensity;
+	float				intensity;
 	float3				position;
 	float3				direction;
 }						t_light;
@@ -53,7 +53,7 @@ typedef struct			s_cam
 
 typedef	struct	s_trace
 {
-	double			closest_intersect;
+	float			closest_intersect;
 	t_obj			closest_object;
 	float2			t;
 }				t_trace;
@@ -88,11 +88,11 @@ int 		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
 float3		GlobalNormal(t_trace *tr, float3 P);
 float3		ReflectRay(float3 R, float3 N);
 float2		Intersect_Cylinder(__constant t_obj *obj, float3 P, float3 V);
-double		GetForms(__constant t_obj *obj, double t, float3 P, float3 V, float3 VA);
+float		GetForms(__constant t_obj *obj, float t, float3 P, float3 V, float3 VA);
 float2		Intersect_Cone(__constant t_obj *obj, float3 P, float3 V);
 float2		Inersect_Sphere(__constant t_obj *obj, float3 O, float3 D);
 float2		Intersect_Plane(__constant t_obj *obj, float3 O, float3 D);
-double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 P, float3 N, float3 V, float spec);
+float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 P, float3 N, float3 V, float spec);
 
 int		RgbToInt(int r, int g, int b)
 {
@@ -130,9 +130,9 @@ float3	ReflectRay(float3 R, float3 N)
 	return (dot(N, R) * (2.0f * N)) - R;
 }
 
-double		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 P, float3 N, float3 V, float spec)
+float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 P, float3 N, float3 V, float spec)
 {
-	double		intens;
+	float		intens;
 	int			j;
 	float3		L;
 	float3		R;
@@ -193,7 +193,7 @@ float2	discriminant(float3 k)
 }
 
 
-double		GetForms(__constant t_obj *obj, double t, float3 P, float3 V, float3 VA)
+float		GetForms(__constant t_obj *obj, float t, float3 P, float3 V, float3 VA)
 {
 	float2 k;
 
@@ -342,8 +342,11 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	float3		N;
 	float4		color[RECURS + 1];
 	int			recurs;
-	double		intensity;
+	float		intensity;
 	float3		DD;
+
+	int 		test = 1;
+
 
 
 	recurs = 0;
@@ -373,7 +376,7 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 			// par = (t_params){P, ReflectRay(DD, N),  par.camera_rot, par.obj, par.light, par.viewport,  par.t_min, 
 			// par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM! // reflect without viewport; 
 			
-			par.Direct = ReflectRay(DD, N); // reflect with viewport; 
+			par.Direct = (dot(N, DD) * (2.0f * N)) - DD; // reflect with viewport; 
 			recurs--;
 		}
 		else

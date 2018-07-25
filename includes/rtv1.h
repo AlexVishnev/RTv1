@@ -81,7 +81,7 @@ typedef struct		s_ray
 typedef	struct		s_light
 {
 	int				type;
-	double			intensive;
+	float			intensive;
 	cl_float3		position;
 	cl_float3		direction;
 }					t_light;
