@@ -94,8 +94,10 @@ int			main(int ac, char **av)
 		opencl_kernel_run(&src);
 		init_fps(&src);
 		time_delay();
+		SDL_EnableScreenSaver();
 		SDL_UpdateWindowSurface(src.wind);
 	}
+ 
 	exit_work(&src);
 	return (0);
 }

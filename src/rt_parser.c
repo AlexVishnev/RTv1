@@ -26,9 +26,6 @@ void	get_camera_direction(char *cord, t_src *src)
 		cord++;
 	}
 	check_adecvate(POS_LIM, (t_pos *)&src->cam_pos, 1, NULL);
-	// src->params.d = (t_ray){(src->cam_pos.x * M_PI) / 180,
-		// (src->cam_pos.y * M_PI) / 180,
-		// (src->cam_pos.z * M_PI) / 180};
 	src->params.d.x = src->cam_pos.x * M_PI / 180;
 	src->params.d.y = src->cam_pos.y * M_PI / 180;
 	src->params.d.z = src->cam_pos.z * M_PI / 180;
@@ -56,9 +53,6 @@ void	get_camera_position(char *cord, t_src *src)
 			src->cam_pos.z = ft_atof(++cord, '}');
 		cord++;
 	}
-	// src->params.o = (t_ray){src->cam_pos.x,
-		// src->cam_pos.y,
-		// src->cam_pos.z};
 	src->params.o.x = src->cam_pos.x;
 	src->params.o.y = src->cam_pos.y;
 	src->params.o.z = src->cam_pos.z;

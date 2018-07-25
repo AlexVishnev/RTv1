@@ -66,7 +66,6 @@ typedef	struct		s_pos
 	float			y;
 	float			z;
 	float			w;
-	// float			r;
 }					t_pos;
 
 typedef struct		s_ray
@@ -74,8 +73,6 @@ typedef struct		s_ray
 	float			x;
 	float			y;
 	float			z;
-	// float			w;
-	// float			reflect;
 }					t_ray;
 
 typedef	struct		s_light
@@ -226,6 +223,7 @@ int					brackects_valide(char *s);
 int					br_adecvat(char *s);
 void				keyboards_control1(t_src *src, SDL_Scancode scancode);
 void				mouse_control(t_src *src, SDL_Event e_k);
+void				take_screenshot(t_src *src, const char* pathfile);
 
 void				validate_data(char *source, t_src *src);
 void				check_nbrs_object(char *av, t_src *src, int size);

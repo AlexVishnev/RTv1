@@ -102,6 +102,22 @@ void	keyboards_control1(t_src *src, SDL_Scancode scancode)
 		src->curs = init_system_cursor(g_arrow, src);
 		SDL_SetCursor(src->curs);
 	}
+	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_S)
+	{
+		take_screenshot(src, "scene/test.bmp");
+	}
+}
+
+void	take_screenshot(t_src *src, const char* pathfile)
+{
+	//(src->op_cl.img_pxl);  array colors;
+	 t_uint *dst = malloc(WIN_WD * WIN_HG);
+
+	 ft_memcpy(dst, src->surf->pixels, WIN_WD * WIN_HG);
+	 for (int i = 0; i < WIN_WD * WIN_HG; i++ )
+	 	printf("%d\n", dst[i]);
+
+	SDL_SaveBMP(src->surf, pathfile);
 }
 
 int		expose_hook(t_src *src)

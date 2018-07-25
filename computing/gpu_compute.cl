@@ -17,6 +17,7 @@
 # define CYLINDER 3
 # define CONE 4
 # define RECURS 1
+# define SAMPLE 1
 
 # ifndef M_PI
 #  define M_PI           3.14159265358979323846  /* pi */
@@ -94,12 +95,11 @@ float2		Inersect_Sphere(__constant t_obj *obj, float3 O, float3 D);
 float2		Intersect_Plane(__constant t_obj *obj, float3 O, float3 D);
 float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 P, float3 N, float3 V, float spec);
 
+
 int		RgbToInt(int r, int g, int b)
 {
 	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
 }
-
-
 
 float3	SetCameraPosititon(t_params par, float x, float y)
 {
@@ -345,9 +345,6 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	float		intensity;
 	float3		DD;
 
-	int 		test = 1;
-
-
 
 	recurs = 0;
 	while (islessequal(recurs, RECURS))
@@ -371,9 +368,12 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		intensity = GenerateLigth(obj, light, &par, P, N, DD, tr.closest_object.specular); //NATIVE
 		color[recurs] = (float)intensity * tr.closest_object.color;
 		color[recurs].w = tr.closest_object.reflect;
+
+		/// Refrecat
+
 		if (isgreater(tr.closest_object.reflect, 0))
 		{
-			// par = (t_params){P, ReflectRay(DD, N),  par.camera_rot, par.obj, par.light, par.viewport,  par.t_min, 
+			// par = (t_params){P, (dot(N, DD) * (2.0f * N)) - DD,  par.camera_rot, par.obj, par.light, par.viewport,  par.t_min, 
 			// par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM! // reflect without viewport; 
 			
 			par.Direct = (dot(N, DD) * (2.0f * N)) - DD; // reflect with viewport; 
@@ -385,11 +385,29 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	recurs = -1;
 	while (isless(++recurs, RECURS))
 	{
-		color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] +
-						(color[recurs + 1].w * color[recurs]); // compute reflection
+		color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] +	(color[recurs + 1].w * color[recurs]); // compute reflection
+		// color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] -	(color[recurs + 1].w * color[recurs]); // compute прозрачность
 		
 	}
 	return (RgbToInt(color[recurs].x, color[recurs].y, color[recurs].z));
+}
+
+int convert_color(int color[SAMPLE])
+{
+	int		samplers;
+	int 	i;
+
+	i = 0;
+	samplers = 0;
+	while (i < SAMPLE)
+	{
+		samplers += color[i];
+		i++;
+	}
+
+	
+
+	return samplers / SAMPLE;
 }
 
 __kernel
@@ -398,8 +416,12 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 	int x = get_global_id(0);
 	int y = get_global_id(1);
 
+	int color[SAMPLE];
+
 	params.Direct = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
 	barrier(CLK_GLOBAL_MEM_FENCE);
-	img_pxl[x + y * params.screenw] = RayTracer(obj, light, params, 0.001f, INFINITY);
+	for (int i = 0; i < SAMPLE; i++)
+		color[i] = RayTracer(obj, light, params, 0.001f, INFINITY);
+	img_pxl[x + y * params.screenw] = convert_color(color);
 }

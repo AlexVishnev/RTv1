@@ -103,6 +103,6 @@ void		opencl_kernel_run(t_src *src)
 		NULL, (size_t[3]){src->surf->w, src->surf->h, 0}, NULL, 0, NULL, NULL);
 	check ? error_manadge("Error: clEnqueueNDRangeKernel", 0, NULL) : 0;
 	check = clEnqueueReadBuffer(src->op_cl.queue, src->op_cl.img_pxl, CL_TRUE,
-		0, src->op_cl.size, (int*)src->surf->pixels, 0, NULL, NULL);
+		0, src->op_cl.size, src->surf->pixels, 0, NULL, NULL);
 	check ? error_manadge("Error: clEnqueueReadBuffer", 0, NULL) : 0;
 }

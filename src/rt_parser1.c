@@ -28,11 +28,9 @@ cl_float3	get_position_object(char *cord, t_src *src)
 		cord++;
 	}
 	check_adecvate(10000, &src->pos, 0, NULL);
-	// sray = (cl_float3){src->pos.x, src->pos.y, src->pos.z};
 	ray.x = src->pos.x;
 	ray.y = src->pos.y;
 	ray.z = src->pos.z;
-
 	return (ray);
 }
 
@@ -99,7 +97,6 @@ t_obj	get_object_params(char *par, t_obj *obj, t_src *src)
 		par++;
 	}
 	get_spetial_params(obj, par);
-	// obj->color = (cl_float4){src->color.red, src->color.green,	src->color.blue, 0};
 	obj->color.x = src->color.red;
 	obj->color.y = src->color.green;
 	obj->color.z = src->color.blue;
