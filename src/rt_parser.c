@@ -29,7 +29,7 @@ void	get_camera_direction(char *cord, t_src *src)
 	src->params.d.x = src->cam_pos.x * M_PI / 180;
 	src->params.d.y = src->cam_pos.y * M_PI / 180;
 	src->params.d.z = src->cam_pos.z * M_PI / 180;
-
+	src->params.camera_rot = src->params.d;
 	src->cam_pos = (t_ray){0, 0, 0};
 }
 

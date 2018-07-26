@@ -76,7 +76,7 @@ devices:
 	@$(PRINTF) "$(OK_COLOR)✓ $(NO_COLOR)$@.c\n"
 
 $(LIBNAME):
-	make -C $(LIBDIR) all
+	@make -C $(LIBDIR)
 
 sdl2_download:
 	@mkdir -p $(DEP_DIR)
@@ -156,6 +156,10 @@ fclean_proj: clean_proj
 	@$(RM) -rf $(NAME)
 
 update: fclean_proj all
+
+norm: 
+	@norminette src/*.c
+	@norminette includes/*.h
 
 sdl2_clean:
 	if [ -d $(DEP_DIR)/SDL2 ]; then \

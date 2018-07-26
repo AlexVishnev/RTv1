@@ -5,15 +5,15 @@
 
 #camera  [{position};{direction}]
 
-->camera [{0,4, -8};{0,1,1}]
+->camera [{0,4, -8};{22,0,0}]
 
 #source ligth [(type){position}{direction}(intensive)]
 
-->slight [(3){-3,1,2}{11,2,13}(0.41)]
+#->slight [(3){-3,1,2}{11,2,13}(0.41)]
 ->slight [(2){10, 23, -14}{12,0, -19}(0.4)]
 ->slight [(2){0, 0, 34}{-1,-1,1}(0.4)]
 ->slight [(2){-1, 4, 99}{2,2,0}(0.9)]
-->slight [(1){0,0,0}{1,4,4}(0.11)]
+#->slight [(1){0,0,0}{1,4,4}(0.11)]
 
 
 #object [(type){colour}{center}{direction}(size)(specular)(angle)(reflect)]

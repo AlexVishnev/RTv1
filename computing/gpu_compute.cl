@@ -17,12 +17,11 @@
 # define CYLINDER 3
 # define CONE 4
 # define RECURS 1
-# define SAMPLE 1
+# define SAMPLE 6
 
 # ifndef M_PI
 #  define M_PI           3.14159265358979323846  /* pi */
 # endif
-
 
 typedef	struct			s_light
 {
@@ -77,9 +76,10 @@ typedef	struct	s_params
 }				t_params;
 
 
+int	convert_color(int color[SAMPLE]);
+float3 		Refract(float3 D,  float3 N,  float ior);
 int			RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max);
 int			RgbToInt(int red, int green, int blue);
-
 float2		discriminant(float3 k);
 
 float3		SetCameraPosititon(t_params par, float x, float y);
@@ -94,6 +94,7 @@ float2		Intersect_Cone(__constant t_obj *obj, float3 P, float3 V);
 float2		Inersect_Sphere(__constant t_obj *obj, float3 O, float3 D);
 float2		Intersect_Plane(__constant t_obj *obj, float3 O, float3 D);
 float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 P, float3 N, float3 V, float spec);
+float		fresnel(float3 D, float3 N, float ior, float kr);
 
 
 int		RgbToInt(int r, int g, int b)
@@ -103,7 +104,7 @@ int		RgbToInt(int r, int g, int b)
 
 float3	SetCameraPosititon(t_params par, float x, float y)
 {
-	return ((float3){x * par.viewport.w / par.screenw, y * par.viewport.h / par.screenh, par.viewport.dist * 2});
+	return ((float3){x * par.viewport.w / par.screenw, y * par.viewport.h / par.screenh, par.viewport.dist});
 }
 
 
@@ -199,8 +200,8 @@ float		GetForms(__constant t_obj *obj, float t, float3 P, float3 V, float3 VA)
 
 	if (isless(t, 0))
 		return (INFINITY);
-	k.x = dot(VA, (P + (float)t * V) - obj->mid);
-	k.y = dot(VA, (P + (float)t * V) - obj->direction);
+	k.x = dot(VA, (P + t * V) - obj->mid);
+	k.y = dot(VA, (P + t * V) - obj->direction);
 	if (isless (k.x, 0.0) && isgreater (k.y, 0.0))
 		return (t);
 	return (INFINITY);
@@ -335,15 +336,75 @@ float3	GlobalNormal(t_trace *tr, float3 P)
 	return (tr->closest_object.direction);
 }
 
+
+float3 Refract(float3 D,  float3 N,  float ior)
+{
+	float tmp;
+	float cosi = clamp(-1.f, 1.f, dot(D, N));
+	float etai = 1, etat = ior; 
+	float3 n = N; 
+	if (cosi < 0) 
+		cosi = -cosi; 
+	else 
+	{
+		tmp = etai;
+		etai = etat;
+		etat = tmp;
+		// swap(etai, etat);
+		n = -N; 
+	} 
+	float eta = etai / etat; 
+	float k = 1 - eta * eta * (1 - cosi * cosi); 
+	return k < 0 ? 0 : eta * D + (eta * cosi - sqrtf(k)) * n;
+}
+
+
+float fresnel(float3 D, float3 N, float ior, float kr) 
+{
+
+	float tmp;
+	float cosi = clamp(-1.f, 1.f, dot(D, N)); 
+	float etai = 1, etat = ior; 
+
+	if (cosi > 0) 
+	{
+		tmp = etai;
+		etai = etat;
+		etat = tmp;
+	} 
+	// Compute sini using Snell's law
+	float sint = etai / etat * sqrtf(max(0.f, 1 - cosi * cosi)); 
+	// Total internal reflection
+	if (sint >= 1) 
+		kr = 1; 
+
+	else 
+	{ 
+		float cost = sqrtf(max(0.f, 1 - sint * sint)); 
+		cosi = fabsf(cosi); 
+		float Rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost)); 
+		float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost)); 
+		kr = (Rs * Rs + Rp * Rp) / 2; 
+	} 
+	// As a consequence of the conservation of energy, transmittance is given by:
+	// kt = 1 - kr;
+	return kr;
+}
+
+
 int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max)
 {
 	t_trace		tr;
 	float3		P;
 	float3		N;
 	float4		color[RECURS + 1];
+	float4		reflection_color;
 	int			recurs;
 	float		intensity;
 	float3		DD;
+	float3		bias;
+	float 		kr;
+	float 		k_refraction = 1.1f;
 
 
 	recurs = 0;
@@ -364,19 +425,20 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		}
 		P = par.O + (float)tr.closest_intersect * par.Direct;  //compute intersection
 		N = GlobalNormal(&tr, P);
-		DD = (float3){-par.Direct.x, -par.Direct.y, -par.Direct.z};
+		DD = -par.Direct;
 		intensity = GenerateLigth(obj, light, &par, P, N, DD, tr.closest_object.specular); //NATIVE
 		color[recurs] = (float)intensity * tr.closest_object.color;
 		color[recurs].w = tr.closest_object.reflect;
 
-		/// Refrecat
+		///
 
 		if (isgreater(tr.closest_object.reflect, 0))
 		{
+		
 			// par = (t_params){P, (dot(N, DD) * (2.0f * N)) - DD,  par.camera_rot, par.obj, par.light, par.viewport,  par.t_min, 
 			// par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM! // reflect without viewport; 
 			
-			par.Direct = (dot(N, DD) * (2.0f * N)) - DD; // reflect with viewport; 
+			par.Direct = (dot(N, DD) * 2.0f * N) - DD; // reflect with viewport; 
 			recurs--;
 		}
 		else
@@ -385,29 +447,26 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	recurs = -1;
 	while (isless(++recurs, RECURS))
 	{
-		color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] +	(color[recurs + 1].w * color[recurs]); // compute reflection
-		// color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] -	(color[recurs + 1].w * color[recurs]); // compute прозрачность
-		
+		color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] +	
+		(color[recurs + 1].w * color[recurs]); // compute reflection
+
 	}
 	return (RgbToInt(color[recurs].x, color[recurs].y, color[recurs].z));
 }
 
 int convert_color(int color[SAMPLE])
 {
-	int		samplers;
+	int		ssaa;
 	int 	i;
 
 	i = 0;
-	samplers = 0;
+	ssaa = 0;
 	while (i < SAMPLE)
 	{
-		samplers += color[i];
+		ssaa += color[i];
 		i++;
 	}
-
-	
-
-	return samplers / SAMPLE;
+	return ssaa / SAMPLE;
 }
 
 __kernel
@@ -421,7 +480,11 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 	params.Direct = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
 	barrier(CLK_GLOBAL_MEM_FENCE);
-	for (int i = 0; i < SAMPLE; i++)
+	int i = 0;
+	while  (i < SAMPLE)
+	{
 		color[i] = RayTracer(obj, light, params, 0.001f, INFINITY);
+		i++;
+	}
 	img_pxl[x + y * params.screenw] = convert_color(color);
 }
