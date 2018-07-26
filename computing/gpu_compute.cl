@@ -17,7 +17,7 @@
 # define CYLINDER 3
 # define CONE 4
 # define RECURS 1
-# define SAMPLE 6
+# define SAMPLE 1
 
 # ifndef M_PI
 #  define M_PI           3.14159265358979323846  /* pi */
@@ -350,7 +350,6 @@ float3 Refract(float3 D,  float3 N,  float ior)
 		tmp = etai;
 		etai = etat;
 		etat = tmp;
-		// swap(etai, etat);
 		n = -N; 
 	} 
 	float eta = etai / etat; 

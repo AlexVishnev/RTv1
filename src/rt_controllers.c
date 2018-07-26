@@ -112,7 +112,25 @@ void	take_screenshot(t_src *src, const char* pathfile)
 {
 	//(src->op_cl.img_pxl);  array colors;
 
-	SDL_SaveBMP(src->surf, pathfile);
+// int width, height, orig_format;
+	
+
+Uint32 rmask, gmask, bmask, amask;
+
+  rmask = 0xff000000;
+  gmask = 0x00ff0000;
+  bmask = 0x0000ff00;
+  amask = 0x000000ff;
+
+int depth;
+
+  depth = 32;
+
+  // depth = 32;
+
+
+	SDL_SaveBMP(SDL_CreateRGBSurfaceFrom(src->surf->pixels, src->surf->w, src->surf->h, depth, src->surf->pitch,
+                                             rmask, gmask, bmask, amask), pathfile);
 }
 
 int		expose_hook(t_src *src)

@@ -5,7 +5,7 @@
 
 #camera  [{position};{direction}]
 
-->camera [{0,4, -8};{22,0,0}]
+->camera [{0,4, -8};{0,0,0}]
 
 #source ligth [(type){position}{direction}(intensive)]
 
