@@ -79,7 +79,7 @@ typedef	struct	s_params
 int			convert_color(int color[SAMPLE]);
 float3 		Refract(float3 D,  float3 N,  float ior);
 int			RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max);
-int			RgbToInt(int red, int green, int blue);
+int			ColorFilters(int red, int green, int blue, int flag);
 float2		discriminant(float3 k);
 
 float3		SetCameraPosititon(t_params par, float x, float y);
@@ -96,10 +96,56 @@ float2		Intersect_Plane(__constant t_obj *obj, float3 O, float3 D);
 float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 P, float3 N, float3 V, float spec);
 float		fresnel(float3 D, float3 N, float ior, float kr);
 
+int		set_carton(int red, int green, int blue);
+int		set_sepia(int red, int green, int blue);
+int		set_bw (int red, int green, int blue);
 
-int		RgbToInt(int r, int g, int b)
+
+int	set_carton(int r, int g, int b)
 {
+	r = ((int)(r * 10.0f)) / 10.0f;
+	g = ((int)(g * 10.0f)) / 10.0f;
+	b = ((int)(b * 10.0f)) / 10.0f;
+
 	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
+
+}
+
+
+int	set_sepia(int r, int g, int b)
+{
+	float		sum;
+
+	sum = (r + g + b) / 3.0f;
+	r = sum + 25.2f;
+	g = sum + 30.1f;
+	b = sum;
+	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
+}
+
+int	set_bw(int r, int g, int b)
+{
+	int		sum;
+
+	sum = (r + g + b) / 3.f;
+	r = sum;
+	g = sum;
+	b = sum;
+	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
+}
+
+
+int		ColorFilters(int r, int g, int b, int flag)
+{
+	if (!flag)
+		return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
+	else if (flag == 1)
+		return (set_carton(r,  g, b));
+	else if (flag == 2)
+		return (set_sepia(r, g, b));
+	else if (flag == 3)
+		return (set_bw(r, g, b));
+	return (r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF);
 }
 
 float3	SetCameraPosititon(t_params par, float x, float y)
@@ -397,13 +443,11 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	float3		P;
 	float3		N;
 	float4		color[RECURS + 1];
-	float4		reflection_color;
 	int			recurs;
 	float		intensity;
 	float3		DD;
-	float3		bias;
-	float 		kr;
-	float 		k_refraction = 1.1f;
+
+
 
 
 	recurs = 0;
@@ -448,9 +492,8 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	{
 		color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] +	
 		(color[recurs + 1].w * color[recurs]); // compute reflection
-
 	}
-	return (RgbToInt(color[recurs].x, color[recurs].y, color[recurs].z));
+	return (ColorFilters(color[recurs].x, color[recurs].y, color[recurs].z, 3));
 }
 
 int convert_color(int color[SAMPLE])
