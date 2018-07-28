@@ -3,7 +3,7 @@
 static inline void please_parse_array_field(cJSON *json_aray, struct s_field_info *field_info, size_t *__data)
 {
 	cJSON *tmp;
-	size_t pos_idx;
+	int pos_idx;
 	float pos[field_info->array_size];
 
 	pos_idx = -1;
@@ -16,9 +16,10 @@ static inline void please_parse_array_field(cJSON *json_aray, struct s_field_inf
 				exit(-6);
 			}
 		pos[pos_idx] = ((float)tmp->valuedouble);
-		printf("value %zu: %f\n", pos_idx, pos[pos_idx]);
+		printf("value %d: %f\n", pos_idx, pos[pos_idx]);
 	}
 	/* copy to __data */
+    (void)__data;
 }
 
 void please_parse_field(cJSON *json_chain, struct s_field_info *field_info, size_t *__data)
@@ -44,6 +45,7 @@ void please_parse_field(cJSON *json_chain, struct s_field_info *field_info, size
 	else
 	{
 			/* copy to __data */
+            (void)__data;
             printf("field: %f\n", json_field->valuedouble);
 	}
 }

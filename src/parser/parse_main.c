@@ -85,13 +85,13 @@ void please_parse_single_light(cJSON *json_light, size_t *__data)
 	please_parse_field(json_light, &field_info, __data);
 	field_info.name = "rotation";
 	please_parse_field(json_light, &field_info, __data);
-	//cJSON_Delete(json_light);
+	//(json_light);
 }
 
 void please_parse_lights(cJSON *json_chain, size_t *__data)
 {
 	cJSON *json_lights, *tmp;
-	size_t arr_idx;
+	int arr_idx;
 
 	/* not key sensative */
 	if (!(json_lights = cJSON_GetObjectItem(json_chain, "lights")))
@@ -113,13 +113,68 @@ void please_parse_lights(cJSON *json_chain, size_t *__data)
 	//cJSON_Delete(json_lights);
 }
 
+void please_parse_single_object(cJSON *json_object, size_t *__data)
+{
+	t_field_info field_info;
+
+	printf("\nObject JSON:\n");
+	field_info.type = cJSON_Number;
+	field_info.is_array = false;
+	field_info.name = "type";
+	please_parse_field(json_object, &field_info, __data);
+	field_info.name = "size";
+	please_parse_field(json_object, &field_info, __data);
+	field_info.name = "specular";
+	please_parse_field(json_object, &field_info, __data);
+	field_info.name = "angle";
+	please_parse_field(json_object, &field_info, __data);
+	field_info.name = "reflect";
+	please_parse_field(json_object, &field_info, __data);
+
+	field_info.type = cJSON_Array;
+	field_info.is_array = true;
+	field_info.arr_type = cJSON_Number;
+	field_info.name = "position";
+	please_parse_field(json_object, &field_info, __data);
+	field_info.name = "rotation";
+	please_parse_field(json_object, &field_info, __data);
+	field_info.name = "color";
+	please_parse_field(json_object, &field_info, __data);
+	//(json_object);
+}
+
+void please_parse_objects(cJSON *json_chain, size_t *__data)
+{
+	cJSON *json_objects, *tmp;
+	int arr_idx;
+
+	/* not key sensative */
+	if (!(json_objects = cJSON_GetObjectItem(json_chain, "objects")))
+	{
+		printf("FUCKING objects\n");
+		exit (-10);
+	}
+	if (json_objects->type != cJSON_Array)
+	{
+		printf("Objectss must be array\n");
+		exit (-11);
+	}
+	arr_idx = -1;
+	while (++arr_idx < cJSON_GetArraySize(json_objects))
+	{
+		tmp = cJSON_GetArrayItem(json_objects, arr_idx);
+		please_parse_single_object(tmp, __data);
+	}
+	//cJSON_Delete(json_objects);
+}
+
 void please_parse_it_into_structure(cJSON *json_chain, size_t *__data)
 {
 	/* there will be cast pointer into relted data */
 	/* All validation inside functions */
 	please_parse_camera(json_chain, __data);
 	please_parse_lights(json_chain, __data);
-	//please_parse_objects(json_chain, __data);
+	please_parse_objects(json_chain, __data);
 	/* parse other staf here */
 }
 
@@ -131,7 +186,7 @@ void call_me_cacao(char *file_content, size_t *__data)
 	json_chain = get_json_chain(file_content);
 
 	please_parse_it_into_structure(json_chain, __data);
-	free(json_chain);
+	cJSON_Delete(json_chain);
 }
 
 /* Ebbaniy stud a ne main */
@@ -142,7 +197,7 @@ int main(void)
 	read_file(&file_str);
 	printf("Will fuck your Mom!\n%s", file_str);
 	call_me_cacao(file_str, NULL);
-	//system("leaks -q a.out");
-	//sleep(5);
+	system("leaks -q a.out");
+	sleep(5);
 	return (0);
 }
