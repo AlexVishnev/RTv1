@@ -76,7 +76,7 @@ typedef	struct	s_params
 }				t_params;
 
 
-int	convert_color(int color[SAMPLE]);
+int			convert_color(int color[SAMPLE]);
 float3 		Refract(float3 D,  float3 N,  float ior);
 int			RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max);
 int			RgbToInt(int red, int green, int blue);
@@ -167,13 +167,13 @@ float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params 
 				continue ;
 			nl = dot(N, L);
 			if (isgreater(nl, 0))
-				intens += light[j].intensity * nl / (length(N) * length(L));
+				intens += light[j].intensity * nl / (fast_length(N) * fast_length(L));
 			if (isgreaterequal(spec, 0))
 			{
 				R = nl * (2.0f * N) - L;
 				rv = dot(R, V);
 				if (isgreater(rv, 0))
-					intens += light[j].intensity * pow(rv / (length(R) * length(V)), spec);
+					intens += light[j].intensity * pow(rv / (fast_length(R) * fast_length(V)), spec);
 			}
 		}
 	}

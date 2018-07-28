@@ -90,7 +90,11 @@ void	mouse_control(t_src *src, SDL_Event e_k)
 
 void	keyboards_control1(t_src *src, SDL_Scancode scancode)
 {
-    (void)scancode;
+	char		*fr;
+	char		*it;
+	static int	i;
+
+	(void)scancode;
 	if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_R)
 	{
 		src->params.camera_rot.y = 0;
@@ -104,40 +108,39 @@ void	keyboards_control1(t_src *src, SDL_Scancode scancode)
 	}
 	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_S)
 	{
-		take_screenshot(src, "scene/test.bmp");
+		it = ft_itoa(i);
+		take_screenshot(src, fr = ft_strjoin(it , "].bmp"));
+		i++;
+		free(fr);
+		free(it);
 	}
 }
 
-void	take_screenshot(t_src *src, const char* pathfile)
+void	take_screenshot(t_src *src, const char *pathfile)
 {
-	//(src->op_cl.img_pxl);  array colors;
+	Uint32		rmask;
+	Uint32		gmask;
+	Uint32		bmask;
+	char		*name;
+	SDL_Surface	*screen;
 
-// int width, height, orig_format;
-	
-
-Uint32 rmask, gmask, bmask, amask;
-
-  rmask = 0xff000000;
-  gmask = 0x00ff0000;
-  bmask = 0x0000ff00;
-  amask = 0x000000ff;
-
-int depth;
-
-  depth = 32;
-
-  // depth = 32;
-
-
-	SDL_SaveBMP(SDL_CreateRGBSurfaceFrom(src->surf->pixels, src->surf->w, src->surf->h, depth, src->surf->pitch,
-                                             rmask, gmask, bmask, amask), pathfile);
+	rmask = 0x00ff0000;
+	gmask = 0x0000ff00;
+	bmask = 0x000000ff;
+	name = ft_strjoin("screenshots/screenshot[", pathfile);
+	screen = SDL_CreateRGBSurfaceFrom(src->surf->pixels, src->surf->w,
+		src->surf->h, 32, src->surf->pitch, rmask,
+		gmask, bmask, 0x0);
+	SDL_SaveBMP(screen, name);
+	SDL_FreeSurface(screen);
+	free(name);
 }
 
 int		expose_hook(t_src *src)
 {
 	if (SDL_GetMouseState(&src->c.mouse_x, &src->c.mouse_y))
 		SDL_WarpMouseInWindow(src->wind, src->c.mouse_x, src->c.mouse_y);
-	if (SDL_PollEvent(&src->c.e_k))
+	while (SDL_PollEvent(&src->c.e_k))
 	{
 		if ((src->c.e_k.type == SDL_QUIT) ||
 		src->c.e_k.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
