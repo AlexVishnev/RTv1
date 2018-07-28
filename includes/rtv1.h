@@ -51,7 +51,6 @@
 # define DICK 42
 # define POS_LIM 22100
 
-
 typedef unsigned int	t_uint;
 
 typedef struct		s_vector
@@ -223,7 +222,7 @@ int					brackects_valide(char *s);
 int					br_adecvat(char *s);
 void				keyboards_control1(t_src *src, SDL_Scancode scancode);
 void				mouse_control(t_src *src, SDL_Event e_k);
-void				take_screenshot(t_src *src, const char* pathfile);
+void				take_screenshot(t_src *src, const char *pathfile);
 
 void				validate_data(char *source, t_src *src);
 void				check_nbrs_object(char *av, t_src *src, int size);
