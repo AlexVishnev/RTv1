@@ -73,13 +73,14 @@ typedef	struct	s_params
 	int			lights;
 	int			screenw;
 	int			screenh;
+	int 		color_filter;
 }				t_params;
 
 
 int			convert_color(int color[SAMPLE]);
 float3 		Refract(float3 D,  float3 N,  float ior);
 int			RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max);
-int			ColorFilters(int red, int green, int blue, int flag);
+int			ColorFilters(int red, int green, int blue, int flag, t_params par);
 float2		discriminant(float3 k);
 
 float3		SetCameraPosititon(t_params par, float x, float y);
@@ -100,7 +101,6 @@ int		set_carton(int red, int green, int blue);
 int		set_sepia(int red, int green, int blue);
 int		set_bw (int red, int green, int blue);
 
-
 int	set_carton(int r, int g, int b)
 {
 	r = ((int)(r * 10.0f)) / 10.0f;
@@ -108,9 +108,7 @@ int	set_carton(int r, int g, int b)
 	b = ((int)(b * 10.0f)) / 10.0f;
 
 	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
-
 }
-
 
 int	set_sepia(int r, int g, int b)
 {
@@ -135,7 +133,7 @@ int	set_bw(int r, int g, int b)
 }
 
 
-int		ColorFilters(int r, int g, int b, int flag)
+int		ColorFilters(int r, int g, int b, int flag, t_params par)
 {
 	if (!flag)
 		return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
@@ -493,7 +491,7 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] +	
 		(color[recurs + 1].w * color[recurs]); // compute reflection
 	}
-	return (ColorFilters(color[recurs].x, color[recurs].y, color[recurs].z, 3));
+	return (ColorFilters(color[recurs].x, color[recurs].y, color[recurs].z, par.color_filter, par));
 }
 
 int convert_color(int color[SAMPLE])

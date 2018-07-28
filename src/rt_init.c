@@ -38,6 +38,7 @@ void		init_parametrs(t_src *src)
 	src->params.height = src->surf->h;
 	src->params.lights = src->lights_cnt;
 	src->params.objects = src->objects_cnt;
+	src->params.color_filter = 0;
 	src->buffer = ft_memalloc(0x40000);
 	src->c.row = 0;
 	src->c.i = -1;

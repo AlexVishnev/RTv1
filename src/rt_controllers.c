@@ -109,11 +109,23 @@ void	keyboards_control1(t_src *src, SDL_Scancode scancode)
 	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_S)
 	{
 		it = ft_itoa(i);
-		take_screenshot(src, fr = ft_strjoin(it , "].bmp"));
+		take_screenshot(src, fr = ft_strjoin(it, "].bmp"));
 		i++;
 		free(fr);
 		free(it);
 	}
+	keyboards_control2(src, scancode);
+
+}
+void	keyboards_control2(t_src *src, SDL_Scancode scancode)
+{
+	(void)scancode;
+	if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_1)
+		src->params.color_filter = 1;
+	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_2)
+		src->params.color_filter = 2;
+	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_3)
+		src->params.color_filter = 3;
 }
 
 void	take_screenshot(t_src *src, const char *pathfile)

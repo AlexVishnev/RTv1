@@ -123,6 +123,7 @@ typedef	struct		s_params
 	int				lights;
 	int				width;
 	int				height;
+	int 			color_filter;
 }					t_params;
 
 typedef	struct		s_privat
@@ -221,6 +222,7 @@ int					brackects(char *s);
 int					brackects_valide(char *s);
 int					br_adecvat(char *s);
 void				keyboards_control1(t_src *src, SDL_Scancode scancode);
+void				keyboards_control2(t_src *src, SDL_Scancode scancode);
 void				mouse_control(t_src *src, SDL_Event e_k);
 void				take_screenshot(t_src *src, const char *pathfile);
 
