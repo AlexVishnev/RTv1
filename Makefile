@@ -85,10 +85,12 @@ $(LIBNAME):
 
 cjson:
 	@mkdir -p $(DEP_DIR)
-	git submodule init;
-	git submodule update;
+	@git submodule init;
+	@git submodule update;
 	@if [ ! -d "cJSON/build/" ]; then mkdir -p "cJSON/build"; fi;
-	cd cJSON/build/ && echo $(PWD) && cmake .. -DCMAKE_INSTALL_PREFIX=$(PWD)/build && make install
+	@if [ ! -f "$(PREFIX)/lib/libcjson.dylib" ]; then \
+		cd cJSON/build/ && cmake .. -DCMAKE_INSTALL_PREFIX=$(PWD)/build && make install; \
+	fi
 
 
 sdl2_download:
@@ -174,6 +176,9 @@ norm:
 	@norminette src/*.c
 	@norminette includes/*.h
 
+cjson_clean:
+	@if [ -f cJSON/build/Makefile ]; then $(MAKE) -C cJSON/build clean; fi;
+
 sdl2_clean:
 	if [ -d $(DEP_DIR)/SDL2 ]; then \
 		$(MAKE) -C $(DEP_DIR)/SDL2 clean; \
@@ -189,7 +194,7 @@ sdl2_ttf_clean:
 		$(MAKE) -C $(DEP_DIR)/SDL2_ttf clean; \
 	fi
 
-clean: sdl2_clean sdl2_image_clean sdl2_ttf_clean clean_proj
+clean: sdl2_clean sdl2_image_clean sdl2_ttf_clean cjson_clean clean_proj
 
 fclean: clean fclean_proj
 	@$(RM) -rf $(PREFIX)
