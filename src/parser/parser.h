@@ -17,6 +17,11 @@ typedef struct s_field_info
 } t_field_info;
 
 void please_parse_field(cJSON *json_chain, struct s_field_info *field_info, size_t *__data);
+void please_parse_camera(cJSON *json_chain, size_t *__data);
+void please_parse_lights(cJSON *json_chain, size_t *__data);
+void please_parse_objects(cJSON *json_chain, size_t *__data);
 
+void please_validate_and_save_enum_of_int(void *src, void *dst, int arr_size, int max_abs);
+void please_validate_and_save_enum_of_float(void *src, void *dst, int arr_size, int max_abs);
 
 #endif 
