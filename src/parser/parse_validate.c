@@ -2,35 +2,42 @@
 #include <math.h>
 #include "parser_internal.h"
 
-void please_validate_and_save_enum_of_int(void *src, void *dst, int arr_size, int max_abs)
-{
-	int arr[arr_size], i, sign, *tmp;
+# define CLAMP(x) fmin(fmax(x, min), max)
 
+static void please_validate_and_save_enum_of_int(void *src, void *dst, t_field_info *info)
+{
+	int arr[info->array_size], i, *tmp, min, max;
+
+	max = info->max_abs;
+	min = (info->can_be_signed) ? (-max) : (0);
 	tmp = (int*)src;
 	i = -1;
-	while (++i < arr_size)
-	{
-		arr[i] = (int)tmp[i];
-		sign = (arr[i] < 0) ? (-1) : (1);
-		arr[i] = (abs(arr[i]) > max_abs) ? (max_abs) : (arr[i] % max_abs);
-		arr[i] *= sign;
-	}
+	while (++i < info->array_size)
+		arr[i] = CLAMP(tmp[i]);
 	memcpy(dst, src, sizeof(arr));
 }
 
-void please_validate_and_save_enum_of_float(void *src, void *dst, int arr_size, int max_abs)
+static void please_validate_and_save_enum_of_float(void *src, void *dst, t_field_info *info)
 {
-	float arr[arr_size], *tmp;
-	int i, sign;
+	float arr[info->array_size], *tmp;
+	int i, min, max;
 
+	max = info->max_abs;
+	min = (info->can_be_signed) ? (-max) : (0);
 	tmp = (float*)src;
 	i = -1;
-	while (i < arr_size)
-	{
-		arr[i] = tmp[i];
-		sign = (arr[i] < 0) ? (-1) : (1);
-		arr[i] = (fabsf(arr[i]) > max_abs) ? (max_abs) : ((int)arr[i] % max_abs);
-		arr[i] *= sign;
-	}
+	while (++i < info->array_size)
+		arr[i] = CLAMP(tmp[i]);
 	memcpy(dst, src, sizeof(arr));
+}
+
+void please_validate_and_save(void *src, void *dst, t_field_info *info)
+{
+	if (info->is_array)
+	{
+		if (info->is_int)
+			please_validate_and_save_enum_of_int(src, dst, info);
+		else
+			please_validate_and_save_enum_of_float(src, dst, info);
+	}		
 }
