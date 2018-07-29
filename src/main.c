@@ -84,7 +84,9 @@ int			main(int ac, char **av)
 
 	if (ac != 2)
 		error_manadge(MSG, 0, NULL);
-	read_from_file(av[1], &src);
+		// TODO: UNFUCK YOURSELF, uncomment this line and all will work fine
+	//read_from_file(av[1], &src);
+	parser_main(av[1], &src);
 	init_host(&src);
 	init_parametrs(&src);
 	create_videohost(&src);

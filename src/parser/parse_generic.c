@@ -1,6 +1,6 @@
-#include "parser.h"
+#include "parser_internal.h"
 
-static inline void please_parse_array_field(cJSON *json_aray, struct s_field_info *field_info, size_t *__data)
+static inline void please_parse_array_field(cJSON *json_aray, struct s_field_info *field_info, void *__data)
 {
 	cJSON *tmp;
 	int pos_idx;
@@ -22,7 +22,7 @@ static inline void please_parse_array_field(cJSON *json_aray, struct s_field_inf
     (void)__data;
 }
 
-void please_parse_field(cJSON *json_chain, struct s_field_info *field_info, size_t *__data)
+void please_parse_field(cJSON *json_chain, struct s_field_info *field_info, void *__data)
 {
 	cJSON *json_field;
 	

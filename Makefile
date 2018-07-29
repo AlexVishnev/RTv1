@@ -24,7 +24,12 @@ SOURCES = rt_parser1.c \
           rt_parser.c \
           rt_errors.c \
           rt_tools.c \
-          rt_read_file.c
+          rt_read_file.c \
+		  parser/parse_main.c \
+		  parser/parse_generic.c \
+		  parser/parse_specific.c \
+		  parser/parse_validate.c \
+		  ../cJSON/cJSON.c
 
 OBJECTS = $(SOURCES:.c=.o)
 OBJECTS := $(addprefix $(OBJECTS_DIR)/, $(OBJECTS))
@@ -64,6 +69,7 @@ $(NAME): install_dependencies $(LIBNAME) $(OBJECTS)
 $(OBJECTS_DIR)/%.o: $(SOURCES_DIR)/%.c
 	@mkdir -p $(OBJECTS_DIR)
 	@mkdir -p $(OBJECTS_DIR)/sdl2 $(OBJECTS_DIR)/scenes $(OBJECTS_DIR)/objects
+	@mkdir -p $(OBJECTS_DIR)/parser 
 	@$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<
 	@$(PRINTF) "$(OK_COLOR)✓ $(NO_COLOR)$<\n"
 

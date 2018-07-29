@@ -1,17 +1,15 @@
-#include "parser.h"
+#include "parser_internal.h"
 
-void please_parse_camera(cJSON *json_chain, size_t *__data)
+void please_parse_camera(cJSON *json_chain, void *__data)
 {
 	cJSON *json_camera;
 	t_field_info field_info;
 
-	/* not key sensative */
 	if (!(json_camera = cJSON_GetObjectItem(json_chain, "camera")))
 	{
 		printf("FUCKING CAMERA\n");
 		exit (-2);
 	}
-	/* All validation inside functions */
 	field_info.type = cJSON_Array;
 	field_info.is_array = true;
 	field_info.arr_type = cJSON_Number;
@@ -19,12 +17,9 @@ void please_parse_camera(cJSON *json_chain, size_t *__data)
 	please_parse_field(json_camera, &field_info, __data);
 	field_info.name = "rotation";
 	please_parse_field(json_camera, &field_info, __data);
-
-	/* Free json object */
-	//cJSON_Delete(json_camera);
 }
 
-static void please_parse_single_light(cJSON *json_light, size_t *__data)
+static void please_parse_single_light(cJSON *json_light, void *__data)
 {
 	t_field_info field_info;
 
@@ -43,15 +38,13 @@ static void please_parse_single_light(cJSON *json_light, size_t *__data)
 	please_parse_field(json_light, &field_info, __data);
 	field_info.name = "rotation";
 	please_parse_field(json_light, &field_info, __data);
-	//(json_light);
 }
 
-void please_parse_lights(cJSON *json_chain, size_t *__data)
+void please_parse_lights(cJSON *json_chain, void *__data)
 {
 	cJSON *json_lights, *tmp;
 	int arr_idx;
 
-	/* not key sensative */
 	if (!(json_lights = cJSON_GetObjectItem(json_chain, "lights")))
 	{
 		printf("FUCKING lights\n");
@@ -68,10 +61,9 @@ void please_parse_lights(cJSON *json_chain, size_t *__data)
 		tmp = cJSON_GetArrayItem(json_lights, arr_idx);
 		please_parse_single_light(tmp, __data);
 	}
-	//cJSON_Delete(json_lights);
 }
 
-static void please_parse_single_object(cJSON *json_object, size_t *__data)
+static void please_parse_single_object(cJSON *json_object, void *__data)
 {
 	t_field_info field_info;
 
@@ -98,15 +90,13 @@ static void please_parse_single_object(cJSON *json_object, size_t *__data)
 	please_parse_field(json_object, &field_info, __data);
 	field_info.name = "color";
 	please_parse_field(json_object, &field_info, __data);
-	//(json_object);
 }
 
-void please_parse_objects(cJSON *json_chain, size_t *__data)
+void please_parse_objects(cJSON *json_chain, void *__data)
 {
 	cJSON *json_objects, *tmp;
 	int arr_idx;
 
-	/* not key sensative */
 	if (!(json_objects = cJSON_GetObjectItem(json_chain, "objects")))
 	{
 		printf("FUCKING objects\n");
@@ -123,5 +113,4 @@ void please_parse_objects(cJSON *json_chain, size_t *__data)
 		tmp = cJSON_GetArrayItem(json_objects, arr_idx);
 		please_parse_single_object(tmp, __data);
 	}
-	//cJSON_Delete(json_objects);
 }

@@ -1,6 +1,6 @@
 #include <string.h>
 #include <math.h>
-#include "parser.h"
+#include "parser_internal.h"
 
 void please_validate_and_save_enum_of_int(void *src, void *dst, int arr_size, int max_abs)
 {
