@@ -180,17 +180,17 @@ cjson_clean:
 	@if [ -f cJSON/build/Makefile ]; then $(MAKE) -C cJSON/build clean; fi;
 
 sdl2_clean:
-	if [ -d $(DEP_DIR)/SDL2 ]; then \
+	@if [ -d $(DEP_DIR)/SDL2 ]; then \
 		$(MAKE) -C $(DEP_DIR)/SDL2 clean; \
 	fi
 
 sdl2_image_clean:
-	if [ -d $(DEP_DIR)/SDL2_image ]; then \
+	@if [ -d $(DEP_DIR)/SDL2_image ]; then \
 		$(MAKE) -C $(DEP_DIR)/SDL2_image clean; \
 	fi
 
 sdl2_ttf_clean:
-	if [ -d $(DEP_DIR)/SDL2_ttf ]; then \
+	@if [ -d $(DEP_DIR)/SDL2_ttf ]; then \
 		$(MAKE) -C $(DEP_DIR)/SDL2_ttf clean; \
 	fi
 
@@ -199,5 +199,6 @@ clean: sdl2_clean sdl2_image_clean sdl2_ttf_clean cjson_clean clean_proj
 fclean: clean fclean_proj
 	@$(RM) -rf $(PREFIX)
 	@$(RM) -rf $(DEP_DIR)
+	@git submodule deinit --all -f
 
 re: fclean all
