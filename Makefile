@@ -50,7 +50,8 @@ IFLAGS = -I. -I$(INCLUDE_DIR) \
 
 LFLAGS = \
 		-L$(LIBDIR) -lft \
-		-L$(PREFIX)/lib -lSDL2 -lSDL2_ttf -lSDL2_image  -lcjson \
+		-L./cJSON/build \
+		-L$(PREFIX)/lib -lSDL2 -lSDL2_ttf -lSDL2_image  -lcjson.1.7.7 \
 		-framework OpenGL -framework AppKit -framework OpenCL
 
 .PHONY: all download clean fclean re sdl2 install_dependencies update\
