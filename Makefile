@@ -17,19 +17,18 @@ SOURCES_DIR = ./src
 OBJECTS_DIR = ./obj
 
 SOURCES = rt_parser1.c \
-          rt_controllers.c \
-          rt_kernels.c \
-          main.c \
-          rt_init.c \
-          rt_parser.c \
-          rt_errors.c \
-          rt_tools.c \
-          rt_read_file.c \
-		  parser/parse_main.c \
-		  parser/parse_generic.c \
-		  parser/parse_specific.c \
-		  parser/parse_validate.c \
-		  ../cJSON/cJSON.c
+			rt_controllers.c \
+			rt_kernels.c \
+			main.c \
+			rt_init.c \
+			rt_parser.c \
+			rt_errors.c \
+			rt_tools.c \
+			rt_read_file.c \
+			parser/parse_main.c \
+			parser/parse_generic.c \
+			parser/parse_specific.c \
+			parser/parse_validate.c
 
 OBJECTS = $(SOURCES:.c=.o)
 OBJECTS := $(addprefix $(OBJECTS_DIR)/, $(OBJECTS))
@@ -51,13 +50,13 @@ IFLAGS = -I. -I$(INCLUDE_DIR) \
 
 LFLAGS = \
 		-L$(LIBDIR) -lft \
-		-L$(PREFIX)/lib -lSDL2 -lSDL2_ttf -lSDL2_image \
+		-L$(PREFIX)/lib -lSDL2 -lSDL2_ttf -lSDL2_image  -lcjson \
 		-framework OpenGL -framework AppKit -framework OpenCL
 
 .PHONY: all download clean fclean re sdl2 install_dependencies update\
 				sdl2_download sdl2_image_download sdl2_ttf_download \
 				sdl2_install sdl2_image_install sdl2_ttf_install \
-				sdl2_clean sdl2_image_clean sdl2_ttf_clean
+				sdl2_clean sdl2_image_clean sdl2_ttf_clean cjson
 
 all: $(NAME)
 
@@ -83,6 +82,14 @@ devices:
 
 $(LIBNAME):
 	@make -C $(LIBDIR)
+
+cjson:
+	@mkdir -p $(DEP_DIR)
+	git submodule init;
+	git submodule update;
+	@if [ ! -d "cJSON/build/" ]; then mkdir -p "cJSON/build"; fi;
+	cd cJSON/build/ && echo $(PWD) && cmake .. -DCMAKE_INSTALL_PREFIX=$(PWD)/build && make install
+
 
 sdl2_download:
 	@mkdir -p $(DEP_DIR)
@@ -150,7 +157,7 @@ sdl2_ttf_install: sdl2_ttf_download
 
 download: sdl2_download sdl2_image_download sdl2_ttf_download
 
-install_dependencies: download sdl2_install sdl2_image_install sdl2_ttf_install
+install_dependencies: download sdl2_install sdl2_image_install sdl2_ttf_install cjson
 
 clean_proj:
 	@$(MAKE) -C $(LIBDIR) clean
@@ -182,9 +189,9 @@ sdl2_ttf_clean:
 		$(MAKE) -C $(DEP_DIR)/SDL2_ttf clean; \
 	fi
 
-clean: sdl2_clean sdl2_image_clean sdl2_ttf_clean
+clean: sdl2_clean sdl2_image_clean sdl2_ttf_clean clean_proj
 
-fclean: clean
+fclean: clean fclean_proj
 	@$(RM) -rf $(PREFIX)
 	@$(RM) -rf $(DEP_DIR)
 

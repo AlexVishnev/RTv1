@@ -13,7 +13,12 @@ set(SOURCE_FILES src/main.c
 				src/rt_parser.c
 				src/rt_parser1.c
 				src/rt_read_file.c
-				src/rt_tools.c)
+				src/rt_tools.c
+				src/parser/parse_generic.c
+				src/parser/parse_main.c
+				src/parser/parse_specific.c
+				src/parser/parse_validate.c
+		)
 
 set(LIBFT_SOURCES libft/ft_strncat.c
 	libft/ft_split_arr.c
