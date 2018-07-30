@@ -2,14 +2,16 @@
 #include <math.h>
 #include "parser_internal.h"
 
-# define CLAMP(x) min(max(x, min), max)
-# define CLAMP_f(x) fmin(fmax(x, min), max)
+#define MIN(a, b) (a) > (b) ? (b) : (a)
+#define MAX (a, b) (a) > (b) ? (a) : (b)
+#define CLAMP (c) MIN(MAX(c, min), max)
+// # define CLAMP_f(x) fmin(fmax(x, min), max)
 
 static void please_validate_and_save_enum_of_int(void *src,
 	void *dst, t_field_info *info)
 {
 	int arr[info->array_size];
-	int i
+	int i;
 	int *tmp;
 	int min;
 	int max;
