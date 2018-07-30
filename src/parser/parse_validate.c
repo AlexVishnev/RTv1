@@ -2,7 +2,8 @@
 #include <math.h>
 #include "parser_internal.h"
 
-# define CLAMP(x) fmin(fmax(x, min), max)
+# define CLAMP(x) min(max(x, min), max)
+# define CLAMP_f(x) fmin(fmax(x, min), max)
 
 static void please_validate_and_save_enum_of_int(void *src,
 	void *dst, t_field_info *info)
@@ -20,7 +21,7 @@ static void please_validate_and_save_enum_of_int(void *src,
 	while (++i < info->array_size)
 	{
 		arr[i] = CLAMP(tmp[i]);
-		printf ("original value: %d, CLAMP value: %d", tmp[i], CLAMP(tmp[i]));
+		printf ("original value: [%d], CLAMP value: [%d]", tmp[i], CLAMP(tmp[i]));
 	}
 	memcpy(dst, src, sizeof(arr));
 }
@@ -41,7 +42,7 @@ static void please_validate_and_save_enum_of_float(void *src,
 	while (++i < info->array_size)
 	{
 		arr[i] = CLAMP(tmp[i]);
-		printf ("original value: %f, CLAMP value: %f", tmp[i], CLAMP(tmp[i]));
+		printf ("original value: [%f], CLAMP value: [%f]", tmp[i], CLAMP(tmp[i]));
 	}
 	memcpy(dst, src, sizeof(arr));
 }

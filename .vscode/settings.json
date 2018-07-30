@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "cmath": "c",
+        "cstdio": "c",
+        "cstdlib": "c",
+        "cwchar": "c",
+        "exception": "c",
+        "chrono": "c",
+        "limits": "c",
+        "algorithm": "c"
+    }
+}
