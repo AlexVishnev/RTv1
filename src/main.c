@@ -90,19 +90,30 @@ int			main(int ac, char **av)
 	parser_main(av[1], &src);
 	printf("\n\n\n\nsrc.params.o.x = [%f]\nsrc.params.o.y = [%f]\nsrc.params.o.z = [%f]\n", src.params.o.x,src.params.o.y , src.params.o.z );
 	printf("\n\n\n\nsrc.params.d.x = [%f]\nsrc.params.d.y = [%f]\nsrc.params.d.z = [%f]\n", src.params.d.x,src.params.d.y , src.params.d.z );
-	printf("\n\n%d\n", src.params.light->type);
-	// init_host(&src);
-	// init_parametrs(&src);
-	// create_videohost(&src);
-	// while (DICK)
-	// {
-	// 	if (!expose_hook(&src))
-	// 		break ;
-	// 	opencl_kernel_run(&src);
-	// 	init_fps(&src);
-	// 	time_delay();
-	// 	SDL_UpdateWindowSurface(src.wind);
-	// }
-	// exit_work(&src);
+	printf("\n\nsrc.params.light->type = [%d]\n", src.params.light->type);
+
+	printf("src.params.object->type) [%d]\n", src.params.object->type);
+	printf("src.params.object->radius [%f]\n", src.params.object->radius);
+	printf("src.params.object->specular [%f]\n", src.params.object->specular);
+	printf("src.params.object->angle [%f]\n", src.params.object->angle);
+	printf("src.params.object->reflection [%f]\n", src.params.object->reflection);
+
+	printf("src.params.object->type) [%d]\n", src.params.light->type);
+	printf("src.params.light->intensive [%f]\n", src.params.light->intensive);
+	printf("src.params.light->direction [x = [%f]; y = [%f]; z = [%f]]\n", src.params.light->direction.x, src.params.light->direction.y, src.params.light->direction.z );
+	printf("src.params.light->position [x = [%f]; y = [%f]; z = [%f]]\n", src.params.light->position.x, src.params.light->position.y, src.params.light->position.z );
+		init_host(&src);
+	init_parametrs(&src);
+	create_videohost(&src);
+	while (DICK)
+	{
+		if (!expose_hook(&src))
+			break ;
+		opencl_kernel_run(&src);
+		init_fps(&src);
+		time_delay();
+		SDL_UpdateWindowSurface(src.wind);
+	}
+	exit_work(&src);
 	return (0);
 }

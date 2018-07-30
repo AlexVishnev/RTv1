@@ -3,8 +3,8 @@
 #include "parser_internal.h"
 
 #define MIN(a, b) (a) > (b) ? (b) : (a)
-#define MAX (a, b) (a) > (b) ? (a) : (b)
-#define CLAMP (c) MIN(MAX(c, min), max)
+#define MAX(a, b) (a) > (b) ? (a) : (b)
+#define CLAMP(c) MIN(MAX(c, min), max)
 // # define CLAMP_f(x) fmin(fmax(x, min), max)
 
 static void please_validate_and_save_enum_of_int(void *src,
@@ -20,11 +20,13 @@ static void please_validate_and_save_enum_of_int(void *src,
 	min = (info->can_be_signed) ? (-max) : (0);
 	tmp = (int*)src;
 	i = -1;
+	printf("\n\n\ninfo->array_size = [%d]\n\n\n", info->array_size );
 	while (++i < info->array_size)
 	{
 		arr[i] = CLAMP(tmp[i]);
-		printf ("original value: [%d], CLAMP value: [%d]", tmp[i], CLAMP(tmp[i]));
+		printf ("\ninfo->array_size[___%d___]original value: [%d], CLAMP value: [%d]\n", i, tmp[i], CLAMP(tmp[i]));
 	}
+	printf("[%lu] [%lu] [%lu] asdasdasd\n", sizeof(&arr), sizeof(dst), sizeof(src));
 	memcpy(dst, src, sizeof(arr));
 }
 
@@ -44,7 +46,7 @@ static void please_validate_and_save_enum_of_float(void *src,
 	while (++i < info->array_size)
 	{
 		arr[i] = CLAMP(tmp[i]);
-		printf ("original value: [%f], CLAMP value: [%f]", tmp[i], CLAMP(tmp[i]));
+		printf ("\noriginal value: [%f], CLAMP value: [%f]\n", tmp[i], CLAMP(tmp[i]));
 	}
 	memcpy(dst, src, sizeof(arr));
 }
