@@ -1,0 +1,29 @@
+{
+	"camera":
+	{
+		"position" : [0,2,-5],
+		"rotation" : [0, 0, 0]
+	},
+	"lights" :
+	[
+		{
+			"type" : 3,
+			"intensive" : 0.8,
+			"position" : [0, 0, 0],
+			"rotation" : [1, 1, -1.5]
+		}
+	],
+	"objects" :
+	[
+		{
+			"type" : 4,
+            "size" : 1,
+            "specular" : 50,
+            "angle" : 9,
+            "reflect" : 0,
+            "position" : [0, 0, -4],
+            "rotation" : [0, 15, 13],
+            "color" : [255, 141, 0]
+		}
+	]
+}

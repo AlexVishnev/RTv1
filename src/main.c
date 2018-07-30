@@ -92,16 +92,17 @@ int			main(int ac, char **av)
 	printf("\n\n\n\nsrc.params.d.x = [%f]\nsrc.params.d.y = [%f]\nsrc.params.d.z = [%f]\n", src.params.d.x,src.params.d.y , src.params.d.z );
 	printf("\n\nsrc.params.light->type = [%d]\n", src.params.light->type);
 
-	printf("src.params.object->type) [%d]\n", src.params.object->type);
-	printf("src.params.object->radius [%f]\n", src.params.object->radius);
-	printf("src.params.object->specular [%f]\n", src.params.object->specular);
-	printf("src.params.object->angle [%f]\n", src.params.object->angle);
-	printf("src.params.object->reflection [%f]\n", src.params.object->reflection);
+	printf("src.params.object->type) [%d]\n", src.params.object[0].type);
+	printf("src.params.object->radius [%f]\n", src.params.object[0].radius);
+	printf("src.params.object->specular [%f]\n", src.params.object[0].specular);
+	printf("src.params.object->angle [%f]\n", src.params.object[0].angle);
+	printf("src.params.object->reflection [%f]\n", src.params.object[0].reflection);
 
-	printf("src.params.object->type) [%d]\n", src.params.light->type);
-	printf("src.params.light->intensive [%f]\n", src.params.light->intensive);
+	printf("src.params.light->type) [%d]\n", src.params.light[0].type);
+	printf("src.params.light->intensive [%f]\n", src.params.light[0].intensive);
 	printf("src.params.light->direction [x = [%f]; y = [%f]; z = [%f]]\n", src.params.light->direction.x, src.params.light->direction.y, src.params.light->direction.z );
 	printf("src.params.light->position [x = [%f]; y = [%f]; z = [%f]]\n", src.params.light->position.x, src.params.light->position.y, src.params.light->position.z );
+	printf("src.params.object->color [x = [%f]; y = [%f]; z = [%f]]\n", src.params.object->color.x, src.params.object->color.y, src.params.object->color.z );
 		init_host(&src);
 	init_parametrs(&src);
 	create_videohost(&src);

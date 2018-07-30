@@ -1,0 +1,45 @@
+{
+	"camera":
+	{
+		"position" : [0, 0.1, -8],
+		"rotation" : [10, 0, 0]
+	},
+	"lights" :
+	[
+		{
+			"type" : 2,
+			"intensive" : 0.4,
+			"position" : [0, 10, 5],
+			"rotation" : [11, 2, 22]
+		},
+		{
+			"type" : 3,
+			"intensive" : 0.5,
+			"position" : [0, 0, 0],
+			"rotation" : [1, 1, -2.5]
+		}
+	],
+	"objects" :
+	[
+		{
+			"type" : 1,
+            "size" : 1.85,
+            "specular" : 50,
+            "angle" : 0,
+            "reflect" : 0,
+            "position" : [0, 0, 0],
+            "rotation" : [0, 0, 0],
+            "color" : [130, 10, 20]
+		},
+		{
+			"type" : 2,
+            "size" : 0.9,
+            "specular" : 5000,
+            "angle" : 30000,
+            "reflect" : 0,
+            "position" : [1, -2, -1],
+            "rotation" : [0,0,0],
+            "color" : [255, 0, 255]
+		}
+	]
+}

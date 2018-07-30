@@ -23,9 +23,9 @@ static void please_validate_and_save_enum_of_int(void *src,
 	while (++i < info->array_size)
 	{
 		arr[i] = CLAMP(tmp[i]);
-		printf ("\ninfo->array_size[___%d___]original value: [%d], CLAMP value: [%d]\n", i, tmp[i], CLAMP(tmp[i]));
+		// printf ("\ninfo->array_size[___%d___]original value: [%d], CLAMP value: [%d]\n", i, tmp[i], CLAMP(tmp[i]));
 	}
-	printf("[%lu] [%lu] [%lu] asdasdasd\n", sizeof(&arr), sizeof(dst), sizeof(src));
+	// printf("[%lu] [%lu] [%lu] asdasdasd\n", sizeof(&arr), sizeof(dst), sizeof(src));
 	memcpy(dst, src, sizeof(arr));
 }
 
@@ -45,18 +45,16 @@ static void please_validate_and_save_enum_of_float(void *src,
 	while (++i < info->array_size)
 	{
 		arr[i] = CLAMP(tmp[i]);
-		printf ("\noriginal value: [%f], CLAMP value: [%f]\n", tmp[i], CLAMP(tmp[i]));
+		// printf ("\noriginal value: [%f], CLAMP value: [%f]\n", tmp[i], CLAMP(tmp[i]));
 	}
 	memcpy(dst, src, sizeof(arr));
 }
 
 void please_validate_and_save(void *src, void *dst, t_field_info *info)
 {
-	if (info->is_array)
-	{
+
 		if (info->is_int)
 			please_validate_and_save_enum_of_int(src, dst, info);
 		else
 			please_validate_and_save_enum_of_float(src, dst, info);
-	}
 }

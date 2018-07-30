@@ -1,0 +1,208 @@
+{
+	"camera":
+	{
+		"position" : [1,4,-35],
+		"rotation" : [15,0,0]
+	},
+	"lights" :
+	[
+		{
+			"type" : 3,
+			"intensive" : 0.5,
+			"position" : [-1 , 2, 54],
+			"rotation" : [2 , 2, 1]
+		},
+		{
+			"type" : 2,
+			"intensive" : 0.9,
+			"position" : [1, 4, 2],
+			"rotation" : [2 , 2, 0]
+		}
+	],
+	"objects" :
+	[
+		{
+			"type" : 1,
+                  "size" : 2.5,
+                  "specular" : 500,
+                  "angle" : 3000,
+                  "reflect" : 0.3,
+                  "position" : [-5, 0.1, 227],
+                  "rotation" : [0, 0, 0],
+                  "color" : [224, 154, 154]
+		},
+            {
+                  "type" : 1,
+                  "size" : 2.5,
+                  "specular" : 500,
+                  "angle" : 3000,
+                  "reflect" : 0.3,
+                  "position" : [5, 0.1, 227],
+                  "rotation" : [0, 0, 0],
+                  "color" : [224, 154, 154]
+            },
+            {
+                  "type" : 1,
+                  "size" : 1.5,
+                  "specular" : 500,
+                  "angle" : 3000,
+                  "reflect" : 0.3,
+                  "position" : [-5, 0.1, 227],
+                  "rotation" : [0, 0, 0],
+                  "color" : [224, 154, 154]
+            },
+            {
+                  "type" : 1,
+                  "size" : 1.5,
+                  "specular" : 500,
+                  "angle" : 3000,
+                  "reflect" : 0.3,
+                  "position" : [0, 1.1, 227],
+                  "rotation" : [0, 0, 0],
+                  "color" : [224, 154, 154]
+            },
+            {
+                  "type" : 1,
+                  "size" : 1.5,
+                  "specular" : 500,
+                  "angle" : 3000,
+                  "reflect" : 0.3,
+                  "position" : [-5, 6.1, 227],
+                  "rotation" : [0, 0, 0],
+                  "color" : [224, 154, 154]
+            },
+            {
+                  "type" : 1,
+                  "size" : 1.5,
+                  "specular" : 500,
+                  "angle" : 3000,
+                  "reflect" : 0.3,
+                  "position" : [12, 0.1, 227],
+                  "rotation" : [0, 0, 0],
+                  "color" : [224, 154, 154]
+            },
+            {
+                  "type" : 3,
+                  "size" : 2.9,
+                  "specular" : 50,
+                  "angle" : 3200,
+                  "reflect" : 0.2,
+                  "position" : [0, 1, 220],
+                  "rotation" : [0, 0, 0],
+                  "color" : [168, 89, 89]
+            },
+            {
+                  "type" : 3,
+                  "size" : 1.5,
+                  "specular" : 5000,
+                  "angle" : 3000,
+                  "reflect" : 0.2,
+                  "position" : [-5, 1, 220],
+                  "rotation" : [-5, 0, 0],
+                  "color" : [168, 255, 123]
+            },
+            {
+                  "type" : 3,
+                  "size" : 1.5,
+                  "specular" : 5000,
+                  "angle" : 3000,
+                  "reflect" : 0.2,
+                  "position" : [-4, 1, 220],
+                  "rotation" : [-5, 0, 0],
+                  "color" : [168, 0, 123]
+            },
+            {
+                  "type" : 3,
+                  "size" : 1.5,
+                  "specular" : 50,
+                  "angle" : 3200,
+                  "reflect" : 0.2,
+                  "position" : [0, 5, 220],
+                  "rotation" : [0, 5, 0],
+                  "color" : [255, 0, 9]
+            },
+            {
+                  "type" : 3,
+                  "size" : 1.5,
+                  "specular" : 50,
+                  "angle" : 3200,
+                  "reflect" : 0.2,
+                  "position" : [1, 5, 220],
+                  "rotation" : [0, 5, 0],
+                  "color" : [0, 2, 255]
+            },
+		{
+			"type" : 3,
+                  "size" : 1.5,
+                  "specular" : 50,
+                  "angle" : 3200,
+                  "reflect" : 0.2,
+                  "position" : [4, 2, 220],
+                  "rotation" : [4, 2, 0],
+                  "color" : [255, 0, 9]
+		},
+            {
+                  "type" : 3,
+                  "size" : 1.5,
+                  "specular" : 50,
+                  "angle" : 3200,
+                  "reflect" : 0.2,
+                  "position" : [5, 2, 220],
+                  "rotation" : [4, 2, 0],
+                  "color" : [0, 2, 255]
+            },
+            {
+                  "type" : 3,
+                  "size" : 1.5,
+                  "specular" : 50,
+                  "angle" : 3200,
+                  "reflect" : 0.2,
+                  "position" : [15, 12, 11],
+                  "rotation" : [-14, 12, 10],
+                  "color" : [0, 2, 255]
+            },
+		{
+			"type" : 3,
+                  "size" : 1.5,
+                  "specular" : 50,
+                  "angle" : 30,
+                  "reflect" : 0,
+                  "position" : [14, 13.4, 10],
+                  "rotation" : [14, -5, 10],
+                  "color" : [255, 0, 0]
+		},
+            {
+                  "type" : 3,
+                  "size" : 1.5,
+                  "specular" : 50,
+                  "angle" : 30,
+                  "reflect" : 0,
+                  "position" : [-13.7, 13.4, 10],
+                  "rotation" : [-13.7, -5, 10],
+                  "color" : [255, 0, 0]
+            },
+            {
+                  "type" : 2,
+                  "size" : 1,
+                  "specular" : 0,
+                  "angle" : 0,
+                  "reflect" : 0.9,
+                  "position" : [1, 0, -4],
+                  "rotation" : [0, 0, 0],
+                  "color" : [255, 255, 202]
+            }
+	]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
