@@ -6,15 +6,15 @@
  */
 int read_file(char *filepath, char **file_str)
 {
-	 FILE *f;
-	 long fsize;
-	 char *fucking_tmp;
+	FILE *f;
+	long fsize;
+	char *fucking_tmp;
 
-	 if (!(f = fopen(filepath, "rb")))
-	 {
+	if (!(f = fopen(filepath, "rb")))
+	{
 		printf("Fuck, file not found...\n");
 		exit(-1);
-	 }
+	}
 	fseek(f, 0, SEEK_END);
 	fsize = ftell(f);
 	fseek(f, 0, SEEK_SET);

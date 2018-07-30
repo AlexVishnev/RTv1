@@ -100,6 +100,7 @@ float		fresnel(float3 D, float3 N, float ior, float kr);
 int		set_carton(int red, int green, int blue);
 int		set_sepia(int red, int green, int blue);
 int		set_bw (int red, int green, int blue);
+int		set_negative (int r, int g, int b);
 
 int	set_carton(int r, int g, int b)
 {
@@ -132,6 +133,14 @@ int	set_bw(int r, int g, int b)
 	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
 }
 
+int set_negative (int r, int g, int b)
+{
+	r = 255 - r;
+	g = 255 - g;
+	b = 255 - b;
+	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
+}
+
 
 int		ColorFilters(int r, int g, int b, int flag, t_params par)
 {
@@ -143,6 +152,8 @@ int		ColorFilters(int r, int g, int b, int flag, t_params par)
 		return (set_sepia(r, g, b));
 	else if (flag == 3)
 		return (set_bw(r, g, b));
+	else if (flag == 4)
+		return (set_negative(r,g,b));
 	return (r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF);
 }
 
@@ -523,7 +534,7 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 	int i = 0;
 	while  (i < SAMPLE)
 	{
-		color[i] = RayTracer(obj, light, params, 0.001f, INFINITY);
+		color[i] = RayTracer(obj, light, params, 0.0001f, INFINITY);
 		i++;
 	}
 	img_pxl[x + y * params.screenw] = convert_color(color);

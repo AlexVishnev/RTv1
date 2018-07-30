@@ -7,7 +7,7 @@ static inline void please_parse_array_field(cJSON *json_aray, struct s_field_inf
 	float pos[field_info->array_size];
 
 	pos_idx = -1;
-	while(++pos_idx < field_info->array_size)
+	while (++pos_idx < field_info->array_size)
 	{
 		tmp = cJSON_GetArrayItem(json_aray, pos_idx);
 			if (tmp->type != field_info->arr_type)

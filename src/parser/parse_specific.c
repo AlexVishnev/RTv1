@@ -26,29 +26,33 @@ void please_parse_camera(cJSON *json_chain, void *__data)
 static void please_parse_single_light(cJSON *json_light, void *__data)
 {
 	t_field_info field_info;
+	t_src *p_src;
 
-	printf("\nLIGHT JSON:\n");
+	p_src =(t_src *)__data;
+
 	field_info.type = cJSON_Number;
 	field_info.is_array = false;
 	field_info.name = "type";
 	field_info.can_be_signed = false;
 	field_info.max_abs = 3;
 	field_info.is_int = true;
-	please_parse_field(json_light, &field_info, __data);
+	please_parse_field(json_light, &field_info, (void *)&(p_src->params.light->type));
 	field_info.name = "intensive";
 	field_info.can_be_signed = false;
 	field_info.is_int = false;
 	field_info.max_abs = 1;
-	please_parse_field(json_light, &field_info, __data);
+	please_parse_field(json_light, &field_info, (void *)&(p_src->params.light->intensive));
 	field_info.type = cJSON_Array;
 	field_info.is_array = true;
 	field_info.arr_type = cJSON_Number;
 	field_info.name = "position";
 	field_info.can_be_signed = true;
 	field_info.max_abs = 1000;
-	please_parse_field(json_light, &field_info, __data);
+	printf("\nLIGHT JSON:\n");
+	// please_parse_field(json_light, &field_info, (void *)&(p_src->params.light->position));
 	field_info.name = "rotation";
-	please_parse_field(json_light, &field_info, __data);
+	// please_parse_field(json_light, &field_info, (void *)&(p_src->params.light->direction));
+
 }
 
 void please_parse_lights(cJSON *json_chain, void *__data)
@@ -76,35 +80,36 @@ void please_parse_lights(cJSON *json_chain, void *__data)
 	arr_idx = -1;
 	while (++arr_idx < p_src->lights_cnt)
 	{
-		printf("ffff\n");
+		printf("[%d] < p_src->lights_cnt [%d]\n", arr_idx,  p_src->lights_cnt);
 		tmp = cJSON_GetArrayItem(json_lights, arr_idx);
-		please_parse_single_light(tmp, __data);
+		please_parse_single_light(tmp, (void *)&(p_src->params.light[arr_idx]));
 	}
 }
 
 static void please_parse_single_object(cJSON *json_object, void *__data)
 {
+	t_src *p_src;
 	t_field_info field_info;
 
-	printf("\nObject JSON:\n");
+	p_src =(t_src *)__data;
 	field_info.type = cJSON_Number;
 	field_info.is_array = false;
 	field_info.name = "type";
 	field_info.is_int = true;
 	field_info.can_be_signed = false;
 	field_info.max_abs = 3;
-	please_parse_field(json_object, &field_info, __data);
+	please_parse_field(json_object, &field_info, (void *)&(p_src->params.object->type));
 	field_info.is_int = false;
 	field_info.name = "size";
-	please_parse_field(json_object, &field_info, __data);
+	please_parse_field(json_object, &field_info, (void *)&(p_src->params.object->radius));
 	field_info.name = "specular";
 	field_info.max_abs = 1000;
-	please_parse_field(json_object, &field_info, __data);
+	please_parse_field(json_object, &field_info, (void *)&(p_src->params.object->specular));
 	field_info.name = "angle";
-	please_parse_field(json_object, &field_info, __data);
+	please_parse_field(json_object, &field_info, (void *)&(p_src->params.object->angle));
 	field_info.name = "reflect";
 	field_info.max_abs = 1;
-	please_parse_field(json_object, &field_info, __data);
+	please_parse_field(json_object, &field_info,  (void *)&(p_src->params.object->reflection));
 
 	field_info.type = cJSON_Array;
 	field_info.is_array = true;
@@ -112,13 +117,14 @@ static void please_parse_single_object(cJSON *json_object, void *__data)
 	field_info.name = "position";
 	field_info.can_be_signed = true;
 	field_info.max_abs = 1000;
-	please_parse_field(json_object, &field_info, __data);
+	printf("\nObject JSON:\n");
+	// please_parse_field(json_object, &field_info, (void *)&(p_src->params.object->mid));
 	field_info.name = "rotation";
-	please_parse_field(json_object, &field_info, __data);
+	// please_parse_field(json_object, &field_info, (void *)&(p_src->params.object->direction));
 	field_info.name = "color";
 	field_info.can_be_signed = false;
 	field_info.max_abs = 255;
-	please_parse_field(json_object, &field_info, __data);
+	// please_parse_field(json_object, &field_info, (void *)&(p_src->params.object->color));
 }
 
 void please_parse_objects(cJSON *json_chain, void *__data)
@@ -148,6 +154,6 @@ void please_parse_objects(cJSON *json_chain, void *__data)
 	{
 		printf("qqqqq\n");
 		tmp = cJSON_GetArrayItem(json_objects, arr_idx);
-		please_parse_single_object(tmp, __data);
+		please_parse_single_object(tmp, (void *)&p_src->params.object[arr_idx]);
 	}
 }
