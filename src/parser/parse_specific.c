@@ -81,8 +81,8 @@ void please_parse_lights(cJSON *json_chain, void *__data)
 	while (++arr_idx < p_src->lights_cnt)
 	{
 		tmp = cJSON_GetArrayItem(json_lights, arr_idx);
-		printf("\n\n\n\n_____________[%d] < p_src->lights_cnt [%d]\n", arr_idx,  p_src->lights_cnt);
-		printf("p_src->lights_cnt ==== %d\n", p_src->lights_cnt);
+		// printf("\n\n\n\n_____________[%d] < p_src->lights_cnt [%d]\n", arr_idx,  p_src->lights_cnt);
+		// printf("p_src->lights_cnt ==== %d\n", p_src->lights_cnt);
 		please_parse_single_light(tmp, ((void *)&(p_src->params.light[arr_idx])));
 	}
 }
