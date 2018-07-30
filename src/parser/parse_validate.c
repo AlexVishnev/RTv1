@@ -26,7 +26,7 @@ static void please_validate_and_save_enum_of_int(void *src,
 		printf ("\ninfo->array_size[___%d___]original value: [%d], CLAMP value: [%d]\n", i, tmp[i], CLAMP(tmp[i]));
 	}
 	printf("[%lu] [%lu] [%lu] asdasdasd\n", sizeof(&arr), sizeof(dst), sizeof(src));
-	// memcpy(dst, src, sizeof(arr));
+	memcpy(dst, src, sizeof(arr));
 }
 
 static void please_validate_and_save_enum_of_float(void *src,
@@ -52,8 +52,11 @@ static void please_validate_and_save_enum_of_float(void *src,
 
 void please_validate_and_save(void *src, void *dst, t_field_info *info)
 {
-	if (info->is_int)
-		please_validate_and_save_enum_of_int(src, dst, info);
-	else
-		please_validate_and_save_enum_of_float(src, dst, info);
+	if (info->is_array)
+	{
+		if (info->is_int)
+			please_validate_and_save_enum_of_int(src, dst, info);
+		else
+			please_validate_and_save_enum_of_float(src, dst, info);
+	}
 }
