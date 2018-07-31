@@ -16,15 +16,12 @@ INCLUDE_DIR = ./includes
 SOURCES_DIR = ./src
 OBJECTS_DIR = ./obj
 
-SOURCES = rt_parser1.c \
-			rt_controllers.c \
+SOURCES = rt_controllers.c \
 			rt_kernels.c \
 			main.c \
 			rt_init.c \
-			rt_parser.c \
 			rt_errors.c \
 			rt_tools.c \
-			rt_read_file.c \
 			parser/parse_main.c \
 			parser/parse_generic.c \
 			parser/parse_specific.c \

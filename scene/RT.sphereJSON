@@ -29,6 +29,7 @@
             "reflect" : 0,
             "position" : [0, 0, 0],
             "rotation" : [0, 0, 0],
+			"fuck_me_twice" : "a_week",
             "color" : [130, 10, 20]
 		},
 		{
