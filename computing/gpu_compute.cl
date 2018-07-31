@@ -97,10 +97,10 @@ float2		Intersect_Plane(__constant t_obj *obj, float3 O, float3 D);
 float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 P, float3 N, float3 V, float spec);
 float		fresnel(float3 D, float3 N, float ior, float kr);
 
-int		set_carton(int red, int green, int blue);
-int		set_sepia(int red, int green, int blue);
-int		set_bw (int red, int green, int blue);
-int		set_negative (int r, int g, int b);
+int			set_carton(int red, int green, int blue);
+int			set_sepia(int red, int green, int blue);
+int			set_bw (int red, int green, int blue);
+int			set_negative (int r, int g, int b);
 
 int	set_carton(int r, int g, int b)
 {
@@ -229,7 +229,7 @@ float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params 
 			}
 			if (isequal(dot(V, N), 0))
 				continue ;
-			ClosestIntersection(obj, &shadows, par, P, L, 0.001, max);
+			ClosestIntersection(obj, &shadows, par, P, L, 0.0001f, max);
 			if (isnotequal(shadows.closest_intersect, INFINITY))
 				continue ;
 			nl = dot(N, L);
@@ -269,7 +269,7 @@ float		GetForms(__constant t_obj *obj, float t, float3 P, float3 V, float3 VA)
 		return (INFINITY);
 	k.x = dot(VA, (P + t * V) - obj->mid);
 	k.y = dot(VA, (P + t * V) - obj->direction);
-	if (isless (k.x, 0.0) && isgreater (k.y, 0.0))
+	if (isless (k.x, 0.0) && isgreater(k.y, 0.0))
 		return (t);
 	return (INFINITY);
 }
@@ -343,10 +343,12 @@ float2	Intersect_Plane(__constant t_obj *obj, float3 O, float3 D)
 	float2	k;
 
 	k.x = dot(D, obj->direction);
-	k.y = dot(O - obj->mid, obj->direction);
+	k.y = (dot(O, obj->direction) - dot(obj->direction, obj->mid));
 	if (k.x)
 		return ((float2){-k.y / k.x, INFINITY});
 	return ((float2){INFINITY, INFINITY});
+
+
  }
 
 int		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
@@ -468,9 +470,6 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	float		intensity;
 	float3		DD;
 
-
-
-
 	recurs = 0;
 	while (islessequal(recurs, RECURS))
 	{
@@ -487,7 +486,7 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 			color[recurs] = 0;
 			break ;
 		}
-		P = par.O + (float)tr.closest_intersect * par.Direct;  //compute intersection
+		P = par.O + tr.closest_intersect * par.Direct;  //compute intersection
 		N = GlobalNormal(&tr, P);
 		DD = -par.Direct;
 		intensity = GenerateLigth(obj, light, &par, P, N, DD, tr.closest_object.specular); //NATIVE
@@ -499,10 +498,10 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		if (isgreater(tr.closest_object.reflect, 0))
 		{
 		
-			// par = (t_params){P, (dot(N, DD) * (2.0f * N)) - DD,  radians(par.camera_rot), par.obj, par.light, par.viewport,  par.t_min, 
-			// par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM! // reflect without viewport; 
+			par = (t_params){P, (dot(N, DD) * (2.0f * N)) - DD,  par.camera_rot, par.obj, par.light, par.viewport, 0.0001f, 
+			par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM! // reflect without viewport; 
 			
-			par.Direct = (dot(N, DD) * 2.0f * N) - DD; // reflect with viewport; 
+			// par.Direct = (dot(N, DD) * 2.0f * N) - DD; // reflect with viewport; 
 			recurs--;
 		}
 		else
@@ -540,8 +539,12 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 
 	int color[SAMPLE];
 
-	params.Direct = matrix_rotate(radians(params.camera_rot.x), radians(params.camera_rot.y), radians(params.camera_rot.z),
+	// params.Direct = matrix_rotate(radians(params.camera_rot.x), radians(params.camera_rot.y), radians(params.camera_rot.z),
+		// SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
+	params.Direct = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
+		
+
 	barrier(CLK_GLOBAL_MEM_FENCE);
 	int i = 0;
 	while  (i < SAMPLE)
