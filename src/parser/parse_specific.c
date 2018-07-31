@@ -17,6 +17,7 @@ void please_parse_camera(cJSON *json_chain, void *__data)
 	field_info.arr_type = cJSON_Number;
 	field_info.can_be_signed = true;
 	field_info.max_abs = 1000;
+	field_info.max_allowed_arr_size = 3;
 	field_info.name = "position";
 	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.o)));
 	field_info.name = "rotation";
@@ -30,6 +31,7 @@ static void please_parse_single_light(cJSON *json_light, void *__data)
 
 	p_light =(t_light *)__data;
 
+	field_info.max_allowed_arr_size = 1;
 	field_info.type = cJSON_Number;
 	field_info.is_array = false;
 	field_info.name = "type";
@@ -37,7 +39,7 @@ static void please_parse_single_light(cJSON *json_light, void *__data)
 	field_info.max_abs = 3;
 	field_info.is_int = true;
 	please_parse_field(json_light, &field_info, ((void *)&(p_light->type)));
-	printf("\nLIGHT FIIIIIIEEEEE\n");
+	// printf("\nLIGHT FIIIIIIEEEEE\n");
 	field_info.name = "intensive";
 	field_info.can_be_signed = false;
 	field_info.is_int = false;
@@ -49,6 +51,7 @@ static void please_parse_single_light(cJSON *json_light, void *__data)
 	field_info.name = "position";
 	field_info.can_be_signed = true;
 	field_info.max_abs = 1000;
+	field_info.max_allowed_arr_size = 3;
 	please_parse_field(json_light, &field_info, ((void *)&(p_light->position)));
 	field_info.name = "rotation";
 	please_parse_field(json_light, &field_info, ((void *)&(p_light->direction)));
@@ -81,8 +84,8 @@ void please_parse_lights(cJSON *json_chain, void *__data)
 	while (++arr_idx < p_src->lights_cnt)
 	{
 		tmp = cJSON_GetArrayItem(json_lights, arr_idx);
-		// printf("\n\n\n\n_____________[%d] < p_src->lights_cnt [%d]\n", arr_idx,  p_src->lights_cnt);
-		// printf("p_src->lights_cnt ==== %d\n", p_src->lights_cnt);
+		// // printf("\n\n\n\n_____________[%d] < p_src->lights_cnt [%d]\n", arr_idx,  p_src->lights_cnt);
+		// // printf("p_src->lights_cnt ==== %d\n", p_src->lights_cnt);
 		please_parse_single_light(tmp, ((void*)&(p_src->params.light[arr_idx])));
 	}
 }
@@ -94,6 +97,7 @@ static void please_parse_single_object(cJSON *json_object, void *__data)
 
 	p_object =(t_obj *)__data;
 
+	field_info.max_allowed_arr_size = 1;
 	field_info.type = cJSON_Number;
 	field_info.is_array = false;
 	field_info.name = "type";
@@ -119,7 +123,8 @@ static void please_parse_single_object(cJSON *json_object, void *__data)
 	field_info.name = "position";
 	field_info.can_be_signed = true;
 	field_info.max_abs = 1000;
-	printf("\nObject JSON:\n");
+	// printf("\nObject JSON:\n");
+	field_info.max_allowed_arr_size = 3;
 	please_parse_field(json_object, &field_info, ((void *)&(p_object->mid)));
 	field_info.name = "rotation";
 	please_parse_field(json_object, &field_info, ((void *)&(p_object->direction)));
@@ -137,12 +142,12 @@ void please_parse_objects(cJSON *json_chain, void *__data)
 
 	if (!(json_objects = cJSON_GetObjectItem(json_chain, "objects")))
 	{
-		printf("FUCKING objects\n");
+		// printf("FUCKING objects\n");
 		exit (-10);
 	}
 	if (json_objects->type != cJSON_Array)
 	{
-		printf("Objectss must be array\n");
+		// printf("Objectss must be array\n");
 		exit (-11);
 	}
 	/* it is a fucking amazing code */
@@ -154,7 +159,7 @@ void please_parse_objects(cJSON *json_chain, void *__data)
 	arr_idx = -1;
 	while (++arr_idx < p_src->objects_cnt)
 	{
-		printf("objects:\n");
+		// printf("objects:\n");
 		tmp = cJSON_GetArrayItem(json_objects, arr_idx);
 		please_parse_single_object(tmp, ((void*)&p_src->params.object[arr_idx]));
 	}

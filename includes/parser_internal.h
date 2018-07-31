@@ -16,6 +16,7 @@ typedef struct s_field_info
 	bool is_int;
 	u_int8_t type;
 	u_int8_t arr_type;
+	u_int8_t max_allowed_arr_size;
 	int array_size;
 	int max_abs;
 	bool can_be_signed;
