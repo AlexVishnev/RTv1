@@ -141,6 +141,16 @@ int set_negative (int r, int g, int b)
 	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
 }
 
+int	set_stereoskop(int r, int g, int b, int flag)
+{
+	if (isequal(flag, 5))
+		r = 0;
+	else if (isequal(flag, 6))
+		g = 0;
+	else if (isequal(flag,7))
+		b = 0;
+	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
+}
 
 int		ColorFilters(int r, int g, int b, int flag, t_params par)
 {
@@ -154,6 +164,8 @@ int		ColorFilters(int r, int g, int b, int flag, t_params par)
 		return (set_bw(r, g, b));
 	else if (flag == 4)
 		return (set_negative(r,g,b));
+	else if (flag == 5 || flag == 6 || flag == 7)
+		return (set_stereoskop(r,g,b, flag));
 	return (r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF);
 }
 
@@ -487,7 +499,7 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		if (isgreater(tr.closest_object.reflect, 0))
 		{
 		
-			// par = (t_params){P, (dot(N, DD) * (2.0f * N)) - DD,  par.camera_rot, par.obj, par.light, par.viewport,  par.t_min, 
+			// par = (t_params){P, (dot(N, DD) * (2.0f * N)) - DD,  radians(par.camera_rot), par.obj, par.light, par.viewport,  par.t_min, 
 			// par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM! // reflect without viewport; 
 			
 			par.Direct = (dot(N, DD) * 2.0f * N) - DD; // reflect with viewport; 
@@ -528,7 +540,7 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 
 	int color[SAMPLE];
 
-	params.Direct = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
+	params.Direct = matrix_rotate(radians(params.camera_rot.x), radians(params.camera_rot.y), radians(params.camera_rot.z),
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
 	barrier(CLK_GLOBAL_MEM_FENCE);
 	int i = 0;
