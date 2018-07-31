@@ -30,7 +30,7 @@ void		init_host(t_src *src)
 void		init_parametrs(t_src *src)
 {
 	src->params.t_max = INFINITY;
-	src->params.t_min = 0.001f;
+	src->params.t_min = 0.0001f;
 	src->params.look_pos.width = 1.0f;
 	src->params.look_pos.height = 1.0f;
 	src->params.look_pos.dist = 1.0f;
@@ -42,6 +42,10 @@ void		init_parametrs(t_src *src)
 	src->buffer = ft_memalloc(0x40000);
 	src->c.row = 0;
 	src->c.i = -1;
+	src->params.d.x = src->params.d.x * M_PI / 180;
+	src->params.d.y = src->params.d.y * M_PI / 180;
+	src->params.d.z = src->params.d.z * M_PI / 180;
+	src->params.camera_rot = src->params.d;
 }
 
 void		wr_data(Uint8 data[], Uint8 mask[], const char *im[], t_src *s)

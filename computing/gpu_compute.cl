@@ -341,9 +341,11 @@ float2	Intersect_Cylinder(__constant t_obj *obj, float3 P, float3 V)
 float2	Intersect_Plane(__constant t_obj *obj, float3 O, float3 D)
 {
 	float2	k;
+	float3	Normal;
 
-	k.x = dot(D, obj->direction);
-	k.y = (dot(O, obj->direction) - dot(obj->direction, obj->mid));
+	Normal = fast_normalize(obj->direction);
+	k.x = dot(D, Normal);
+	k.y = (dot(O, Normal) - dot(Normal, obj->mid));
 	if (k.x)
 		return ((float2){-k.y / k.x, INFINITY});
 	return ((float2){INFINITY, INFINITY});
@@ -402,7 +404,7 @@ float3	GlobalNormal(t_trace *tr, float3 P)
 		Normal -= (dot(Normal, center) * center);
 		return (fast_normalize(Normal));
 	}
-	return (tr->closest_object.direction);
+	return (fast_normalize(tr->closest_object.direction));
 }
 
 

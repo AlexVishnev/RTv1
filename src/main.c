@@ -6,7 +6,7 @@
 /*   By: avishnev <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/14 12:43:10 by avishnev          #+#    #+#             */
-/*   Updated: 2018/07/15 16:20:04 by avishnev         ###   ########.fr       */
+/*   Updated: 2018/07/31 21:42:33 by vchaus           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,12 +84,52 @@ int			main(int ac, char **av)
 
 	if (ac != 2)
 		error_manadge(MSG, 0, NULL);
-		// TODO: UNFUCK YOURSELF, uncomment this line and all will work fine
-	// 	read_from_file(av[1], &src);
-	// And uncomment this line
 	parser_main(av[1], &src);
 	init_host(&src);
 	init_parametrs(&src);
+
+
+
+	printf("BEFORE WHILE___\n\n\n\nCAMERA:\n");
+	printf("BEFORE WHILE___positon:\n");
+	printf("BEFORE WHILE___[%f, %f, %f]\n", src.params.o.x,src.params.o.y , src.params.o.z );
+	printf("BEFORE WHILE___rotation:\n");
+	printf("BEFORE WHILE___[%f, %f, %f]\n\n", src.params.d.x,src.params.d.y , src.params.d.z );
+
+	printf("BEFORE WHILE___num_lights : %d\n", src.lights_cnt);
+	printf("BEFORE WHILE___num_objects: %d\n\n", src.objects_cnt);
+
+	int i;
+	printf("BEFORE WHILE___LIGHTS:\n");
+	for (i = 0; i < src.lights_cnt; i++)
+	{
+		printf("BEFORE WHILE___type      = %d\n", src.params.light[i].type);
+		printf("BEFORE WHILE___intensive = %f\n", src.params.light[i].intensive);
+		printf("BEFORE WHILE___position  = [%f, %f, %f]\n", src.params.light[i].position.x, 
+					src.params.light[i].position.y , src.params.light[i].position.z );
+		printf("BEFORE WHILE___direction = [%f, %f, %f]\n\n", src.params.light[i].direction.x, 
+					src.params.light[i].direction.y , src.params.light[i].direction.z );
+	}
+	printf("BEFORE WHILE___OBJECTS:\n");
+	for (i = 0; i < src.objects_cnt; i++)
+	{
+		printf("BEFORE WHILE___type      = %d\n", src.params.object[i].type);
+		printf("BEFORE WHILE___size      = %f\n", src.params.object[i].radius);
+		printf("BEFORE WHILE___specular  = %f\n", src.params.object[i].specular);
+		printf("BEFORE WHILE___angle     = %f\n", src.params.object[i].angle);
+		printf("BEFORE WHILE___reflection= %f\n", src.params.object[i].reflection);
+		printf("BEFORE WHILE___position  = [%f, %f, %f]\n", src.params.object[i].mid.x, 
+					src.params.object[i].mid.y , src.params.object[i].mid.z );
+		printf("BEFORE WHILE___rotation  = [%f, %f, %f]\n", src.params.object[i].direction.x, 
+					src.params.object[i].direction.y , src.params.object[i].direction.z );
+		printf("BEFORE WHILE___color     = [%f, %f, %f]\n\n", src.params.object[i].color.x, 
+					src.params.object[i].color.y , src.params.object[i].color.z );
+	}
+	printf("t_min = [%f] t_max = [%f]\n", src.params.t_min, src.params.t_min );
+	printf("src.params.object = %d\nsrc.params.light = %d\n", src.params.objects, src.params.lights);
+	printf("width = %d\n heigth = %d\n",src.params.width, src.params.height );
+
+
 	create_videohost(&src);
 	while (DICK)
 	{

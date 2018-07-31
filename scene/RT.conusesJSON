@@ -67,8 +67,8 @@
             "specular" : 50,
             "angle" : 2230,
             "reflect" : 0,
-            "position" : [0, 0, 0],
             "rotation" : [1, 0, 3],
+            "position" : [0, 0, 0],
             "color" : [224, 154, 154]
 		}
 	]

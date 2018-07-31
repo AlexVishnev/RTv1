@@ -99,7 +99,7 @@ typedef	struct		s_privat
 
 typedef	struct		s_trace
 {
-	double			closest_t;
+	float			closest_t;
 	t_obj			closest_obj;
 	t_vector		t;
 }					t_trace;
@@ -135,7 +135,7 @@ typedef	struct		s_src
 	t_params		params;
 	t_color			color;
 	t_pos			pos;
-	t_trace			tr;
+	// t_trace			tr;
 	unsigned int	*img_pxl;
 	int				objects_cnt;
 	int				lights_cnt;

@@ -46,3 +46,4 @@ void please_validate_and_save(void *src, void *dst, t_field_info *info)
 	else
 		please_validate_and_save_enum_of_float(src, dst, info);
 }
+

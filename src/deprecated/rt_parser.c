@@ -26,10 +26,13 @@ void	get_camera_direction(char *cord, t_src *src)
 		cord++;
 	}
 	check_adecvate(POS_LIM, (t_pos *)&src->cam_pos, 1, NULL);
-	src->params.d.x = src->cam_pos.x * M_PI / 180;
-	src->params.d.y = src->cam_pos.y * M_PI / 180;
-	src->params.d.z = src->cam_pos.z * M_PI / 180;
-	src->params.camera_rot = src->params.d;
+	// src->params.d.x = src->cam_pos.x * M_PI / 180;
+	// src->params.d.y = src->cam_pos.y * M_PI / 180;
+	// src->params.d.z = src->cam_pos.z * M_PI / 180;
+	src->params.d.x = src->cam_pos.x;
+	src->params.d.y = src->cam_pos.x;
+	src->params.d.z = src->cam_pos.x;
+	// src->params.camera_rot = src->params.d;
 	src->cam_pos = (t_ray){0, 0, 0};
 }
 
@@ -81,6 +84,7 @@ void	get_spotlights_direction(char *cord, t_src *src, int ind)
 	}
 	check_adecvate(POS_LIM, (t_pos *)&src->params.light[ind].direction,
 		2, NULL);
+	// printf("\n\n\n\n\nD_x = [%f]\n D_y = [%f]\n D_z = [%f]\n \n\n\n\n", src->params.light[ind].direction.x, src->params.light[ind].direction.y, src->params.light[ind].direction.z );
 }
 
 void	get_spotlights_params(char *cord, t_src *src, int ind)
@@ -99,8 +103,11 @@ void	get_spotlights_params(char *cord, t_src *src, int ind)
 		else if (*cord == ',' && src->params.light[ind].position.z == 0)
 			src->params.light[ind].position.z = ft_atof(++cord, ',');
 		cord++;
+
 	}
+
 	if (src->params.light[ind].type < 1 || src->params.light[ind].type > 3)
 		error_manadge(MSG_L, 0, NULL);
 	check_adecvate(POS_LIM, (t_pos *)&src->params.light[ind].position, 2, NULL);
+	// printf("\n\n\n\n\nx = [%f]\n y = [%f]\n z = [%f]\n \n\n\n\n", src->params.light[ind].position.x, src->params.light[ind].position.y, src->params.light[ind].position.z );
 }
