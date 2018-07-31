@@ -48,6 +48,8 @@ static void please_validate_and_save_enum_of_float(void *src,
 		// printf ("\noriginal value: [%f], CLAMP value: [%f]\n", tmp[i], CLAMP(tmp[i]));
 	}
 	memcpy(dst, src, sizeof(arr));
+	printf("_____src-float: %f\n", *((float*)src));
+	printf("_____src-doubl: %f\n", *((double*)src));
 }
 
 void please_validate_and_save(void *src, void *dst, t_field_info *info)
@@ -57,4 +59,24 @@ void please_validate_and_save(void *src, void *dst, t_field_info *info)
 			please_validate_and_save_enum_of_int(src, dst, info);
 		else
 			please_validate_and_save_enum_of_float(src, dst, info);
+}
+
+void please_validate_and_save_double(void *src, void *dst, t_field_info *info)
+{
+	double res;
+	int min;	//int?
+	int max;
+
+	max = info->max_abs;
+	min = (info->can_be_signed) ? (-max) : (0);
+	res = *((double*)src);
+
+		res = CLAMP(res);
+	
+	// memcpy(dst, src, sizeof(res));
+	*((float*)dst) = (float)res;
+	printf("_____src-float: %f\n", *((float*)src));
+	printf("_________________________src-doubl: %f\n", *((double*)src));
+	printf("_________________________src-doubl: %f\n", *((double*)dst));
+	printf("_________________________src-doubl: %f\n", res);
 }

@@ -89,8 +89,8 @@ int			main(int ac, char **av)
 	// And uncomment this line
 	parser_main(av[1], &src);
 	printf("\n\n\n\nsrc.params.o.x = [%f]\nsrc.params.o.y = [%f]\nsrc.params.o.z = [%f]\n", src.params.o.x,src.params.o.y , src.params.o.z );
-	printf("\n\n\n\nsrc.params.d.x = [%f]\nsrc.params.d.y = [%f]\nsrc.params.d.z = [%f]\n", src.params.d.x,src.params.d.y , src.params.d.z );
-	printf("\n\nsrc.params.light->type = [%d]\n", src.params.light->type);
+	printf("\nsrc.params.d.x = [%f]\nsrc.params.d.y = [%f]\nsrc.params.d.z = [%f]\n", src.params.d.x,src.params.d.y , src.params.d.z );
+	printf("\nsrc.params.light->type = [%d]\n", src.params.light->type);
 
 	printf("src.params.object->type) [%d]\n", src.params.object[0].type);
 	printf("src.params.object->radius [%f]\n", src.params.object[0].radius);

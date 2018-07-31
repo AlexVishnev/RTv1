@@ -57,7 +57,7 @@ void please_parse_field(cJSON *json_chain, struct s_field_info *field_info, void
 		if (field_info->is_int)
 			please_validate_and_save((void*)&json_field->valueint, _addr, field_info);
 		else
-			please_validate_and_save((void*)&json_field->valuedouble, _addr, field_info);
+			please_validate_and_save_double((void*)&json_field->valuedouble, _addr, field_info);
         printf("field: %f\n", json_field->valuedouble);
 	}
 }

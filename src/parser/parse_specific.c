@@ -93,7 +93,7 @@ static void please_parse_single_object(cJSON *json_object, void *__data)
 	t_field_info	field_info;
 
 	p_object =(t_obj *)__data;
-	
+
 	field_info.type = cJSON_Number;
 	field_info.is_array = false;
 	field_info.name = "type";
@@ -154,7 +154,7 @@ void please_parse_objects(cJSON *json_chain, void *__data)
 	arr_idx = -1;
 	while (++arr_idx < p_src->objects_cnt)
 	{
-		printf("qqqqq\n");
+		printf("objects:\n");
 		tmp = cJSON_GetArrayItem(json_objects, arr_idx);
 		please_parse_single_object(tmp, ((void*)&p_src->params.object[arr_idx]));
 	}

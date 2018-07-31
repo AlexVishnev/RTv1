@@ -29,5 +29,6 @@ void please_parse_objects(cJSON *json_chain, void *__data);
 // void please_validate_and_save_enum_of_int(void *src, void *dst, int arr_size, int max_abs);
 // void please_validate_and_save_enum_of_float(void *src, void *dst, int arr_size, int max_abs);
 void please_validate_and_save(void *src, void *dst, t_field_info *info);
+void please_validate_and_save_double(void *src, void *dst, t_field_info *info);
 
 #endif 
