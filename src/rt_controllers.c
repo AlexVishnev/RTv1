@@ -126,6 +126,14 @@ void	keyboards_control2(t_src *src, SDL_Scancode scancode)
 		src->params.color_filter = 2;
 	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_3)
 		src->params.color_filter = 3;
+	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_4)
+		src->params.color_filter = 4;
+	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_5)
+		src->params.color_filter = 5;
+	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_6)
+		src->params.color_filter = 6;
+	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_7)
+		src->params.color_filter = 7;
 }
 
 void	take_screenshot(t_src *src, const char *pathfile)

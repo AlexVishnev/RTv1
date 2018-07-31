@@ -85,9 +85,21 @@ int			main(int ac, char **av)
 	if (ac != 2)
 		error_manadge(MSG, 0, NULL);
 		// TODO: UNFUCK YOURSELF, uncomment this line and all will work fine
-	// read_from_file(av[1], &src);
+	read_from_file(av[1], &src);
 	// And uncomment this line
-	parser_main(av[1], &src);
+	// parser_main(av[1], &src);
+	init_host(&src);
+	init_parametrs(&src);
+	create_videohost(&src);
+	while (DICK)
+	{
+		if (!expose_hook(&src))
+			break ;
+		opencl_kernel_run(&src);
+		init_fps(&src);
+		time_delay();
+		SDL_UpdateWindowSurface(src.wind);
+	}
 	printf("\n\n\n\nsrc.params.o.x = [%f]\nsrc.params.o.y = [%f]\nsrc.params.o.z = [%f]\n", src.params.o.x,src.params.o.y , src.params.o.z );
 	printf("\nsrc.params.d.x = [%f]\nsrc.params.d.y = [%f]\nsrc.params.d.z = [%f]\n", src.params.d.x,src.params.d.y , src.params.d.z );
 	printf("\nsrc.params.light->type = [%d]\n", src.params.light->type);
@@ -103,18 +115,6 @@ int			main(int ac, char **av)
 	printf("src.params.light->direction [x = [%f]; y = [%f]; z = [%f]]\n", src.params.light->direction.x, src.params.light->direction.y, src.params.light->direction.z );
 	printf("src.params.light->position [x = [%f]; y = [%f]; z = [%f]]\n", src.params.light->position.x, src.params.light->position.y, src.params.light->position.z );
 	printf("src.params.object->color [x = [%f]; y = [%f]; z = [%f]]\n", src.params.object->color.x, src.params.object->color.y, src.params.object->color.z );
-		init_host(&src);
-	init_parametrs(&src);
-	create_videohost(&src);
-	while (DICK)
-	{
-		if (!expose_hook(&src))
-			break ;
-		opencl_kernel_run(&src);
-		init_fps(&src);
-		time_delay();
-		SDL_UpdateWindowSurface(src.wind);
-	}
 	exit_work(&src);
 	return (0);
 }
