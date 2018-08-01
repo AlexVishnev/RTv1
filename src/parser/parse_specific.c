@@ -39,7 +39,7 @@ static void	please_parse_single_light(cJSON *json_light, void *data)
 	t_field_info	field_info;
 	t_light			*p_light;
 
-	p_light =(t_light *)data;
+	p_light = (t_light *)data;
 	field_info.max_allowed_arr_size = 1;
 	field_info.type = cJSON_Number;
 	field_info.is_array = false;
@@ -63,27 +63,21 @@ static void	please_parse_single_light(cJSON *json_light, void *data)
 	please_parse_field(json_light, &field_info, ((void *)&(p_light->position)));
 	field_info.name = "rotation";
 	please_parse_field(json_light, &field_info, ((void *)&(p_light->direction)));
-
 }
 
-void please_parse_lights(cJSON *json_chain, void *data)
+void		please_parse_lights(cJSON *json_chain, void *data)
 {
-	cJSON *json_lights, *tmp;
-	t_src *p_src;
-	int arr_idx;
+	cJSON	*json_lights;
+	cJSON	*tmp;
+	t_src	*p_src;
+	int		arr_idx;
 
 	if (!(json_lights = cJSON_GetObjectItem(json_chain, "lights")))
-	{
-		ft_putstr("FUCKING lights\n");
-		exit (-7);
-	}
+		print_error_and_exit("FUCKING lights ", -7);
 	if (json_lights->type != cJSON_Array)
-	{
-		ft_putstr("Lights must be array\n");
-		exit (-8);
-	}
+		print_error_and_exit("FUCKING lights is not arr ", -7);
 	/* it is a fucking amazing code */
-	p_src = (t_src*)data;
+	p_src = (t_src *)data;
 	p_src->lights_cnt = cJSON_GetArraySize(json_lights);
 	p_src->params.light = (t_light *)ft_memalloc(sizeof(t_light) *
 		p_src->lights_cnt + 1);
@@ -92,16 +86,16 @@ void please_parse_lights(cJSON *json_chain, void *data)
 	while (++arr_idx < p_src->lights_cnt)
 	{
 		tmp = cJSON_GetArrayItem(json_lights, arr_idx);
-		please_parse_single_light(tmp, ((void*)&(p_src->params.light[arr_idx])));
+		please_parse_single_light(tmp, ((void *)&(p_src->params.light[arr_idx])));
 	}
 }
 
-static void please_parse_single_object(cJSON *json_object, void *data)
+static void	please_parse_single_object(cJSON *json_object, void *data)
 {
 	t_obj			*p_object;
 	t_field_info	field_info;
 
-	p_object =(t_obj *)data;
+	p_object = (t_obj *)data;
 
 	field_info.max_allowed_arr_size = 1;
 	field_info.type = cJSON_Number;
@@ -139,32 +133,26 @@ static void please_parse_single_object(cJSON *json_object, void *data)
 	please_parse_field(json_object, &field_info, ((void *)&(p_object->color)));
 }
 
-void please_parse_objects(cJSON *json_chain, void *data)
+void		please_parse_objects(cJSON *json_chain, void *data)
 {
-	cJSON *json_objects, *tmp;
-	t_src *p_src;
-	int arr_idx;
+	cJSON	*json_objects;
+	cJSON	*tmp;
+	t_src	*p_src;
+	int		arr_idx;
 
 	if (!(json_objects = cJSON_GetObjectItem(json_chain, "objects")))
-	{
-		// printf("FUCKING objects\n");
-		exit (-10);
-	}
+		print_error_and_exit("FUCKING objects", -10);
 	if (json_objects->type != cJSON_Array)
-	{
-		// printf("Objectss must be array\n");
-		exit (-11);
-	}
-	/* it is a fucking amazing code */
+		print_error_and_exit("objects must be array", -11);
 	p_src = (t_src*)data;
 	p_src->objects_cnt = cJSON_GetArraySize(json_objects);
 	p_src->params.object = (t_obj *)ft_memalloc(sizeof(t_obj) *
 		p_src->objects_cnt + 1);
-	/* fucking amazing code end */
 	arr_idx = -1;
 	while (++arr_idx < p_src->objects_cnt)
 	{
 		tmp = cJSON_GetArrayItem(json_objects, arr_idx);
-		please_parse_single_object(tmp, ((void*)&p_src->params.object[arr_idx]));
+		please_parse_single_object(tmp,
+			((void*)&p_src->params.object[arr_idx]));
 	}
 }

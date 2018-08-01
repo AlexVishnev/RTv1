@@ -10,13 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef __RTV_SHARED_TYPES_H__
-# define __RTV_SHARED_TYPES_H__
+#ifndef RTV_SHARED_TYPES_H
+# define RTV_SHARED_TYPES_H
 
 # include <SDL2/SDL.h>
 # include <SDL2/SDL_image.h>
 # include <SDL2/SDL_ttf.h>
-#  include <OpenCL/opencl.h>
+# include <OpenCL/opencl.h>
 
 typedef unsigned int	t_uint;
 
@@ -83,14 +83,14 @@ typedef	struct		s_params
 	t_obj			*object;
 	t_light			*light;
 	t_cam			look_pos;
-	float			t_min; 
+	float			t_min;
 	float			t_max;
 	int				color;
 	int				objects;
 	int				lights;
 	int				width;
 	int				height;
-	int 			color_filter;
+	int				color_filter;
 }					t_params;
 
 typedef	struct		s_privat
@@ -157,4 +157,4 @@ typedef	struct		s_src
 	t_ray			cam_pos;
 }					t_src;
 
-#endif 
+#endif
