@@ -57,19 +57,6 @@
 void				wr_data(Uint8 d[], Uint8 m[], const char *z[], t_src *s);
 SDL_Cursor			*init_system_cursor(const char *image[], t_src *src);
 
-void				get_parameters(char *str, t_src *src);
-cl_float3			get_position_object(char *cord, t_src *object);
-void				get_spetial_params(t_obj *obj, char *params);
-t_obj				get_object_params(char *cord, t_obj *object, t_src *src);
-t_color				get_color_object(char *col);
-
-int					get_data_values(char *data, t_src *src);
-void				get_camera_position(char *cord, t_src *src);
-void				get_spotlights_params(char *params, t_src *src, int index);
-
-void				get_spotlights_direction(char *h, t_src *e, int r);
-void				get_camera_direction(char *cord, t_src *src);
-
 void				init_host(t_src *src);
 void				init_parametrs(t_src *src);
 void				opencl_kernel_run(t_src *src);
@@ -79,22 +66,12 @@ void				debugger(t_src *src);
 
 int					expose_hook(t_src *src);
 
-int					check_adecvate(int l, t_pos *p, int fl, t_color *s);
-int					kostyl(char *s, int chr, int index);
-int					brackects(char *s);
-int					brackects_valide(char *s);
-int					br_adecvat(char *s);
 void				keyboards_control1(t_src *src, SDL_Scancode scancode);
 void				keyboards_control2(t_src *src, SDL_Scancode scancode);
 void				mouse_control(t_src *src, SDL_Event e_k);
 void				take_screenshot(t_src *src, const char *pathfile);
 
-void				validate_data(char *source, t_src *src);
-void				check_nbrs_object(char *av, t_src *src, int size);
-void				read_from_file(char *data, t_src *s);
 void				error_manadge(char *str, int flag, char *src);
-int					get_size(char *av, t_src *src);
-int					cnt_objects(char *params, t_src *src);
 void				print_error_and_exit(const char *erorr_msg, int exit_stat);
 
 #endif

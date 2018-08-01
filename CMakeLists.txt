@@ -5,19 +5,19 @@ set(CMAKE_C_STANDARD 90)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror")
 
-set(SOURCE_FILES src/main.c
-				src/rt_controllers.c
-				src/rt_errors.c
-				src/rt_init.c
-				src/rt_kernels.c
-				src/rt_parser.c
-				src/rt_parser1.c
-				src/rt_read_file.c
-				src/rt_tools.c
-				src/parser/parse_generic.c
-				src/parser/parse_main.c
-				src/parser/parse_specific.c
-				src/parser/parse_validate.c
+set(SOURCE_FILES
+			src/rt_controllers.c
+			src/parser/parse_generic.c
+			src/parser/parse_validate.c
+			src/parser/parse_err.c
+			src/parser/parse_specific.c
+			src/parser/parse_main.c
+			src/parser/parse_specific_objects.c
+			src/rt_kernels.c
+			src/main.c
+			src/rt_init.c
+			src/rt_errors.c
+			src/rt_tools.c
 		)
 
 set(LIBFT_SOURCES libft/ft_strncat.c
@@ -116,7 +116,7 @@ endif()
 
 add_library(ft ${LIBFT_SOURCES})
 
-add_executable(RTv1 ${SOURCE_FILES})
+add_executable(RT ${SOURCE_FILES})
 include_directories(${SDL2_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} libft/includes includes)
 
-target_link_libraries(RTv1 ${SDL2_LIBRARIES} ${OpenCL_LIBRARIES} ft m)
+target_link_libraries(RT ${SDL2_LIBRARIES} ${OpenCL_LIBRARIES} ft m)
