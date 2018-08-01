@@ -1,29 +1,41 @@
 {
 	"camera":
 	{
-		"position" : [0,-4,-8],
+		"position" : [0,4,8],
 		"rotation" : [0,-0,0]
 	},
 	"lights" :
 	[
+        {
+            "type" : 1,
+            "intensive" : 0.11,
+            "position" : [0 , 0, 0],
+            "rotation" : [0 , 0, 0]
+        },
 		{
 			"type" : 2,
 			"intensive" : 0.4,
 			"position" : [10 , 23, -14],
-			"rotation" : [12 , 0, -19]
+			"rotation" : [0 , 0, 0]
 		},
 		{
 			"type" : 2,
 			"intensive" : 0.3,
 			"position" : [0, 0, 34],
-			"rotation" : [-1 , -1, 1]
+			"rotation" : [0 , 0, 0]
 		},
 		{
 			"type" : 2,
 			"intensive" : 0.9,
 			"position" : [-1, 4, 99],
-			"rotation" : [2 , 2, 0]
-		}
+			"rotation" : [0 , 0, 0]
+		},
+        {
+            "type" : 3,
+            "intensive" : 0.41,
+            "position" : [0,0,0],
+            "rotation" : [11,2,13]
+        }
 	],
 	"objects" :
 	[
@@ -229,22 +241,22 @@
         },
         {
             "type" : 2,
-            "size" : 1,
+            "size" : 0,
             "specular" : 1000,
-            "angle" : 110,
+            "angle" : 0,
             "reflect" : 0,
             "position" : [0, 0, 0],
-            "rotation" : [1, 0, 1],
+            "rotation" : [1, 1, 0],
             "color" : [100,100,100]
         },
         {
             "type" : 2,
-            "size" : 1,
+            "size" : 0,
             "specular" : 1000,
-            "angle" : 110,
+            "angle" : 0,
             "reflect" : 0,
             "position" : [0, 0, 0],
-            "rotation" : [-1, 0, 1],
+            "rotation" : [-1, 1, 0],
             "color" : [100,100,100]
         }
 	]
