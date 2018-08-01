@@ -10,10 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef __PARSER_EXTERNAL_H__
-# define __PARSER_EXTERNAL_H__
+#ifndef PARSER_EXTERNAL_H
+# define PARSER_EXTERNAL_H
 
-#include "rtv_shared_types.h"
+# include "rtv_shared_types.h"
 
-int	parser_main(char *filename, t_src *src);
+int		parser_main(char *filename, t_src *src);
+
 #endif
