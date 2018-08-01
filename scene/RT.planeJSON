@@ -1,8 +1,8 @@
 {
 	"camera":
 	{
-		"position" : [0,2,-25],
-		"rotation" : [0, 0, 0]
+		"position" : [5,5,-25],
+		"rotation" : [10, -10, 0]
 	},
 	"lights" :
 	[
@@ -84,14 +84,17 @@
 
 
 
+
+
+
 		{
 			"type" : 3,
             "size" : 1.5,
             "specular" : 50,
             "angle" : 0,
             "reflect" : 0,
-            "position" : [5, 0, 0],
-            "rotation" : [0, 15, 13],
+            "position" : [30, -40, -20],
+            "rotation" : [-30, 60, 60],
             "color" : [0, 141, 255]
 		},
 		{
@@ -100,8 +103,8 @@
             "specular" : 50,
             "angle" : 9,
             "reflect" : 0,
-            "position" : [0, -4, -4],
-            "rotation" : [5, 5, 5],
+            "position" : [0, -14, -14],
+            "rotation" : [35, 35, 35],
             "color" : [255, 141, 0]
 		}
 	]
