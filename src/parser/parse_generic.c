@@ -23,10 +23,9 @@ static inline void	please_parse_array_field(cJSON *json_aray,
 	while (++arr_idx < field_info->array_size)
 	{
 		tmp = cJSON_GetArrayItem(json_aray, arr_idx);
-			if (tmp->type != field_info->arr_type)
-				print_error_and_exit("Fuck, arr_type", -6);
+		if (tmp->type != field_info->arr_type)
+			print_error_and_exit("Fuck, arr_type", -6);
 		arr[arr_idx] = ((float)(tmp->valuedouble));
-
 	}
 	please_validate_and_save((void*)arr, addr, field_info);
 }
@@ -40,7 +39,6 @@ void				please_parse_field(cJSON *json_chain,
 	if (!(json_field = cJSON_GetObjectItem(json_chain,
 		field_info->name)))
 		print_error_and_exit("FUCKING cJSON_GetObjectItem", -3);
-
 	if (json_field->type != field_info->type)
 		print_error_and_exit("Fuck, arr_type", -4);
 	if (field_info->is_array)
@@ -55,7 +53,8 @@ void				please_parse_field(cJSON *json_chain,
 		field_info->array_size = 1;
 		tmp = (float)json_field->valuedouble;
 		if (field_info->is_int)
-			please_validate_and_save((void*)&(json_field->valueint), addr, field_info);
+			please_validate_and_save((void*)&(json_field->valueint),
+															addr, field_info);
 		else
 			please_validate_and_save((void*)&tmp, addr, field_info);
 	}

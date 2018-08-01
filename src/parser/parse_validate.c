@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_validate.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vchaus <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/01 18:45:16 by vchaus            #+#    #+#             */
+/*   Updated: 2018/08/01 18:45:16 by vchaus           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <string.h>
 #include <math.h>
 #include "parser_internal.h"
@@ -38,13 +50,11 @@ static void	please_validate_and_save_enum_of_float(void *src,
 	memcpy(dst, arr, sizeof(arr));
 }
 
-void	please_validate_and_save(void *src, void *dst,
+void		please_validate_and_save(void *src, void *dst,
 	t_field_info *info)
 {
-
 	if (info->is_int)
 		please_validate_and_save_enum_of_int(src, dst, info);
 	else
 		please_validate_and_save_enum_of_float(src, dst, info);
 }
-

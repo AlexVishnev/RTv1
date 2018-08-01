@@ -37,6 +37,7 @@ SOURCES = rt_controllers.c \
 			parser/parse_main.c \
 			parser/parse_generic.c \
 			parser/parse_specific.c \
+			parser/parse_specific_objects.c \
 			parser/parse_validate.c \
 			parser/parse_err.c
 
