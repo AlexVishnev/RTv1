@@ -42,9 +42,9 @@ void		init_parametrs(t_src *src)
 	src->buffer = ft_memalloc(0x40000);
 	src->c.row = 0;
 	src->c.i = -1;
-	src->params.d.x = src->params.d.x * M_PI / 180;
-	src->params.d.y = src->params.d.y * M_PI / 180;
-	src->params.d.z = src->params.d.z * M_PI / 180;
+ 	src->params.d.x = src->params.d.x * M_PI / 180.f;
+	src->params.d.y = src->params.d.y * M_PI / 180.f;
+	src->params.d.z = src->params.d.y * M_PI / 180.f;
 	src->params.camera_rot = src->params.d;
 }
 
