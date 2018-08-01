@@ -126,13 +126,13 @@ static void please_parse_single_object(cJSON *json_object, void *__data)
 	field_info.type = cJSON_Array;
 	field_info.is_array = true;
 	field_info.arr_type = cJSON_Number;
-	field_info.name = "rotation";
+	field_info.name = "position";
 	field_info.can_be_signed = true;
 	field_info.max_abs = 1000;
 	// printf("\nObject JSON:\n");
 	field_info.max_allowed_arr_size = 3;
 	please_parse_field(json_object, &field_info, ((void *)&(p_object->mid)));
-	field_info.name = "position";
+	field_info.name = "rotation";
 	please_parse_field(json_object, &field_info, ((void *)&(p_object->direction)));
 	field_info.name = "color";
 	field_info.can_be_signed = false;
