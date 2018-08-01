@@ -17,7 +17,7 @@
 # define CYLINDER 3
 # define CONE 4
 # define RECURS 1
-# define SAMPLE 1
+# define SAMPLE 4
 
 # ifndef M_PI
 #  define M_PI           3.14159265358979323846  /* pi */
@@ -540,13 +540,23 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 	int y = get_global_id(1);
 
 	int color[SAMPLE];
+    float3 dirs[SAMPLE];
 
 	params.Direct = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
 	barrier(CLK_GLOBAL_MEM_FENCE);
 	int i = 0;
+    if (SAMPLE == 4)
+    {
+        dirs[0] = params.Direct + (float3)(0.25, 0.25, 0.);
+        dirs[1] = params.Direct + (float3)(0.25, -0.25, 0.);
+        dirs[2] = params.Direct + (float3)(-0.25, 0.25, 0.);
+        dirs[3] = params.Direct + (float3)(-0.25, -0.25, 0.);
+    }
 	while  (i < SAMPLE)
 	{
+        if (SAMPLE == 4)
+            params.Direct = fast_normalize(dirs[i]);
 		color[i] = RayTracer(obj, light, params, 0.01f, INFINITY);
 		i++;
 	}
