@@ -2,35 +2,27 @@
 
 void please_parse_camera(cJSON *json_chain, void *__data)
 {
-	cJSON *json_camera;
-	t_field_info field_info;
-	t_src *p_src;
-	cl_float3 *cl_float;
+  cJSON *json_camera;
+  t_field_info field_info;
+  t_src *p_src;
 
-	if (!(json_camera = cJSON_GetObjectItem(json_chain, "camera")))
-	{
-		ft_putstr("FUCKING CAMERA\n");
-		exit (-2);
-	}
-	p_src = (t_src*)__data;
-	field_info.type = cJSON_Array;
-	field_info.is_array = true;
-	field_info.arr_type = cJSON_Number;
-	field_info.can_be_signed = true;
-	field_info.max_abs = 1000;
-	field_info.max_allowed_arr_size = 3;
-	field_info.name = "position";
-	cl_float = &(p_src->params.o);
-	please_parse_field(json_camera, &field_info, ((void*)(cl_float)));
-	field_info.name = "rotation";
-	field_info.type = cJSON_Array;
-	field_info.is_array = true;
-	field_info.arr_type = cJSON_Number;
-	field_info.can_be_signed = true;
-	field_info.max_abs = 1000;
-	field_info.max_allowed_arr_size = 3;
-	cl_float = &(p_src->params.d);
-	please_parse_field(json_camera, &field_info, ((void*)(cl_float)));
+  if (!(json_camera = cJSON_GetObjectItem(json_chain, "camera")))
+  {
+    ft_putstr("FUCKING CAMERA\n");
+    exit (-2);
+  }
+  p_src = (t_src*)__data;
+  field_info.type = cJSON_Array;
+  field_info.is_array = true;
+  field_info.arr_type = cJSON_Number;
+  field_info.can_be_signed = true;
+  field_info.max_abs = 1000;
+  field_info.max_allowed_arr_size = 3;
+  field_info.is_int = false;
+  field_info.name = "position";
+  please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.o)));
+  field_info.name = "rotation";
+  please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.d)));
 }
 
 static void please_parse_single_light(cJSON *json_light, void *__data)
