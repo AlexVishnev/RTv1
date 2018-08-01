@@ -21,6 +21,12 @@ void please_parse_camera(cJSON *json_chain, void *__data)
 	field_info.name = "position";
 	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.o)));
 	field_info.name = "rotation";
+	field_info.type = cJSON_Array;
+	field_info.is_array = true;
+	field_info.arr_type = cJSON_Number;
+	field_info.can_be_signed = true;
+	field_info.max_abs = 1000;
+	field_info.max_allowed_arr_size = 3;
 	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.d)));
 }
 

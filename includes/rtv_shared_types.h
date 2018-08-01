@@ -135,7 +135,6 @@ typedef	struct		s_src
 	t_params		params;
 	t_color			color;
 	t_pos			pos;
-	// t_trace			tr;
 	unsigned int	*img_pxl;
 	int				objects_cnt;
 	int				lights_cnt;

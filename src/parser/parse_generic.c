@@ -18,10 +18,10 @@ static inline void please_parse_array_field(cJSON *json_aray, struct s_field_inf
 		arr[arr_idx] = ((float)(tmp->valuedouble));
 		// if (arr[arr_idx] < 0 && !(field_info->can_be_signed))
 		// {
-		// 	// printf("THIS FIELD CAN'T BE SIGNED!\n");
+			printf("THIS FIELD CAN'T BE SIGNED!\n");
 		// 	exit(-12);
 		// }
-		//printf("array field %d: %f\n", arr_idx, arr[arr_idx]);
+		// printf("array field %d: %f\n", arr_idx, arr[arr_idx]);
 	}
 	please_validate_and_save((void*)arr, _addr, field_info);
 }
@@ -33,12 +33,12 @@ void please_parse_field(cJSON *json_chain, struct s_field_info *field_info, void
 	
 	if (!(json_field = cJSON_GetObjectItem(json_chain, field_info->name)))
 	{
-		// printf("FUCKING %s\n", field_info->name);
+		printf("FUCKING %s\n", field_info->name);
 		exit (-3);
 	}
 	if (json_field->type != field_info->type)
 	{
-		// printf("FUCK THIS IS NOT %d\n", field_info->type);
+		printf("FUCK THIS IS NOT %d\n", field_info->type);
 		exit (-4);
 	}
 	if (field_info->is_array)
@@ -56,7 +56,7 @@ void please_parse_field(cJSON *json_chain, struct s_field_info *field_info, void
 	{
 		// if (json_field->valuedoble < 0 && !(field_info->can_be_signed))
 		// {
-		// 	// printf("THIS FIELD CAN'T BE SIGNED!\n");
+			printf("THIS FIELD CAN'T BE SIGNED!\n");
 		// 	exit(-12);
 		// }
 		field_info->array_size = 1;

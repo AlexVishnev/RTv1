@@ -12,7 +12,7 @@ int read_file(char *filepath, char **file_str)
 
 	if (!(f = fopen(filepath, "rb")))
 	{
-		// printf("Fuck, file not found...\n");
+		printf("Fuck, file not found...\n");
 		exit(-1);
 	}
 	fseek(f, 0, SEEK_END);
@@ -24,7 +24,7 @@ int read_file(char *filepath, char **file_str)
 	fread(fucking_tmp, fsize, 1, f);
 	fclose(f);
 	fucking_tmp[fsize] = 0;
-	// // printf("File: \n%s", fucking_tmp);
+	printf("File: \n%s", fucking_tmp);
 	*file_str = fucking_tmp;
 	return (0);
 }
@@ -35,7 +35,7 @@ cJSON *get_json_chain(char *free_aft_use)
 
 	if (!(json_chain = cJSON_Parse(free_aft_use)))
 	{
-		// printf("FUCKING LIBRARY\n");
+		printf("FUCKING LIBRARY\n");
 		exit (-1);
 	}
 	free(free_aft_use);
@@ -63,7 +63,7 @@ int parser_main(char *filename, t_src *src)
 {
 	char *file_str;
 	read_file(filename, &file_str);
-	// // printf("Will fuck your Mom!\n%s", file_str);
+	printf("Will fuck your Mom!\n%s", file_str);
 	call_me_cacao(file_str, (void*)src);
 	return (0);
 }

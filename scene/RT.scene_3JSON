@@ -1,8 +1,8 @@
 {
 	"camera":
 	{
-		"position" : [0,4,-8],
-		"rotation" : [0,0,0]
+		"position" : [0,-4,-8],
+		"rotation" : [0,-0,0]
 	},
 	"lights" :
 	[
@@ -55,7 +55,7 @@
             "reflect" : 0,
             "position" : [5, 5, 27],
             "rotation" : [0, 0, 0],
-              "color" : [255, 0, 10]
+            "color" : [255, 0, 10]
         },
         {
             "type" : 1,

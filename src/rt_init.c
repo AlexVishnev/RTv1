@@ -44,7 +44,7 @@ void		init_parametrs(t_src *src)
 	src->c.i = -1;
  	src->params.d.x = src->params.d.x * M_PI / 180.f;
 	src->params.d.y = src->params.d.y * M_PI / 180.f;
-	src->params.d.z = src->params.d.y * M_PI / 180.f;
+	src->params.d.z = src->params.d.z * M_PI / 180.f;
 	src->params.camera_rot = src->params.d;
 }
 
