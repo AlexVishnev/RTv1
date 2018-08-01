@@ -70,7 +70,7 @@
 		{
 			"type" : 2,
             "size" : 1,
-            "specular" : 5000,
+            "specular" : 0,
             "angle" : 0,
             "reflect" : 0,
             "position" : [0, 0, 0],
@@ -80,7 +80,7 @@
 		{
 			"type" : 2,
             "size" : 1,
-            "specular" : 5000,
+            "specular" : 0,
             "angle" : 0,
             "reflect" : 0,
             "position" : [0, 0, 10],
