@@ -1,45 +1,44 @@
 {
 	"camera":
 	{
-		"position" : [-10, 0.1, 8],
-		"rotation" : [-10, -0, -0]
+		"position" : [0, 5, -20],
+		"rotation" : [0, 0, 0]
 	},
 	"lights" :
 	[
 		{
 			"type" : 2,
-			"intensive" : 1,
-			"position" : [-0, -10, 5],
-			"rotation" : [11, -2, -22]
+			"intensive" : 0.5,
+			"position" : [8, 11, -8],
+			"rotation" : [0, 0, 0]
 		},
 		{
 			"type" : 3,
-			"intensive" : 0.8,
-			"position" : [1, 5, 0],
-			"rotation" : [1, 1, -1.5]
+			"intensive" : 0.3,
+			"position" : [0, 0, 0],
+			"rotation" : [-1, 1, -1]
 		}
 	],
 	"objects" :
 	[
 		{
 			"type" : 1,
-            "size" : 1.85,
+            "size" : 2.85,
             "specular" : 50,
             "angle" : 0,
             "reflect" : 0,
-            "position" : [-1, -1, -1],
+            "position" : [0, 4, 0],
             "rotation" : [0, 0, 0],
-			"fuck_me_twice" : "a_week",
-            "color" : [130, 10, 20]
+            "color" : [255, 0, 0]
 		},
 		{
 			"type" : 2,
             "size" : 1,
             "specular" : 5000,
-            "angle" : 100,
+            "angle" : 0,
             "reflect" : 0,
-            "position" : [1, 1, 0],
-            "rotation" : [0, 0, 0],
+            "position" : [0, 0, 0],
+            "rotation" : [0, 1, 0],
             "color" : [255, 0, 255]
 		}
 	]

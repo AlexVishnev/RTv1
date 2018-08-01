@@ -5,6 +5,7 @@ void please_parse_camera(cJSON *json_chain, void *__data)
 	cJSON *json_camera;
 	t_field_info field_info;
 	t_src *p_src;
+	cl_float3 *cl_float;
 
 	if (!(json_camera = cJSON_GetObjectItem(json_chain, "camera")))
 	{
@@ -19,7 +20,8 @@ void please_parse_camera(cJSON *json_chain, void *__data)
 	field_info.max_abs = 1000;
 	field_info.max_allowed_arr_size = 3;
 	field_info.name = "position";
-	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.o)));
+	cl_float = &(p_src->params.o);
+	please_parse_field(json_camera, &field_info, ((void*)(cl_float)));
 	field_info.name = "rotation";
 	field_info.type = cJSON_Array;
 	field_info.is_array = true;
@@ -27,7 +29,8 @@ void please_parse_camera(cJSON *json_chain, void *__data)
 	field_info.can_be_signed = true;
 	field_info.max_abs = 1000;
 	field_info.max_allowed_arr_size = 3;
-	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.d)));
+	cl_float = &(p_src->params.d);
+	please_parse_field(json_camera, &field_info, ((void*)(cl_float)));
 }
 
 static void please_parse_single_light(cJSON *json_light, void *__data)

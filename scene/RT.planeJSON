@@ -1,11 +1,17 @@
 {
 	"camera":
 	{
-		"position" : [0,2,-5],
+		"position" : [0,2,-25],
 		"rotation" : [0, 0, 0]
 	},
 	"lights" :
 	[
+		{
+			"type" : 1,
+			"intensive" : 0.2,
+			"position" : [0, 0, 0],
+			"rotation" : [0, 0, 0]
+		},
 		{
 			"type" : 3,
 			"intensive" : 0.8,
@@ -16,13 +22,86 @@
 	"objects" :
 	[
 		{
+			"type" : 1,
+            "size" : 0.1,
+            "specular" : 0,
+            "angle" : 0,
+            "reflect" : 0,
+            "position" : [1, 0, 0],
+            "rotation" : [0, 0, 0],
+            "color" : [255, 255, 255]
+		},
+		{
+			"type" : 1,
+            "size" : 0.1,
+            "specular" : 0,
+            "angle" : 0,
+            "reflect" : 0,
+            "position" : [0, 1, 0],
+            "rotation" : [0, 0, 0],
+            "color" : [255, 255, 255]
+		},
+		{
+			"type" : 1,
+            "size" : 0.1,
+            "specular" : 0,
+            "angle" : 0,
+            "reflect" : 0,
+            "position" : [0, 0, 1],
+            "rotation" : [0, 0, 0],
+            "color" : [255, 255, 255]
+		},
+		{
+			"type" : 3,
+            "size" : 0.05,
+            "specular" : 50,
+            "angle" : 0,
+            "reflect" : 0,
+            "position" : [-100, 0, 0],
+            "rotation" : [100, 0, 0],
+            "color" : [255, 0, 0]
+		},
+		{
+			"type" : 3,
+            "size" : 0.05,
+            "specular" : 50,
+            "angle" : 0,
+            "reflect" : 0,
+            "position" : [0, -100, 0],
+            "rotation" : [0, 100, 0],
+            "color" : [0, 255, 0]
+		},
+		{
+			"type" : 3,
+            "size" : 0.05,
+            "specular" : 50,
+            "angle" : 0,
+            "reflect" : 0,
+            "position" : [0, 0, -100],
+            "rotation" : [0, 0, 100],
+            "color" : [0, 0, 255]
+		},
+
+
+
+		{
+			"type" : 3,
+            "size" : 1.5,
+            "specular" : 50,
+            "angle" : 0,
+            "reflect" : 0,
+            "position" : [5, 0, 0],
+            "rotation" : [0, 15, 13],
+            "color" : [0, 141, 255]
+		},
+		{
 			"type" : 4,
-            "size" : 1,
+            "size" : 0,
             "specular" : 50,
             "angle" : 9,
             "reflect" : 0,
-            "position" : [0, 0, -4],
-            "rotation" : [0, 15, 13],
+            "position" : [0, -4, -4],
+            "rotation" : [5, 5, 5],
             "color" : [255, 141, 0]
 		}
 	]
