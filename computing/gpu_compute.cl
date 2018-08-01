@@ -235,7 +235,7 @@ float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params 
 			nl = dot(N, L);
 			if (isgreater(nl, 0))
 				intens += light[j].intensity * nl / (fast_length(N) * fast_length(L));
-			if (isgreaterequal(spec, 0))
+			if (isgreater(spec, 0))
 			{
 				R = nl * (2.0f * N) - L;
 				rv = dot(R, V);
@@ -501,7 +501,7 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		{
 		
 			par = (t_params){P, (dot(N, DD) * (2.0f * N)) - DD,  par.camera_rot, par.obj, par.light, par.viewport, 0.01f, 
-			par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM! // reflect without viewport; 
+			par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh};// reflect without viewport; 
 			
 			// par.Direct = (dot(N, DD) * 2.0f * N) - DD; // reflect with viewport; 
 			recurs--;
