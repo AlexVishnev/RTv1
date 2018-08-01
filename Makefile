@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: dtitenko <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2018/04/14 12:41:56 by dtitenko          #+#    #+#              #
+#    Updated: 2018/06/17 11:47:20 by avishnev         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = RT
 
 RM = /bin/rm
@@ -172,7 +184,7 @@ fclean_proj: clean_proj
 update: fclean_proj all
 
 norm: 
-	@norminette src/*.c
+	@norminette $(SOURCES);
 	@norminette includes/*.h
 
 cjson_clean:
