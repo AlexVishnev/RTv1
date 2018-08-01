@@ -229,7 +229,7 @@ float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params 
 			}
 			if (isequal(dot(V, N), 0))
 				continue ;
-			ClosestIntersection(obj, &shadows, par, P, L, 0.0001f, max);
+			ClosestIntersection(obj, &shadows, par, P, L, 0.01f, max);
 			if (isnotequal(shadows.closest_intersect, INFINITY))
 				continue ;
 			nl = dot(N, L);
@@ -500,7 +500,7 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		if (isgreater(tr.closest_object.reflect, 0))
 		{
 		
-			par = (t_params){P, (dot(N, DD) * (2.0f * N)) - DD,  par.camera_rot, par.obj, par.light, par.viewport, 0.0001f, 
+			par = (t_params){P, (dot(N, DD) * (2.0f * N)) - DD,  par.camera_rot, par.obj, par.light, par.viewport, 0.01f, 
 			par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh}; // peredacha dannuyh structure PO POSITCIAM! // reflect without viewport; 
 			
 			// par.Direct = (dot(N, DD) * 2.0f * N) - DD; // reflect with viewport; 
@@ -551,7 +551,7 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 	int i = 0;
 	while  (i < SAMPLE)
 	{
-		color[i] = RayTracer(obj, light, params, 0.0001f, INFINITY);
+		color[i] = RayTracer(obj, light, params, 0.01f, INFINITY);
 		i++;
 	}
 	img_pxl[x + y * params.screenw] = convert_color(color);
