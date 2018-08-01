@@ -91,6 +91,7 @@ typedef	struct		s_params
 	int				width;
 	int				height;
 	int				color_filter;
+	int				is_true;
 }					t_params;
 
 typedef	struct		s_privat

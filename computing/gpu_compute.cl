@@ -74,6 +74,7 @@ typedef	struct	s_params
 	int			screenw;
 	int			screenh;
 	int 		color_filter;
+	int			is_true;
 }				t_params;
 
 
@@ -190,8 +191,6 @@ float3	matrix_rotate(float a, float b, float c, float3 r)
 	 + ((-cos_c * sin_a + cos_a * sin_b * sin_c) * r.z),((-sin_b) * r.x) +
 	  ((cos_b * sin_a) * r.y) + ((cos_a * cos_b) * r.z)});
 }
-
-
 
 float3	ReflectRay(float3 R, float3 N)
 {
@@ -431,7 +430,6 @@ float3 Refract(float3 D,  float3 N,  float ior)
 
 float fresnel(float3 D, float3 N, float ior, float kr) 
 {
-
 	float tmp;
 	float cosi = clamp(-1.f, 1.f, dot(D, N)); 
 	float etai = 1, etat = ior; 
@@ -488,22 +486,21 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 			color[recurs] = 0;
 			break ;
 		}
-		P = par.O + tr.closest_intersect * par.Direct;  //compute intersection
+		P = par.O + tr.closest_intersect * par.Direct;
 		N = GlobalNormal(&tr, P);
 		DD = -par.Direct;
-		intensity = GenerateLigth(obj, light, &par, P, N, DD, tr.closest_object.specular); //NATIVE
+		intensity = GenerateLigth(obj, light, &par, P, N, DD, tr.closest_object.specular);
 		color[recurs] = (float)intensity * tr.closest_object.color;
 		color[recurs].w = tr.closest_object.reflect;
 
-		///
-
 		if (isgreater(tr.closest_object.reflect, 0))
 		{
-		
-			par = (t_params){P, (dot(N, DD) * (2.0f * N)) - DD,  par.camera_rot, par.obj, par.light, par.viewport, 0.01f, 
-			par.t_max, par.color, par.objects, par.lights, par.screenw, par.screenh};// reflect without viewport; 
-			
-			// par.Direct = (dot(N, DD) * 2.0f * N) - DD; // reflect with viewport; 
+			if (isequal(par.is_true, 1))
+			{
+				par.Direct = (dot(N, DD) * 2.0f * N) - DD;
+				par.O = P;
+			}
+			par.Direct = (dot(N, DD) * 2.0f * N) - DD; // reflect with viewport; 
 			recurs--;
 		}
 		else
@@ -541,12 +538,8 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 
 	int color[SAMPLE];
 
-	// params.Direct = matrix_rotate(radians(params.camera_rot.x), radians(params.camera_rot.y), radians(params.camera_rot.z),
-		// SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
 	params.Direct = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
-		
-
 	barrier(CLK_GLOBAL_MEM_FENCE);
 	int i = 0;
 	while  (i < SAMPLE)
