@@ -95,5 +95,6 @@ void				read_from_file(char *data, t_src *s);
 void				error_manadge(char *str, int flag, char *src);
 int					get_size(char *av, t_src *src);
 int					cnt_objects(char *params, t_src *src);
+void				print_error_and_exit(const char *erorr_msg, int exit_stat);
 
 #endif

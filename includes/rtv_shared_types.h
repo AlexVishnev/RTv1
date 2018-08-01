@@ -54,27 +54,27 @@ typedef	struct		s_color
 typedef	struct		s_obj
 {
 	int				type;
-	cl_float3		mid; // position
+	cl_float3		mid;
 	cl_float3		direction;
-	cl_float4		color; // r,g,b + a
+	cl_float4		color;
 	float			specular;
-	float			radius; // size
+	float			radius;
 	float			reflection;
 	float			angle;
 }					t_obj;
 
 typedef	struct		s_params
 {
-	cl_float3		o; //camera position
-	cl_float3		d; //camera direction
+	cl_float3		o;
+	cl_float3		d;
 	cl_float3		camera_rot;
-	t_obj			*object; //list of objects
-	t_light			*light; //list of lights
+	t_obj			*object;
+	t_light			*light;
 	t_cam			look_pos;
-	float			t_min; //wtf
-	float			t_max; //wtf
-	int				color; //wtf
-	int				objects; //size
+	float			t_min; 
+	float			t_max;
+	int				color;
+	int				objects;
 	int				lights;
 	int				width;
 	int				height;

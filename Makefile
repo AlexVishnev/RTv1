@@ -25,7 +25,8 @@ SOURCES = rt_controllers.c \
 			parser/parse_main.c \
 			parser/parse_generic.c \
 			parser/parse_specific.c \
-			parser/parse_validate.c
+			parser/parse_validate.c \
+			parser/parse_err.c
 
 OBJECTS = $(SOURCES:.c=.o)
 OBJECTS := $(addprefix $(OBJECTS_DIR)/, $(OBJECTS))

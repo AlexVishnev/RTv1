@@ -6,13 +6,13 @@
 #define MAX(a, b) (a) > (b) ? (a) : (b)
 #define CLAMP(c, max) MIN(MAX(c, min), max)
 
-static void please_validate_and_save_enum_of_int(void *src,
+static void	please_validate_and_save_enum_of_int(void *src,
 	void *dst, t_field_info *info)
 {
-	int arr[info->array_size];
-	int i;
-	int *tmp;
-	int min;
+	int	arr[info->array_size];
+	int	i;
+	int	*tmp;
+	int	min;
 
 	min = (info->can_be_signed) ? (-(info->max_abs)) : (0);
 	tmp = (int*)src;
@@ -22,13 +22,13 @@ static void please_validate_and_save_enum_of_int(void *src,
 	memcpy(dst, arr, sizeof(arr));
 }
 
-static void please_validate_and_save_enum_of_float(void *src,
+static void	please_validate_and_save_enum_of_float(void *src,
 	void *dst, t_field_info *info)
 {
-	float arr[info->array_size];
-	float *tmp;
-	int i;
-	int min;
+	float	arr[info->array_size];
+	float	*tmp;
+	int		i;
+	int		min;
 
 	min = (info->can_be_signed) ? (-(info->max_abs)) : (0);
 	tmp = (float*)src;
@@ -38,7 +38,8 @@ static void please_validate_and_save_enum_of_float(void *src,
 	memcpy(dst, arr, sizeof(arr));
 }
 
-void please_validate_and_save(void *src, void *dst, t_field_info *info)
+void	please_validate_and_save(void *src, void *dst,
+	t_field_info *info)
 {
 
 	if (info->is_int)
