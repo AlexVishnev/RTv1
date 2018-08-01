@@ -115,8 +115,8 @@ void	keyboards_control1(t_src *src, SDL_Scancode scancode)
 		free(it);
 	}
 	keyboards_control2(src, scancode);
-
 }
+
 void	keyboards_control2(t_src *src, SDL_Scancode scancode)
 {
 	(void)scancode;
@@ -136,27 +136,6 @@ void	keyboards_control2(t_src *src, SDL_Scancode scancode)
 		src->params.color_filter = 7;
 	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_V)
 		src->params.stop_real_mode = 1;
-
-}
-
-void	take_screenshot(t_src *src, const char *pathfile)
-{
-	Uint32		rmask;
-	Uint32		gmask;
-	Uint32		bmask;
-	char		*name;
-	SDL_Surface	*screen;
-
-	rmask = 0x00ff0000;
-	gmask = 0x0000ff00;
-	bmask = 0x000000ff;
-	name = ft_strjoin("screenshots/screenshot[", pathfile);
-	screen = SDL_CreateRGBSurfaceFrom(src->surf->pixels, src->surf->w,
-		src->surf->h, 32, src->surf->pitch, rmask,
-		gmask, bmask, 0x0);
-	SDL_SaveBMP(screen, name);
-	SDL_FreeSurface(screen);
-	free(name);
 }
 
 int		expose_hook(t_src *src)

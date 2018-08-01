@@ -474,7 +474,6 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	float3 		tmp;
 
 	recurs = 0;
-	int test = 1; 
 	while (islessequal(recurs, RECURS))
 	{
 		color[recurs] = 0;
@@ -511,10 +510,6 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 			break ;
 	}
 	recurs = -1;
-	if (test == 1)
-	{
-
-	}
 	while (isless(++recurs, RECURS))
 	{
 		color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] +	

@@ -36,7 +36,7 @@
 #  include <SDL2/SDL_ttf.h>
 #  include <CL/cl.h>
 # endif
-# define MSG "\033[0;92m\033[3mUsage:\033[0m scenes/RT.sphere"
+# define MSG "\033[0;92m\033[3mUsage:\033[0m ./RT scene/scene_file"
 # define MSG_CLR "\033[4;31mError:\033[0m can't build color"
 # define MSG_PARSE "\033[4;31mError:\033[0m You'r argunents are NOT support"
 # define MSG_FORMAT "\033[4;31mError:\033[0m invalid format of data"
