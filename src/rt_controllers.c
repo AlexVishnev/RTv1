@@ -134,6 +134,9 @@ void	keyboards_control2(t_src *src, SDL_Scancode scancode)
 		src->params.color_filter = 6;
 	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_7)
 		src->params.color_filter = 7;
+	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_V)
+		src->params.stop_real_mode = 1;
+
 }
 
 void	take_screenshot(t_src *src, const char *pathfile)
@@ -160,23 +163,23 @@ int		expose_hook(t_src *src)
 {
 	if (SDL_GetMouseState(&src->c.mouse_x, &src->c.mouse_y))
 		SDL_WarpMouseInWindow(src->wind, src->c.mouse_x, src->c.mouse_y);
-	while (SDL_PollEvent(&src->c.e_k))
+	if (SDL_PollEvent(&src->c.e_k))
 	{
 		if ((src->c.e_k.type == SDL_QUIT) ||
 		src->c.e_k.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 			return (0);
-		if (src->c.e_k.key.keysym.scancode > 10 &&
+		else if (src->c.e_k.key.keysym.scancode > 10 &&
 			src->c.e_k.key.keysym.scancode < 89)
 			keyboards_control(src, src->c.e_k.key.keysym.scancode);
-		if (src->c.e_k.button.button == SDL_BUTTON_LEFT)
+		else if (src->c.e_k.button.button == SDL_BUTTON_LEFT)
 			src->c.mouse_on = 2;
-		if (src->c.e_k.button.button == SDL_BUTTON_RIGHT)
+		else if (src->c.e_k.button.button == SDL_BUTTON_RIGHT)
 		{
 			SDL_CaptureMouse(false);
 			src->c.mouse_on = 42;
 			SDL_ShowCursor(1);
 		}
-		if (src->c.mouse_on == 2)
+		else if (src->c.mouse_on == 2)
 			mouse_control(src, src->c.e_k);
 	}
 	return (1);

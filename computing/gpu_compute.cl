@@ -74,7 +74,7 @@ typedef	struct	s_params
 	int			screenw;
 	int			screenh;
 	int 		color_filter;
-	int			is_true;
+	int			stop_real_mode;
 }				t_params;
 
 
@@ -407,25 +407,28 @@ float3	GlobalNormal(t_trace *tr, float3 P)
 }
 
 
-float3 Refract(float3 D,  float3 N,  float ior)
-{
-	float tmp;
-	float cosi = clamp(-1.f, 1.f, dot(D, N));
-	float etai = 1, etat = ior; 
-	float3 n = N; 
-	if (cosi < 0) 
-		cosi = -cosi; 
-	else 
-	{
-		tmp = etai;
-		etai = etat;
-		etat = tmp;
-		n = -N; 
-	} 
-	float eta = etai / etat; 
-	float k = 1 - eta * eta * (1 - cosi * cosi); 
-	return k < 0 ? 0 : eta * D + (eta * cosi - sqrtf(k)) * n;
-}
+// float3 Refract(float3 D,  float3 N,  float ior)
+// {
+// 	float tmp;
+// 	float cosi = clamp(-1.f, 1.f, dot(D, N));
+// 	float etai = 1, etat = ior; 
+// 	float3 n = N;
+
+// 	if (cosi < 0) 
+// 		cosi = -cosi; 
+// 	else 
+// 	{
+// 		tmp = etai;
+// 		etai = etat;
+// 		etat = tmp;
+// 		n = -N; 
+// 	} 
+// 	float eta = etai / etat; 
+// 	float k = 1 - eta * eta * (1 - cosi * cosi);
+// 	if (k < 0) 
+// 		return (0);
+// 	return (eta * D + (eta * cosi - sqrtf(k)) * n);
+// }
 
 
 float fresnel(float3 D, float3 N, float ior, float kr) 
@@ -445,7 +448,6 @@ float fresnel(float3 D, float3 N, float ior, float kr)
 	// Total internal reflection
 	if (sint >= 1) 
 		kr = 1; 
-
 	else 
 	{ 
 		float cost = sqrtf(max(0.f, 1 - sint * sint)); 
@@ -463,14 +465,16 @@ float fresnel(float3 D, float3 N, float ior, float kr)
 int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max)
 {
 	t_trace		tr;
-	float3		P;
+	float3		Point;
 	float3		N;
 	float4		color[RECURS + 1];
 	int			recurs;
 	float		intensity;
 	float3		DD;
+	float3 		tmp;
 
 	recurs = 0;
+	int test = 1; 
 	while (islessequal(recurs, RECURS))
 	{
 		color[recurs] = 0;
@@ -479,34 +483,38 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	recurs = RECURS;
 	while (isgreaterequal(recurs, 0))
 	{
-
 		ClosestIntersection(obj, &tr, &par, par.O, par.Direct, t_min, t_max);
 		if (isinf(tr.closest_intersect))
 		{
 			color[recurs] = 0;
 			break ;
 		}
-		P = par.O + tr.closest_intersect * par.Direct;
-		N = GlobalNormal(&tr, P);
+		Point = par.O + tr.closest_intersect * par.Direct;
+		N = GlobalNormal(&tr, Point);
 		DD = -par.Direct;
-		intensity = GenerateLigth(obj, light, &par, P, N, DD, tr.closest_object.specular);
-		color[recurs] = (float)intensity * tr.closest_object.color;
+		intensity = GenerateLigth(obj, light, &par, Point, N, DD, tr.closest_object.specular);
+		color[recurs] = intensity * tr.closest_object.color;
 		color[recurs].w = tr.closest_object.reflect;
 
 		if (isgreater(tr.closest_object.reflect, 0))
 		{
-			if (isequal(par.is_true, 1))
+			if (isequal(par.stop_real_mode, 1))
 			{
 				par.Direct = (dot(N, DD) * 2.0f * N) - DD;
-				par.O = P;
+				par.O = Point;
 			}
-			par.Direct = (dot(N, DD) * 2.0f * N) - DD; // reflect with viewport; 
+			else 
+				par.Direct = (dot(N, DD) * 2.0f * N) - DD; // reflect with viewport; 
 			recurs--;
 		}
 		else
 			break ;
 	}
 	recurs = -1;
+	if (test == 1)
+	{
+
+	}
 	while (isless(++recurs, RECURS))
 	{
 		color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] +	
