@@ -91,8 +91,8 @@ float2		Intersect_Plane(__constant t_obj *obj, float3 O, float3 D);
 float2		discriminant(float3 k);
 
 
-int			RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max);
-int			convert_color(int color[], int max_arr_size);
+float4			RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float3 ray, float t_min, float t_max);
+int			convert_color(float4 color[], int max_arr_size, t_params par);
 int			ColorFilters(int red, int green, int blue, int flag, t_params par);
 int 		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
 						float3 O, float3 D, float t_min, float t_max);
@@ -104,7 +104,7 @@ int			set_carton(int red, int green, int blue);
 int			set_sepia(int red, int green, int blue);
 int			set_bw (int red, int green, int blue);
 int			set_negative (int r, int g, int b);
-int	set_stereoskop(int r, int g, int b, int flag);
+int			set_stereoskop(int r, int g, int b, int flag);
 
 
 
@@ -230,7 +230,7 @@ float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params 
 			}
 			if (isequal(dot(V, Normal), 0))
 				continue ;
-			ClosestIntersection(obj, &shadows, par, Point, Light, 0.001f, max);
+			ClosestIntersection(obj, &shadows, par, Point, Light, 0.01f, max);
 			if (isnotequal(shadows.closest_intersect, INFINITY))
 				continue ;
 			nl = dot(Normal, Light);
@@ -464,7 +464,7 @@ float fresnel(float3 D, float3 N, float ior, float kr)
 }
 
 
-int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max)
+float4		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float3 Ray, float t_min, float t_max)
 {
 	t_trace		tr;
 	float3		Point;
@@ -482,15 +482,15 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	recurs = RECURS;
 	while (isgreaterequal(recurs, 0))
 	{
-		ClosestIntersection(obj, &tr, &par, par.O, par.Ray, t_min, t_max);
+		ClosestIntersection(obj, &tr, &par, par.O, Ray, t_min, t_max);
 		if (isinf(tr.closest_intersect))
 		{
 			color[recurs] = 0;
 			break ;
 		}
-		Point = par.O + tr.closest_intersect * par.Ray;
+		Point = par.O + tr.closest_intersect * Ray;
 		Nornal = GlobalNormal(&tr, Point);
-		intensity = GenerateLigth(obj, light, &par, Point, Nornal, -par.Ray, tr.closest_object.specular);
+		intensity = GenerateLigth(obj, light, &par, Point, Nornal, -Ray, tr.closest_object.specular);
 		color[recurs] = intensity * tr.closest_object.color;
 		color[recurs].w = tr.closest_object.reflect;
 
@@ -498,11 +498,11 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		{
 			if (isequal(par.stop_real_mode, 1))
 			{
-				par.Ray = (dot(Nornal, -par.Ray) * 2.0f * Nornal) + par.Ray;
+				Ray = (dot(Nornal, -Ray) * 2.0f * Nornal) + Ray;
 				par.O = Point;
 			}
 			else 
-				par.Ray = (dot(Nornal, -par.Ray) * 2.0f * Nornal) + par.Ray; 
+				Ray = (dot(Nornal, -Ray) * 2.0f * Nornal) + Ray; 
 			recurs--;
 		}
 		else
@@ -514,22 +514,24 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		color[recurs + 1] = (1 - color[recurs + 1].w) * color[recurs + 1] +	
 		(color[recurs + 1].w * color[recurs]);
 	}
-	return (ColorFilters(color[recurs].x, color[recurs].y, color[recurs].z, par.color_filter, par));
+	return (color[recurs]);
 }
 
-int convert_color(int color[], int array_size)
+int convert_color(float4 color[], int array_size, t_params par)
 {
-	int		ssaa;
+	float4	ssaa;
 	int 	i;
 
 	i = 0;
 	ssaa = 0;
-	while (isless(i, array_size))
+
+	while (i < array_size)
 	{
 		ssaa += color[i];
 		i++;
 	}
-	return ssaa / array_size;
+	ssaa /= array_size;
+	return (ColorFilters(ssaa.x, ssaa.y, ssaa.z, par.color_filter, par));
 }
 
 __kernel
@@ -540,27 +542,41 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 
 
 	int sample;
-	if (isequal(params.ssaa_flag, 42))
+
+	if (isequal(params.ssaa_flag, 24))
 		sample = 4;
-	sample = 1;
-	int color[sample];
+	if (isequal(params.ssaa_flag, 42))
+		sample = 8;
+	else
+		sample = 1;
+	float4 color[sample];
     float3 dirs[sample];
 
 	params.Ray = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
 	barrier(CLK_GLOBAL_MEM_FENCE);
 	int i = 0;
-    if (isequal(sample, 4))
+    if (isequal(sample, 8))
     {
-        dirs[0] = params.Ray + (float3)(0.25, 0.25, 0.);
-        dirs[1] = params.Ray + (float3)(0.25, -0.25, 0.);
-        dirs[2] = params.Ray + (float3)(-0.25, 0.25, 0.);
-        dirs[3] = params.Ray + (float3)(-0.25, -0.25, 0.);
+        dirs[0] = params.Ray + (float3)(0.0005f, 0.0005f, 0.);
+        dirs[1] = params.Ray + (float3)(0.0005f, -0.0005f, 0.);
+        dirs[2] = params.Ray + (float3)(-0.0005f, 0.0005f, 0.);
+        dirs[3] = params.Ray + (float3)(-0.0005f, -0.0005f, 0.);
+
+        dirs[4] = params.Ray + (float3)(0.0005f, 0.0008f, 0.);;
+        dirs[5] = params.Ray + (float3)(0.0005f, -0.0008f, 0.);;
+        dirs[6] = params.Ray + (float3)(-0.0005f, 0.0008f, 0.);;
+        dirs[7] = params.Ray + (float3)(-0.0005f, -0.00051f, 0.);;
     }
+
 	while (isless( i, sample))
 	{
-		color[i] = RayTracer(obj, light, params, 0.001f, INFINITY);
+		if (sample == 8)
+            dirs[i] = fast_normalize(dirs[i]);
+		color[i] = RayTracer(obj, light, params,  dirs[i], 0.01f, INFINITY);
 		i++;
 	}
-	img_pxl[x + y * params.screenw] = convert_color(color, sample);
+	if (sample == 1)
+		color[0] = RayTracer(obj, light, params, params.Ray, 0.01f, INFINITY);
+	img_pxl[x + y * params.screenw] = convert_color(color, sample, params);
 }
