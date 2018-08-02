@@ -37,7 +37,7 @@ void		please_parse_camera(cJSON *json_chain, void *data)
 	field_info.is_array = false;
 	field_info.name = "antialiasing";
 	field_info.can_be_signed = false;
-	field_info.max_abs = 8;
+	field_info.max_abs = 16;
 	field_info.is_int = true;
 	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.ssaa)));
 }

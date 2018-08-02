@@ -540,32 +540,52 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 	int y = get_global_id(1);
 
 
-	float4 color[8];
-    float3 dirs[8];
+	float4 color[16];
+    float3 dirs[16];
 
 	params.Ray = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
 	barrier(CLK_GLOBAL_MEM_FENCE);
    
 
-    if (isequal(params.ssaa, 4) || isequal(params.ssaa, 8))
+    if (isequal(params.ssaa, 4) || isequal(params.ssaa, 8) || isequal(params.ssaa, 16))
     {
-        dirs[0] = params.Ray + (float3)(0.0005f, 0.0005f, 0.);
-        dirs[1] = params.Ray + (float3)(-0.0005f, 0.0005f, 0.);
-        dirs[2] = params.Ray + (float3)(-0.0005f, -0.0005f, 0.);
-        dirs[3] = params.Ray + (float3)(0.0005f, -0.0005f, 0.);
+        dirs[0] = params.Ray + (float3)(0.0005f, 0.0005f, 0.) / 2;
+        dirs[1] = params.Ray + (float3)(-0.0005f, 0.0005f, 0.) / 2;
+        dirs[2] = params.Ray + (float3)(-0.0005f, -0.0005f, 0.) / 2;
+        dirs[3] = params.Ray + (float3)(0.0005f, -0.0005f, 0.) / 2;
     }
 
-    if (isequal(params.ssaa, 8) )
+    if (isequal(params.ssaa, 8) || isequal(params.ssaa, 16))
     {
-        dirs[0] = dirs[0] + (float3)(0.00025f, 0, 0.);
-        dirs[1] = dirs[1] + (float3)(0.00025f, 0, 0.);
-        dirs[2] = dirs[2] + (float3)(0.00025f, 0, 0.);
-        dirs[3] = dirs[3] + (float3)(0.00025f, 0, 0.);
-        dirs[4] = dirs[0] + (float3)(-0.0005f, 0.f, 0.);
-        dirs[5] = dirs[1] + (float3)(-0.0005f, 0. , 0.);
-        dirs[6] = dirs[2] + (float3)(-0.0005f, 0, 0.);
-        dirs[7] = dirs[3] + (float3)(-0.0005f, 0, 0.);
+        dirs[0] = dirs[0] + (float3)(0.00025f, 0, 0.) / 2;
+        dirs[1] = dirs[1] + (float3)(0.00025f, 0, 0.) / 2;
+        dirs[2] = dirs[2] + (float3)(0.00025f, 0, 0.) / 2;
+        dirs[3] = dirs[3] + (float3)(0.00025f, 0, 0.) / 2;
+        dirs[4] = dirs[0] + (float3)(-0.0005f, 0.f, 0.) / 2;
+        dirs[5] = dirs[1] + (float3)(-0.0005f, 0. , 0.) / 2;
+        dirs[6] = dirs[2] + (float3)(-0.0005f, 0, 0.) / 2;
+        dirs[7] = dirs[3] + (float3)(-0.0005f, 0, 0.) / 2;
+    }
+
+    if (isequal(params.ssaa, 16))
+    {
+        dirs[0] = dirs[0] + (float3)(0, 0.00025f, 0.) / 2;
+        dirs[1] = dirs[1] + (float3)(0, 0.00025f, 0.) / 2;
+        dirs[2] = dirs[2] + (float3)(0, 0.00025f, 0.) / 2;
+        dirs[3] = dirs[3] + (float3)(0, 0.00025f, 0.) / 2;
+        dirs[4] = dirs[4] + (float3)(0, 0.00025f, 0.) / 2;
+        dirs[5] = dirs[5] + (float3)(0, 0.00025f, 0.) / 2;
+        dirs[6] = dirs[6] + (float3)(0, 0.00025f, 0.) / 2;
+        dirs[7] = dirs[7] + (float3)(0, 0.00025f, 0.) / 2;
+        dirs[8] = dirs[0] + (float3)(0, -0.0005f, 0.) / 2;
+        dirs[9] = dirs[1] + (float3)(0, -0.0005f, 0.) / 2;
+        dirs[10] = dirs[2] + (float3)(0, -0.0005f, 0.) / 2;
+        dirs[11] = dirs[3] + (float3)(0, -0.0005f, 0.) / 2;
+        dirs[12] = dirs[5] + (float3)(0, -0.0005f, 0.) / 2;
+        dirs[13] = dirs[6] + (float3)(0, -0.0005f, 0.) / 2;
+        dirs[14] = dirs[7] + (float3)(0, -0.0005f, 0.) / 2;
+        dirs[15] = dirs[8] + (float3)(0, -0.0005f, 0.) / 2;
     }
 
 	int i = 0;
