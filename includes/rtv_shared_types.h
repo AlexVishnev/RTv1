@@ -65,6 +65,7 @@ typedef	struct		s_params
 	int				height;
 	int				color_filter;
 	int				stop_real_mode;
+	int 			ssaa;
 }					t_params;
 
 typedef	struct		s_privat
