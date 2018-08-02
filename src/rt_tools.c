@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/rtv1.h"
+#include "rt.h"
 
 void	take_screenshot(t_src *src, const char *pathfile)
 {

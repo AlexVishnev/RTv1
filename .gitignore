@@ -1,6 +1,6 @@
 RTv1
 RT
-/screenshots/*
+/screenshots/screenshot[*].bmp
 /downloads
 /build
 /platforms

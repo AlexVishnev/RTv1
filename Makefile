@@ -206,9 +206,9 @@ sdl2_ttf_clean:
 		$(MAKE) -C $(DEP_DIR)/SDL2_ttf clean; \
 	fi
 
-clean: sdl2_clean sdl2_image_clean sdl2_ttf_clean cjson_clean clean_proj
+clean: sdl2_clean sdl2_image_clean sdl2_ttf_clean clean_proj
 
-fclean: clean fclean_proj
+fclean: clean fclean_proj cjson_clean
 	@$(RM) -rf $(PREFIX)
 	@$(RM) -rf $(DEP_DIR)
 	@git submodule deinit --all -f

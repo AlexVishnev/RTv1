@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef RTV1_H
-# define RTV1_H
+#ifndef RT_H
+# define RT_H
 
 # include <time.h>
 # include "libft/includes/libft.h"
