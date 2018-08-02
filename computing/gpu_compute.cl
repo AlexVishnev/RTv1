@@ -548,7 +548,7 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 	if (isequal(params.ssaa_flag, 42))
 		sample = 8;
 	else
-		sample = 1;
+		sample = 8;
 	float4 color[sample];
     float3 dirs[sample];
 

@@ -25,7 +25,6 @@ void		init_host(t_src *src)
 					SDL_WINDOW_ALLOW_HIGHDPI);
 	src->surf = SDL_GetWindowSurface(src->wind);
 	src->img_pxl = src->surf->pixels;
-
 }
 
 void		init_parametrs(t_src *src)
