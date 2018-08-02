@@ -17,7 +17,7 @@
 # define CYLINDER 3
 # define CONE 4
 # define RECURS 1
-# define SAMPLE 4
+// # define SAMPLE 4
 
 # ifndef M_PI
 #  define M_PI           3.14159265358979323846  /* pi */
@@ -79,23 +79,24 @@ typedef	struct	s_params
 }				t_params;
 
 
-int			convert_color(int color[], int max_arr_size);
-float3 		Refract(float3 D,  float3 N,  float ior);
-int			RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max);
-int			ColorFilters(int red, int green, int blue, int flag, t_params par);
-float2		discriminant(float3 k);
-
-float3		SetCameraPosititon(t_params par, float x, float y);
-float3		matrix_rotate(float a, float b, float c, float3 r);
-int 		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
-							float3 O, float3 D, float t_min, float t_max);
 float3		GlobalNormal(t_trace *tr, float3 P);
 float3		ReflectRay(float3 R, float3 N);
+float3		SetCameraPosititon(t_params par, float x, float y);
+float3		matrix_rotate(float a, float b, float c, float3 r);
+float3 		Refract(float3 D,  float3 N,  float ior);
 float2		Intersect_Cylinder(__constant t_obj *obj, float3 P, float3 V);
-float		GetForms(__constant t_obj *obj, float t, float3 P, float3 V, float3 VA);
 float2		Intersect_Cone(__constant t_obj *obj, float3 P, float3 V);
 float2		Inersect_Sphere(__constant t_obj *obj, float3 O, float3 D);
 float2		Intersect_Plane(__constant t_obj *obj, float3 O, float3 D);
+float2		discriminant(float3 k);
+
+
+int			RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max);
+int			convert_color(int color[], int max_arr_size);
+int			ColorFilters(int red, int green, int blue, int flag, t_params par);
+int 		ClosestIntersection(__constant t_obj *obj, t_trace *tr, t_params *par,
+						float3 O, float3 D, float t_min, float t_max);
+float		GetForms(__constant t_obj *obj, float t, float3 P, float3 V, float3 VA);
 float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 P, float3 N, float3 V, float spec);
 float		fresnel(float3 D, float3 N, float ior, float kr);
 
@@ -103,6 +104,9 @@ int			set_carton(int red, int green, int blue);
 int			set_sepia(int red, int green, int blue);
 int			set_bw (int red, int green, int blue);
 int			set_negative (int r, int g, int b);
+int	set_stereoskop(int r, int g, int b, int flag);
+
+
 
 int	set_carton(int r, int g, int b)
 {
@@ -193,10 +197,6 @@ float3	matrix_rotate(float a, float b, float c, float3 r)
 	  ((cos_b * sin_a) * r.y) + ((cos_a * cos_b) * r.z)});
 }
 
-float3	ReflectRay(float3 R, float3 N)
-{
-	return (dot(N, R) * (2.0f * N)) - R;
-}
 
 float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params *par,	float3 Point, 
 							float3 Normal, float3 V, float spec)
