@@ -11,27 +11,27 @@
 /* ************************************************************************** */
 
 #include "parser_internal.h"
+#define A	field_info.can_be_signed = true; field_info.max_abs = 1000
+#define B	field_info.is_int = false; field_info.name = "position"
+#define C	A; B
 
 void		please_parse_camera(cJSON *json_chain, void *data)
 {
 	cJSON			*json_camera;
 	t_field_info	field_info;
-	t_src			*p_src;
+	t_src			*p;
 
 	if (!(json_camera = cJSON_GetObjectItem(json_chain, "camera")))
 		print_error_and_exit("FUCKING cJSON_GetObjectItem ", -2);
-	p_src = (t_src*)data;
+	p = (t_src*)data;
 	field_info.type = cJSON_Array;
 	field_info.is_array = true;
 	field_info.arr_type = cJSON_Number;
-	field_info.can_be_signed = true;
-	field_info.max_abs = 1000;
 	field_info.max_allowed_arr_size = 3;
-	field_info.is_int = false;
-	field_info.name = "position";
-	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.o)));
+	C;
+	please_parse_field(json_camera, &field_info, ((void*)&(p->params.o)));
 	field_info.name = "rotation";
-	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.d)));
+	please_parse_field(json_camera, &field_info, ((void*)&(p->params.d)));
 	field_info.max_allowed_arr_size = 1;
 	field_info.type = cJSON_Number;
 	field_info.is_array = false;
@@ -39,7 +39,7 @@ void		please_parse_camera(cJSON *json_chain, void *data)
 	field_info.can_be_signed = false;
 	field_info.max_abs = 16;
 	field_info.is_int = true;
-	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.ssaa)));
+	please_parse_field(json_camera, &field_info, ((void*)&(p->params.ssaa)));
 }
 
 static void	parse_single_light_part(cJSON *json_light, t_light *p_lig,
