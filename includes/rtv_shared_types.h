@@ -20,27 +20,6 @@
 
 typedef unsigned int	t_uint;
 
-typedef struct		s_vector
-{
-	float			x;
-	float			y;
-}					t_vector;
-
-typedef	struct		s_pos
-{
-	float			x;
-	float			y;
-	float			z;
-	float			w;
-}					t_pos;
-
-typedef struct		s_ray
-{
-	float			x;
-	float			y;
-	float			z;
-}					t_ray;
-
 typedef	struct		s_light
 {
 	int				type;
@@ -56,12 +35,6 @@ typedef	struct		s_cam
 	float			dist;
 }					t_cam;
 
-typedef	struct		s_color
-{
-	unsigned int	red;
-	unsigned int	green;
-	unsigned int	blue;
-}					t_color;
 
 typedef	struct		s_obj
 {
@@ -110,13 +83,6 @@ typedef	struct		s_privat
 	size_t				size;
 }					t_private;
 
-typedef	struct		s_trace
-{
-	float			closest_t;
-	t_obj			closest_obj;
-	t_vector		t;
-}					t_trace;
-
 typedef struct		s_control
 {
 	SDL_Event		e_k;
@@ -146,8 +112,6 @@ typedef	struct		s_src
 	t_cam			camera;
 	t_private		op_cl;
 	t_params		params;
-	t_color			color;
-	t_pos			pos;
 	unsigned int	*img_pxl;
 	int				objects_cnt;
 	int				lights_cnt;
@@ -155,7 +119,6 @@ typedef	struct		s_src
 	int				index1;
 	char			*buffer;
 	t_control		c;
-	t_ray			cam_pos;
 }					t_src;
 
 #endif

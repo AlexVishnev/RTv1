@@ -228,7 +228,7 @@ float		GenerateLigth(__constant t_obj *obj, __constant t_light *light, t_params 
 			}
 			if (isequal(dot(V, N), 0))
 				continue ;
-			ClosestIntersection(obj, &shadows, par, P, L, 0.01f, max);
+			ClosestIntersection(obj, &shadows, par, P, L, 0.001f, max);
 			if (isnotequal(shadows.closest_intersect, INFINITY))
 				continue ;
 			nl = dot(N, L);
@@ -555,9 +555,7 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
     }
 	while  (i < SAMPLE)
 	{
-        if (SAMPLE == 4)
-            params.Direct = fast_normalize(dirs[i]);
-		color[i] = RayTracer(obj, light, params, 0.01f, INFINITY);
+		color[i] = RayTracer(obj, light, params, 0.001f, INFINITY);
 		i++;
 	}
 	img_pxl[x + y * params.screenw] = convert_color(color);
