@@ -75,10 +75,11 @@ typedef	struct	s_params
 	int			screenh;
 	int 		color_filter;
 	int			stop_real_mode;
+	int 		ssaa_flag;
 }				t_params;
 
 
-int			convert_color(int color[SAMPLE]);
+int			convert_color(int color[], int max_arr_size);
 float3 		Refract(float3 D,  float3 N,  float ior);
 int			RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, float t_min, float t_max);
 int			ColorFilters(int red, int green, int blue, int flag, t_params par);
@@ -490,8 +491,7 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		}
 		Point = par.O + tr.closest_intersect * par.Direct;
 		N = GlobalNormal(&tr, Point);
-		DD = -par.Direct;
-		intensity = GenerateLigth(obj, light, &par, Point, N, DD, tr.closest_object.specular);
+		intensity = GenerateLigth(obj, light, &par, Point, N, -par.Direct, tr.closest_object.specular);
 		color[recurs] = intensity * tr.closest_object.color;
 		color[recurs].w = tr.closest_object.reflect;
 
@@ -499,11 +499,11 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 		{
 			if (isequal(par.stop_real_mode, 1))
 			{
-				par.Direct = (dot(N, DD) * 2.0f * N) - DD;
+				par.Direct = (dot(N, -par.Direct) * 2.0f * N) + par.Direct;
 				par.O = Point;
 			}
 			else 
-				par.Direct = (dot(N, DD) * 2.0f * N) - DD; // reflect with viewport; 
+				par.Direct = (dot(N, -par.Direct) * 2.0f * N) + par.Direct; // reflect with viewport; 
 			recurs--;
 		}
 		else
@@ -518,19 +518,19 @@ int		RayTracer(__constant t_obj *obj, __constant t_light *light, t_params par, f
 	return (ColorFilters(color[recurs].x, color[recurs].y, color[recurs].z, par.color_filter, par));
 }
 
-int convert_color(int color[SAMPLE])
+int convert_color(int color[], int array_size)
 {
 	int		ssaa;
 	int 	i;
 
 	i = 0;
 	ssaa = 0;
-	while (i < SAMPLE)
+	while (i < array_size)
 	{
 		ssaa += color[i];
 		i++;
 	}
-	return ssaa / SAMPLE;
+	return ssaa / array_size;
 }
 
 __kernel
@@ -539,24 +539,29 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 	int x = get_global_id(0);
 	int y = get_global_id(1);
 
-	int color[SAMPLE];
-    float3 dirs[SAMPLE];
+
+	int sample;
+	if (isequal(params.ssaa_flag, 42))
+		sample = 4;
+	sample = 1;
+	int color[sample];
+    float3 dirs[sample];
 
 	params.Direct = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
 	barrier(CLK_GLOBAL_MEM_FENCE);
 	int i = 0;
-    if (SAMPLE == 4)
+    if (sample == 4)
     {
         dirs[0] = params.Direct + (float3)(0.25, 0.25, 0.);
         dirs[1] = params.Direct + (float3)(0.25, -0.25, 0.);
         dirs[2] = params.Direct + (float3)(-0.25, 0.25, 0.);
         dirs[3] = params.Direct + (float3)(-0.25, -0.25, 0.);
     }
-	while  (i < SAMPLE)
+	while  (i < sample)
 	{
 		color[i] = RayTracer(obj, light, params, 0.001f, INFINITY);
 		i++;
 	}
-	img_pxl[x + y * params.screenw] = convert_color(color);
+	img_pxl[x + y * params.screenw] = convert_color(color, sample);
 }
