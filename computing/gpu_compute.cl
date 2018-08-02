@@ -17,7 +17,6 @@
 # define CYLINDER 3
 # define CONE 4
 # define RECURS 1
-// # define SAMPLE 4
 
 # ifndef M_PI
 #  define M_PI           3.14159265358979323846  /* pi */
@@ -75,7 +74,7 @@ typedef	struct	s_params
 	int			screenh;
 	int 		color_filter;
 	int			stop_real_mode;
-	int 		ssaa_flag;
+	int 		ssaa;
 }				t_params;
 
 
@@ -541,42 +540,34 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 	int y = get_global_id(1);
 
 
-	int sample;
-
-	if (isequal(params.ssaa_flag, 24))
-		sample = 4;
-	if (isequal(params.ssaa_flag, 42))
-		sample = 8;
-	else
-		sample = 8;
-	float4 color[sample];
-    float3 dirs[sample];
+	float4 color[params.ssaa];
+    float3 dirs[params.ssaa];
 
 	params.Ray = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
 	barrier(CLK_GLOBAL_MEM_FENCE);
-	int i = 0;
-    if (isequal(sample, 8))
+    if (isequal(params.ssaa, 4))
     {
         dirs[0] = params.Ray + (float3)(0.0005f, 0.0005f, 0.);
         dirs[1] = params.Ray + (float3)(0.0005f, -0.0005f, 0.);
         dirs[2] = params.Ray + (float3)(-0.0005f, 0.0005f, 0.);
         dirs[3] = params.Ray + (float3)(-0.0005f, -0.0005f, 0.);
 
-        dirs[4] = params.Ray + (float3)(0.0005f, 0.0008f, 0.);;
-        dirs[5] = params.Ray + (float3)(0.0005f, -0.0008f, 0.);;
-        dirs[6] = params.Ray + (float3)(-0.0005f, 0.0008f, 0.);;
-        dirs[7] = params.Ray + (float3)(-0.0005f, -0.00051f, 0.);;
+        // dirs[4] = params.Ray + (float3)(0.0005f, 0.0008f, 0.);
+        // dirs[5] = params.Ray + (float3)(0.0005f, -0.0008f, 0.);
+        // dirs[6] = params.Ray + (float3)(-0.0005f, 0.0008f, 0.);
+        // dirs[7] = params.Ray + (float3)(-0.0005f, -0.00051f, 0.);
     }
 
-	while (isless( i, sample))
+	int i = 0;
+	while (isless( i, params.ssaa))
 	{
-		if (sample == 8)
+		if (params.ssaa == 8)
             dirs[i] = fast_normalize(dirs[i]);
 		color[i] = RayTracer(obj, light, params,  dirs[i], 0.01f, INFINITY);
 		i++;
 	}
-	if (sample == 1)
+	if (params.ssaa == 1)
 		color[0] = RayTracer(obj, light, params, params.Ray, 0.01f, INFINITY);
-	img_pxl[x + y * params.screenw] = convert_color(color, sample, params);
+	img_pxl[x + y * params.screenw] = convert_color(color, params.ssaa, params);
 }
