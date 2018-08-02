@@ -87,6 +87,7 @@ int			main(int ac, char **av)
 	init_host(&src);
 	init_parametrs(&src);
 	create_videohost(&src);
+	printf("src.params.ssaa == %d\n", src.params.ssaa );
 	while (DICK)
 	{
 		if (!expose_hook(&src))

@@ -2,7 +2,8 @@
 	"camera":
 	{
 		"position" : [1,4,-25],
-		"rotation" : [5,19,0]
+		"rotation" : [5,19,0],
+            "antialiasing" : 8
 	},
 	"lights" :
 	[
