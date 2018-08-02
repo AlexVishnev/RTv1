@@ -32,6 +32,14 @@ void		please_parse_camera(cJSON *json_chain, void *data)
 	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.o)));
 	field_info.name = "rotation";
 	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.d)));
+	field_info.max_allowed_arr_size = 1;
+	field_info.type = cJSON_Number;
+	field_info.is_array = false;
+	field_info.name = "antialiasing";
+	field_info.can_be_signed = false;
+	field_info.max_abs = 8;
+	field_info.is_int = true;
+	please_parse_field(json_camera, &field_info, ((void*)&(p_src->params.ssaa)));
 }
 
 static void	parse_single_light_part(cJSON *json_light, t_light *p_lig,
