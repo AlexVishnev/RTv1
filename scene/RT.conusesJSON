@@ -3,7 +3,7 @@
 	{
 		"position" : [-5, 8, -30],
 		"rotation" : [0, 15, 0],
-		"antialiasing" : 4
+		"antialiasing" : 8
 	},
 	"lights" :
 	[

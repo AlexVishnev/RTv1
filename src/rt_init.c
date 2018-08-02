@@ -46,7 +46,8 @@ void		init_parametrs(t_src *src)
 	src->params.d.y = src->params.d.y * M_PI / 180.f;
 	src->params.d.z = src->params.d.z * M_PI / 180.f;
 	src->params.camera_rot = src->params.d;
-	src->params.ssaa = (src->params.ssaa == 4) ? 4 : 1;
+	if (src->params.ssaa != 4 && src->params.ssaa != 8)
+		src->params.ssaa = 1;
 }
 
 void		wr_data(Uint8 data[], Uint8 mask[], const char *im[], t_src *s)

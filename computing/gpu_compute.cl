@@ -540,27 +540,36 @@ void	render(__global int *img_pxl, t_params params, __constant t_obj *obj, __con
 	int y = get_global_id(1);
 
 
-	float4 color[params.ssaa];
-    float3 dirs[params.ssaa];
+	float4 color[8];
+    float3 dirs[8];
 
 	params.Ray = matrix_rotate(params.camera_rot.x, params.camera_rot.y, params.camera_rot.z,
 		SetCameraPosititon(params, x - params.screenw / 2, params.screenh / 2 - y));
 	barrier(CLK_GLOBAL_MEM_FENCE);
-    if (isequal(params.ssaa, 4))
+   
+
+    if (isequal(params.ssaa, 4) || isequal(params.ssaa, 8))
     {
         dirs[0] = params.Ray + (float3)(0.0005f, 0.0005f, 0.);
-        dirs[1] = params.Ray + (float3)(0.0005f, -0.0005f, 0.);
-        dirs[2] = params.Ray + (float3)(-0.0005f, 0.0005f, 0.);
-        dirs[3] = params.Ray + (float3)(-0.0005f, -0.0005f, 0.);
+        dirs[1] = params.Ray + (float3)(-0.0005f, 0.0005f, 0.);
+        dirs[2] = params.Ray + (float3)(-0.0005f, -0.0005f, 0.);
+        dirs[3] = params.Ray + (float3)(0.0005f, -0.0005f, 0.);
+    }
 
-        // dirs[4] = params.Ray + (float3)(0.0005f, 0.0008f, 0.);
-        // dirs[5] = params.Ray + (float3)(0.0005f, -0.0008f, 0.);
-        // dirs[6] = params.Ray + (float3)(-0.0005f, 0.0008f, 0.);
-        // dirs[7] = params.Ray + (float3)(-0.0005f, -0.00051f, 0.);
+    if (isequal(params.ssaa, 8) )
+    {
+        dirs[0] = dirs[0] + (float3)(0.00025f, 0, 0.);
+        dirs[1] = dirs[1] + (float3)(0.00025f, 0, 0.);
+        dirs[2] = dirs[2] + (float3)(0.00025f, 0, 0.);
+        dirs[3] = dirs[3] + (float3)(0.00025f, 0, 0.);
+        dirs[4] = dirs[0] + (float3)(-0.0005f, 0.f, 0.);
+        dirs[5] = dirs[1] + (float3)(-0.0005f, 0. , 0.);
+        dirs[6] = dirs[2] + (float3)(-0.0005f, 0, 0.);
+        dirs[7] = dirs[3] + (float3)(-0.0005f, 0, 0.);
     }
 
 	int i = 0;
-	while (isless( i, params.ssaa))
+	while (isless(i, params.ssaa))
 	{
 		if (params.ssaa == 8)
             dirs[i] = fast_normalize(dirs[i]);
