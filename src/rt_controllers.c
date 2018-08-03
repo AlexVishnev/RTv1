@@ -136,10 +136,6 @@ void	keyboards_control2(t_src *src, SDL_Scancode scancode)
 		src->params.color_filter = 7;
 	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_V)
 		src->params.stop_real_mode = 1;
-	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_A)
-		src->params.ssaa = 42;
-	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_D)
-		src->params.ssaa = 24;
 }
 
 int		expose_hook(t_src *src)

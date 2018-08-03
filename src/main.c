@@ -74,7 +74,6 @@ void		exit_work(t_src *src)
 	free(src->objects);
 	free(src->params.object);
 	free(src->buffer);
-	system("leaks -q RT");
 }
 
 int			main(int ac, char **av)
