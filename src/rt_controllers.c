@@ -137,39 +137,3 @@ void	keyboards_control2(t_src *src, SDL_Scancode scancode)
 	else if (src->c.e_k.key.keysym.scancode == SDL_SCANCODE_V)
 		src->params.stop_real_mode = 1;
 }
-
-int		expose_hook(t_src *src)
-{
-	if (SDL_GetMouseState(&src->c.mouse_x, &src->c.mouse_y))
-		SDL_WarpMouseInWindow(src->wind, src->c.mouse_x, src->c.mouse_y);
-	if (SDL_PollEvent(&src->c.e_k))
-	{
-		if (src->c.e_k.key.state == SDL_PRESSED)
-		{
-			if ((src->c.e_k.type == SDL_QUIT) ||
-			src->c.e_k.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-				return (0);
-			else if (src->c.e_k.key.keysym.scancode > 1 &&
-				src->c.e_k.key.keysym.scancode < 89)
-				keyboards_control(src, src->c.e_k.key.keysym.scancode);
-		}
-		if (src->c.e_k.button.button == SDL_BUTTON_LEFT)
-			src->c.mouse_on = 2;
-		else if (src->c.e_k.button.button == SDL_BUTTON_RIGHT)
-		{
-			SDL_CaptureMouse(false);
-			src->c.mouse_on = 42;
-			SDL_ShowCursor(1);
-		}
-		else if (src->c.mouse_on == 2)
-			mouse_control(src, src->c.e_k);
-		if (src->c.e_k.type == SDL_MOUSEWHEEL && !(!src->c.e_k.wheel.x && !src->c.e_k.wheel.y))
-		{
-			if (src->c.e_k.wheel.y > 0)
-				src->params.focus += 0.00025;
-			else
-				src->params.focus -= 0.00025;
-		}
-	}
-	return (1);
-}

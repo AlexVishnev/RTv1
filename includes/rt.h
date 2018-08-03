@@ -68,6 +68,7 @@ int					expose_hook(t_src *src);
 
 void				keyboards_control1(t_src *src, SDL_Scancode scancode);
 void				keyboards_control2(t_src *src, SDL_Scancode scancode);
+void				keyboards_control(t_src *src, SDL_Scancode scancode);
 void				mouse_control(t_src *src, SDL_Event e_k);
 void				take_screenshot(t_src *src, const char *pathfile);
 
