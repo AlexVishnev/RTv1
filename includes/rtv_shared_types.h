@@ -65,6 +65,7 @@ typedef	struct		s_params
 	int				color_filter;
 	int				stop_real_mode;
 	int				ssaa;
+	float			focus;
 }					t_params;
 
 typedef	struct		s_privat

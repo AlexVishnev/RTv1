@@ -49,6 +49,7 @@ void		init_parametrs(t_src *src)
 	if (src->params.ssaa != 4 && src->params.ssaa != 8 &&
 														src->params.ssaa != 16)
 		src->params.ssaa = 1;
+	src->params.focus = 0;
 }
 
 void		wr_data(Uint8 data[], Uint8 mask[], const char *im[], t_src *s)

@@ -163,6 +163,13 @@ int		expose_hook(t_src *src)
 		}
 		else if (src->c.mouse_on == 2)
 			mouse_control(src, src->c.e_k);
+		if (src->c.e_k.type == SDL_MOUSEWHEEL && !(!src->c.e_k.wheel.x && !src->c.e_k.wheel.y))
+		{
+			if (src->c.e_k.wheel.y > 0)
+				src->params.focus += 0.00025;
+			else
+				src->params.focus -= 0.00025;
+		}
 	}
 	return (1);
 }
